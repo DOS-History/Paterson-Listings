@@ -1,0 +1,4 @@
+* -text
+LICENSE text=auto
+*.md text=auto
+*.txt text=auto

@@ -1,0 +1,613 @@
+   CCCCCCCCCCCC      HHH         HHH      KKK         KKK      DDDDDDDDDDDD            SSSSSSSSSSSS      KKK         KKK
+   СССССССССССС      HHH         HHH      KKK         KKK      DDDDDDDDDDDD            SSSSSSSSSSSS      KKK         KKK
+   СССССССССССС      HHH         HHH      KKK         KKK      DDDDDDDDDDDD            SSSSSSSSSSSS      KKK         KKK
+CCC                  HHH         HHH      KKK         KKK      DDD         DDD      SSS                  KKK         KKK
+CCC                  HHH         HHH      KKK         KKK      DDD         DDD      SSS                  KKK         KKK
+CCC                  HHH         HHH      KKK         KKK      DDD         DDD      SSS                  KKK         KKK
+CCC                  HHH         HHH      KKK      KKK         DDD         DDD      SSS                  KKK      KKK   
+CCC                  HHH         HHH      KKK      KKK         DDD         DDD      SSS                  KKK      KKK   
+CCC                  HHH         HHH      KKK      KKK         DDD         DDD      SSS                  KKK      KKK   
+CCC                  HHHHHHHHHHHHHHH      KKKKKKKKK            DDD         DDD         SSSSSSSSS         KKKKKKKKK      
+CCC                  HHHHHHHHHHHHHHH      KKKKKKKKK            DDD         DDD         SSSSSSSSS         KKKKKKKKK      
+CCC                  HHHHHHHHHHHHHHH      KKKKKKKKK            DDD         DDD         SSSSSSSSS         KKKKKKKKK      
+CCC                  HHH         HHH      KKK      KKK         DDD         DDD                  SSS      KKK      KKK   
+CCC                  HHH         HHH      KKK      KKK         DDD         DDD                  SSS      KKK      KKK   
+CCC                  HHH         HHH      KKK      KKK         DDD         DDD                  SSS      KKK      KKK   
+CCC                  HHH         HHH      KKK         KKK      DDD         DDD                  SSS      KKK         KKK
+CCC                  HHH         HHH      KKK         KKK      DDD         DDD                  SSS      KKK         KKK
+CCC                  HHH         HHH      KKK         KKK      DDD         DDD                  SSS      KKK         KKK
+   CCCCCCCCCCCC      HHH         HHH      KKK         KKK      DDDDDDDDDDDD         SSSSSSSSSSSS         KKK         KKK
+   СССССССССССС      HHH         HHH      KKK         KKK      DDDDDDDDDDDD         SSSSSSSSSSSS         KKK         KKK
+   СССССССССССС      HHH         HHH      KKK         KKK      DDDDDDDDDDDD         SSSSSSSSSSSS         KKK         KKK
+
+
+
+
+   AAAAAAAAA            888888888            666666666   
+   AAAAAAAAA            888888888            666666666   
+   AAAAAAAAA            888888888            666666666   
+AAA         AAA      888         888      666            
+AAA         AAA      888         888      666            
+AAA         AAA      888         888      666            
+AAA         AAA      888         888      666            
+AAA         AAA      888         888      666            
+AAA         AAA      888         888      666            
+AAA         AAA         888888888         666666666666   
+AAA         AAA         888888888         666666666666   
+AAA         AAA         888888888         666666666666   
+AAAAAAAAAAAAAAA      888         888      666         666
+AAAAAAAAAAAAAAA      888         888      666         666
+AAAAAAAAAAAAAAA      888         888      666         666
+AAA         AAA      888         888      666         666
+AAA         AAA      888         888      666         666
+AAA         AAA      888         888      666         666
+AAA         AAA         888888888            666666666   
+AAA         AAA         888888888            666666666   
+AAA         AAA         888888888            666666666   
+
+
+
+
+ *START* User ROS BASIC [500,500]  Job  86DOS Seq. 7115 Date 16-Jun-81 15:13:30 Monitor Microsoft 1091 603a4d80j *START*
+File: DSKC:CHKDSK.A86<055>[500,500] Created: 15-Jun-81 04:10:28 Printed: 16-Jun-81 15:32:54
+QUEUE Switches:  /FILE:ASCII /COPIES:1 /SPACING:1 /LIMIT:565 /FORMS:NORMAL
+00100	
+00200	; CHKDSK	Version 1.0	03/10/81
+00300	
+00400	; Verifies and repairs 86-DOS disk directory.
+00500	
+00600	SETDRV:	EQU	14
+00700	GETDRV:	EQU	25
+00800	GETMAP:	EQU	27
+00900	OPEN:	EQU	15
+01000	CLOSE:	EQU	16
+01100	DELETE:	EQU	19
+01200	SETDMA:	EQU	26
+01300	SRCHFST:EQU	17
+01400	SRCHNXT:EQU	18
+01500	OUTCH:	EQU	2
+01600	BLKWRT:	EQU	40
+01700	PRINTBUF:EQU	9
+01800	
+01900		ORG	100H
+02000		PUT	100H
+02100	
+02200	CHKDSK:
+02205		MOV	SP,STACK
+02300		MOV	AH,GETDRV
+02400		INT	21H
+02500		MOV	[CURDRV],AL
+02600		MOV	DL,[5CH]
+02700		OR	DL,DL
+02800		JZ	DRVSET
+02900		MOV	AH,SETDRV
+03000		DEC	DL
+03100		INT	21H
+03110		CMP	AL,DL
+03120		JA	DRVSET
+03130		MOV	DX,BADDRV
+03135	ERROR:
+03140		MOV	AH,PRINTBUF
+03150		INT	33
+03160		INT	32
+03170	
+03175	BADDSK:
+03177		MOV	AX,CS
+03178		MOV	DS,AX
+03180		MOV	AH,SETDRV
+03185		MOV	DL,[CURDRV]
+03190		INT	33
+03195		MOV	DX,DIRBAD
+03197		JP	ERROR
+03200	DRVSET:
+03202		MOV	B,[WRKDRV],DL	;Save drive indicator
+03300		MOV	AH,GETMAP
+03400		INT	21H
+03410		CMP	B,[BX],0FEH	;Check for initialized disk
+03420		JNE	BADDSK
+03500		PUSH	DS
+03600		PUSH	ES
+03700		POP	DS
+03800		MOV	[DSKSIZ],DX	;Number of allocation units
+03900		MOV	[SECSIZ],CX	;Size of physical sector
+04000		MOV	AH,0
+04100		MOV	[CLUSSIZ],AX	;Sectors per cluster
+04200		MOV	CX,DX
+04300		MOV	DI,MAP
+04400		XOR	AX,AX
+04500		REP
+04600		STOW			;Zero out allocation map
+04700		MOV	CX,AX
+04800		MOV	[ALLOC],AX	;Count of allocation units used
+04900		MOV	[FILECNT],AX	;Number of files found
+05000		MOV	[DELCNT],AX	;Number of files deleted due to error
+05100		MOV	BP,DI
+05200		MOV	[NAMTAB],BP	;First address of file list
+05300		MOV	DX,DI
+05400		MOV	AH,SETDMA
+05500		INT	21H
+05600		MOV	AH,SRCHFST
+05700		MOV	DX,ALLFILE
+05800		INT	21H
+05900		INC	AL
+06000		POP	ES		;ES:BX point to FAT
+06100		JNZ	GETFILES
+06200		JMP	COMPMAP
+06300	GETFILES:
+06400		INC	CX		;Count number of files
+06500		ADD	DI,44		;Separate in file in list by 44 bytes
+06600		MOV	DX,DI
+06700		MOV	AH,SETDMA
+06800		INT	21H
+06900		MOV	AH,SRCHNXT
+07000		MOV	DX,ALLFILE
+07100		INT	21H
+07200		INC	AL
+07300		JNZ	GETFILES	;Loop until all files are in list
+07400		MOV	[FILECNT],CX
+07500		MOV	CX,1		;File number (position in list)
+07600		MOV	DX,[DSKSIZ]
+07700		INC	DX		;Maximum cluster number
+07800		MOV	[MAXCLUS],DX
+07900		ADD	BP,34		;Point to "first cluster" entry
+08000	EACHFIL:
+08100		XOR	AX,AX		;No. of clusters in file
+08200		MOV	SI,[BP]		;First cluster of file
+08300		CMP	SI,[MAXCLUS]	;Make sure it's legal
+08400		MOV	DI,BADDIR
+08500		JA	BADFIRST
+08600		OR	SI,SI		;Check for zero-length file
+08700		JZ	HAVENDJ
+08800	SCANFAT:
+08900		MOV	DI,CX
+09000		SHL	SI
+09100		XCHG	DI,[SI+MAP-4]	;Xchange current map entry with file no.
+09200		SHR	SI
+09300		OR	DI,DI		;Should be zero for unallocated cluster
+09400		JNZ	CROSSLINK
+09500		INC	AX		;Count cluster as part of this file
+09600		CALL	UNPACK
+09700		JZ	FORCEND		;Make sure cluster knows it's allocated
+09800		CMP	DI,0FF8H	;Bigger than this means End of File
+09900	HAVENDJ:JAE	HAVEND
+10000		CMP	DI,[MAXCLUS]	;Make sure it's a legal value
+10100		JA	FORCEND
+10200		MOV	SI,DI
+10300		JP	SCANFAT		;Visit each cluster allocated to file
+10400	
+10500	BADFIRST:
+10600		PUSH	AX		;Because FILERR will pop it later
+10700		MOV	AX,CX
+10800		MOV	DX,44
+10900		DEC	AX
+11000		MUL	AX,DX		;Get position in file name table
+11100		MOV	DX,AX
+11200		ADD	DX,[NAMTAB]
+11300		MOV	AH,DELETE
+11400		INT	21H
+11405		OR	AL,AL		;SEE IF WE HAVE A VALID DIRECTORY
+11450		JZ	DISKOK
+11452		JMP	BADDSK
+11454	DISKOK:
+11500		INC	[DELCNT]	;Count one deleted file
+11600		MOV	DX,BADDIR
+11700		JP	FILERR
+11800	
+11900	CROSSLINK:
+12000		MOV	DX,LINKED
+12100		PUSH	AX
+12200		MOV	AH,PRINTBUF
+12300		INT	21H
+12400		MOV	AX,DI
+12500		CALL	PRINTNAM
+12600		MOV	DX,FILE2
+12700		MOV	AH,PRINTBUF
+12800		INT	33
+12900		MOV	AX,CX
+13000		CALL	PRINTNAM
+13100		MOV	DX,CRLF
+13200		MOV	AH,PRINTBUF
+13300		INT	33
+13400		POP	AX
+13500		ADD	[ALLOC],AX
+13600		JMP	SIZSET1
+13700	
+13800	FORCEND:
+13900	; Come here if a cluster allocated to a file contained an illegal
+14000	; link--either a zero (meaning unallocated), or a value larger than
+14100	; the maximum cluster number, but not End of File. Put an End of File
+14200	; mark there so the FAT will at least be well-formed.
+14300		MOV	DX,0FFFH
+14400		CALL	PACK
+14500		MOV	DX,BADCLUS
+14600		PUSH	AX
+14700	
+14800	FILERR:
+14900		MOV	AH,PRINTBUF
+15000		INT	21H
+15100		MOV	AX,CX
+15200		CALL	PRINTNAM
+15300		MOV	DX,CRLF
+15400		MOV	AH,PRINTBUF
+15500		INT	21H
+15600		POP	AX
+15700	
+15800	HAVEND:
+15900		ADD	[ALLOC],AX	;Total up allocated clusters
+16000		MOV	SI,AX
+16100		MOV	AX,[BP+2]
+16200		MOV	DX,[BP+4]	;AX:DX now have file length
+16300		PUSH	CX
+16400		MOV	CX,[CLUSSIZ]
+16500		DEC	CX
+16600		ADD	AX,CX
+16700		ADC	DX,0
+16800		INC	CX
+16900	SCALE:
+17000		SHR	CX
+17100		JC	SCALED
+17200		SHR	DX
+17300		RCR	AX
+17400		JP	SCALE
+17500	SCALED:
+17600		DIV	AX,[SECSIZ]
+17700		OR	DX,DX
+17800		JZ	HAVSIZ
+17900		INC	AX
+18000	HAVSIZ:
+18100		CMP	AX,SI		;See if file size corresponds with allocation
+18200		JZ	SIZSET
+18300		XOR	DI,DI
+18400		MOV	CX,[CLUSSIZ]
+18500		CALL	UNSCALE
+18600		MOV	[BP+6],SI
+18700		MOV	[BP+8],DI
+18800		MOV	DX,BP
+18900		SUB	DX,34
+19000		MOV	AH,OPEN
+19100		INT	21H
+19110		OR	AL,AL
+19120		JZ	DISKOK2
+19130		JMP	BADDSK
+19140	DISKOK2:
+19200		MOV	AX,[SECSIZ]
+19300		MOV	[BP-27+14],AX	;Make record size=sector size
+19400		MOV	CX,0
+19500		MOV	AH,BLKWRT
+19600		INT	21H
+19700		MOV	AH,CLOSE	;Write back corrected directory entry
+19800		INT	21H
+19900		MOV	AH,GETMAP
+20000		PUSH	DS
+20100		INT	33		;Make sure FAT dirty bit is still set
+20200		POP	DS
+20300		MOV	DX,BADSIZ
+20400		MOV	AH,PRINTBUF
+20500		INT	21H
+20600		POP	AX
+20700		PUSH	AX
+20800		CALL	PRINTNAM
+20900		MOV	DX,CRLF
+21000		MOV	AH,PRINTBUF
+21100		INT	21H
+21200	SIZSET:
+21300		POP	CX
+21400	SIZSET1:
+21500		ADD	BP,44		;Scan next file
+21600		INC	CX
+21700		CMP	CX,[FILECNT]
+21800		JA	COMPMAP
+21900		JMP	EACHFIL
+22000	; Now compare the allocation map we have made with the FAT. Any
+22100	; clusters not allocated in the map will be released.
+22200	COMPMAP:
+22300		XOR	AX,AX		;Keep count of clusters released
+22400		MOV	BP,MAP
+22500		MOV	SI,2		;First usable cluster number
+22600		MOV	CX,[DSKSIZ]
+22700	RELCLUS:
+22800		TEST	[BP],-1		;Allocated in our map?
+22900		JNZ	NXTCLUS		;If so, skip to next
+23000		CALL	UNPACK
+23100		JZ	NXTCLUS		;If not allocated, skip to next
+23200		XOR	DX,DX
+23300		CALL	PACK		;Change to "Free" status
+23400		INC	AX		;Count clusters released
+23500	NXTCLUS:
+23600		INC	BP
+23700		INC	BP
+23800		INC	SI
+23900		LOOP	RELCLUS
+24000		OR	AX,AX		;Any clusters released?
+24100		JZ	REPORT		;If not, do final report
+24200		MOV	BX,FREED
+24300		CALL	DISPCLUS
+24400	REPORT:
+24500	; Make status report. Include no. of files, total disk space,
+24600	; free space on disk, total memory, and free memory.
+24610		SEG	CS
+24620		MOV	DL,[CURDRV]
+24630		MOV	AH,SETDRV
+24640		INT	21H
+24700		MOV	SI,[FILECNT]
+24800		SUB	SI,[DELCNT]
+24900		XOR	DI,DI
+25000		MOV	BX,NUMFIL
+25100		CALL	DISP32BITS
+25200		MOV	AX,[DSKSIZ]
+25300		MOV	BX,DSKSPC
+25400		CALL	DISPCLUS
+25500		MOV	AX,[DSKSIZ]
+25600		SUB	AX,[ALLOC]
+25700		MOV	BX,FRESPC
+25800		CALL	DISPCLUS
+25900		MOV	AX,[2]
+26000		MOV	DX,16
+26100		MUL	AX,DX
+26200		MOV	SI,AX
+26300		MOV	DI,DX
+26400		MOV	BX,TOTMEM
+26500		CALL	DISP32BITS
+26600		MOV	AX,[2]
+26700		MOV	DX,CS
+26800		SUB	AX,DX
+26900		MOV	DX,16
+27000		MUL	AX,DX
+27100		MOV	SI,AX
+27200		MOV	DI,DX
+27300		MOV	BX,FREMEM
+27400		CALL	DISP32BITS
+27405		CALL	WRTFRC		;Force all writes and handle write
+27410					;protect violation
+27900		INT	20H		;All done
+27902	
+27904	WRTFRC:	;********************************************************
+27906		;	This code forces all writes by performing a disk
+27908		;	reset (function 13). When the attempt to write
+27910		;	the allocation table fails in the case of a write-
+27912		;	protected diskette, this logic determines if the
+27914		;	allocation table had changed and if no changes were
+27916		;	made a normal termination will be forced
+27918		;*********************************************************
+27919		MOV	AX,DS
+27920		PUSH	DS		;Must first intercept INT 24H
+27921		MOV	ES,AX
+27922		XOR	AX,AX
+27924		MOV	DS,AX
+27926		MOV	SI,90H
+27928		MOV	DI,INT24	;will move vector to local address
+27930		MOV	CX,2
+27931		CLD			;So move will increment
+27932		REP
+27934		MOVW			;Vector now locally stored
+27936		MOV	AL,24H		;
+27938		MOV	AH,37
+27940		MOV	DX,WRTPRT	;
+27942		POP	DS		;Get local segment
+27944		INT	21H		;Interrupt vector now set
+27946		MOV	AH,13
+27948		INT	21H
+27953		PUSH	ES		;Will now reset INT 24H vector
+27955		XOR	AX,AX
+27957		MOV	ES,AX
+27959		CLD
+27961		MOV	DI,90H
+27963		MOV	SI,INT24
+27965		MOV	CX,2
+27967		REP
+27969		MOVW
+27971		POP	ES
+27973		RET
+27974	
+27976	WRTPRT:	;*********************************************************
+27978		;	This logic is designed to handle the case where
+27980		;	CHKDSK found no problems and upon rewriting the
+27982		;	allocation table (by the DOS) the disk was write-
+27984		;	protected and an error thus occured. With no problems
+27986		;	this code will cause normal termination, otherwise
+27987		;	normal error handling will occur.
+27988		;*********************************************************
+27990		EI		;Run with interrupts live
+27992		AND	DI,0FFH		;See if write-protect
+27994		JNZ	WRT100		;Do normal error handling
+27996		CMP	AH,3		;File allocation write?
+27998		JNZ	WRT100		;If not do normal handling
+27999		SEG	CS
+28000		CMP	[WRKDRV],AL	;Correct drive?
+28002		JNZ	WRT100		;
+28003		SEG	CS
+28004		CMP	B,[CHGCLS],1	;Legitimate change?
+28006		JZ	WRT100		;If so do normal handling
+28007		XOR	AL,AL		;Ignore the error
+28008		IRET
+28009	WRT100:	SEG	CS
+28010		JMP	L,[INT24]	;Normal error handling
+28012	
+28014	
+28015	
+28100	UNPACK:
+28200		MOV	DI,SI
+28300		SHR	DI
+28400		ADD	DI,SI
+28500		SEG	ES
+28600		MOV	DI,[DI+BX]
+28700		TEST	SI,1
+28800		JZ	HAVCLUS
+28900		SHR	DI
+29000		SHR	DI
+29100		SHR	DI
+29200		SHR	DI
+29300	HAVCLUS:
+29400		AND	DI,0FFFH
+29500		RET
+29600	
+29700	PACK:
+29705	;*************************************************************
+29710	;	ES:BX	POINTER TO THE BASE OF THE ALLOCATION TABLE
+29715	;	SI	CLUSTER NUMBER TO BE PACKED
+29720	;	DX	POINTER TO BE PLACED IN CLUSTER (SI)
+29725	;*************************************************************
+29730		MOV	B,[CHGCLS],1	;INDICATE CLUSTER CHANGED
+29800		PUSH	SI
+29900		MOV	DI,SI
+30000		SHR	SI
+30100		ADD	SI,BX
+30200		ADD	SI,DI
+30300		SHR	DI
+30400		SEG	ES
+30500		MOV	DI,[SI]
+30600		JNC	ALIGNED
+30700		SHL	DX
+30800		SHL	DX
+30900		SHL	DX
+31000		SHL	DX
+31100		AND	DI,0FH
+31200		JP	PACKIN
+31300	ALIGNED:
+31400		AND	DI,0F000H
+31500	PACKIN:
+31600		OR	DI,DX
+31700		SEG	ES
+31800		MOV	[SI],DI
+31900		POP	SI
+32000		RET
+32100	
+32200	UNSCALE:
+32300		SHR	CX
+32400		JC	RET
+32500		SHL	SI
+32600		RCL	DI
+32700		JP	UNSCALE
+32800	
+32900	DISPCLUS:
+33000		MUL	AX,[SECSIZ]
+33100		MOV	CX,[CLUSSIZ]
+33200		MOV	SI,AX
+33300		MOV	DI,DX
+33400		CALL	UNSCALE
+33500	DISP32BITS:
+33600		PUSH	BX
+33700		XOR	AX,AX
+33800		MOV	BX,AX
+33900		MOV	BP,AX
+34000		MOV	CX,32
+34100	CONVLP:
+34200		SHL	SI
+34300		RCL	DI
+34400		XCHG	AX,BP
+34500		CALL	CONVWRD
+34600		XCHG	AX,BP
+34700		XCHG	AX,BX
+34800		CALL	CONVWRD
+34900		XCHG	AX,BX
+35000		ADC	AL,0
+35100		LOOP	CONVLP
+35200	; Conversion complete. Print 10-digit number with 2 leading blanks.
+35300		MOV	CX,1B10H
+35400		CALL	OUTWORD
+35500		MOV	AX,BX
+35600		CALL	OUTWORD
+35700		MOV	AX,BP
+35800		CALL	OUTWORD
+35900		POP	DX
+36000		MOV	AH,PRINTBUF
+36100		INT	21H
+36200		RET
+36300	
+36400	OUTWORD:
+36500		PUSH	AX
+36600		MOV	DL,AH
+36700		CALL	OUTBYTE
+36800		POP	DX
+36900	OUTBYTE:
+37000		MOV	DH,DL
+37100		SHR	DL
+37200		SHR	DL
+37300		SHR	DL
+37400		SHR	DL
+37500		CALL	DIGIT
+37600		MOV	DL,DH
+37700	DIGIT:
+37800		AND	DL,0FH
+37900		JZ	BLANKZER
+38000		MOV	CL,0
+38100	BLANKZER:
+38200		DEC	CH
+38300		AND	CL,CH
+38400		OR	DL,30H
+38500		SUB	DL,CL
+38600		MOV	AH,OUTCH
+38700		INT	21H
+38800		RET
+38900	
+39000	CONVWRD:
+39100		ADC	AL,AL
+39200		DAA
+39300		XCHG	AL,AH
+39400		ADC	AL,AL
+39500		DAA
+39600		XCHG	AL,AH
+39700		RET
+39800	
+39900	PRINTNAM:
+39910		PUSH	CX
+40000		DEC	AX
+40100		MOV	CX,44
+40200		MUL	AX,CX
+40300		MOV	SI,AX
+40400		ADD	SI,[NAMTAB]
+40500		ADD	SI,8
+40600		MOV	CX,8
+40700		MOV	AH,OUTCH
+40800		CALL	PRINTCNT
+40900		MOV	DL," "
+41000		INT	21H
+41100		MOV	CL,3
+41110		CALL	PRINTCNT
+41120		POP	CX
+41130		RET
+41140	
+41200	PRINTCNT:
+41300		LODB
+41400		MOV	DL,AL
+41500		INT	21H
+41700		LOOP	PRINTCNT
+41800		RET
+41900	
+41950	ALLFILE:DB	-1,0,0,0,0,0,6	;Extended FCB
+42000		DB	0,"???????????"
+42100		DS	25
+42200	
+42300	FILE2:	DB	"  and  $"
+42305	BADDRV:	DB	"Invalid drive specification$"
+42400	BADCLUS:DB	"Allocation error for file $"
+42500	BADDIR:	DB	"Directory error-file :    $"
+42600	LINKED:	DB	"Files cross-linked: "
+42605		DB	13,10
+42610		DB	"     $"
+42700	BADSIZ:	DB	"File size error for file  $"
+42705	DIRBAD:	DB	"Diskette not initialized $"
+42800	FREED:	DB	" bytes disk space freed",13,10,13,10,"$"
+42900	NUMFIL:	DB	" disk files",13,10,"$"
+43000	DSKSPC:	DB	" bytes total disk space",13,10,"$"
+43100	FRESPC:	DB	" bytes remain available",13,10,13,10,"$"
+43200	TOTMEM:	DB	" bytes total memory",13,10,"$"
+43300	FREMEM:	DB	" bytes free"
+43400	CRLF:	DB	13,10,"$"
+43500	
+43600	DSKSIZ:	DS	2
+43700	SECSIZ:	DS	2
+43800	CLUSSIZ:DS	2
+43805	CHGCLS:	DB	0		;IF RESET TO 1-ALLOCATION TABLE UPDATED
+43810	WRKDRV:	DB	0
+43815	INT24:	DS	4
+43900	FILECNT:DS	2
+44000	NAMTAB:	DS	2
+44100	ALLOC:	DS	2
+44200	MAXCLUS:DS	2
+44300	DELCNT:	DS	2
+44400	CURDRV:	DS	1
+44405		DS	100H
+44410	STACK:
+44500	
+44600	MAP:

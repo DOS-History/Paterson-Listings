@@ -1,0 +1,1810 @@
+File 1)	DSKC:86DOS.ASM[500,500]	created: 1056 05-MAY-1981
+File 2)	DSKC:86DOS.A86[500,500]	created: 1425 16-JUNE-1981
+
+1)1	00230	SMALLDIR:	EQU	1	;1 to enable, 0 to disable
+1)	00260	; Turn on switch below to allow testing disk code with DEBUG. It sets
+****
+2)1	00230	SMALLDIR:	EQU	0	;1 to enable, 0 to disable
+2)	00260	; Turn on switch below to allow testing disk code with DEBUG. It sets
+**************
+1)1	00300	DSKTEST:	EQU	0	;1 to enable, 0 to disable
+1)	00330	; Interrupt Entry Points:
+****
+2)1	00300	DSKTEST:	EQU	1	;1 to enable, 0 to disable
+2)	00330	; Interrupt Entry Points:
+**************
+1)1	00460	MAXCOM:	EQU	41
+1)	00470	ESCCH:	EQU	1BH
+1)	00480	INTBASE:EQU	80H
+****
+2)1	00460	MAXCOM:	EQU	45
+2)	00470	ESCCH:	EQU	0
+2)	00480	INTBASE:EQU	80H
+**************
+1)1	00590	; Field definition for FCBs
+****
+2)1	00580					;Date format
+2)	00590					;16 15 14 13 11 10 9 8 7 6 5 4 3 2 1 0
+2)	00600					; y  y  y  y  y  y y m m m m d d d d d
+2)	00610					;
+2)	00620					;where y=year,m=month,d=day
+2)	00640	; Field definition for FCBs
+**************
+1)1	00790	;
+1)	00800	; Location	bytes	Description
+1)	00810	;
+1)	00820	;    0		11	File name and extension ( 0E5H if empty)
+1)	00830	;   11		13	Zero field (for expansion)
+1)	00840	;   24		 2	Date. Bits 0-4=day, bits 5-8=month, bits 9-15=year-1980
+****
+2)1	00850	; Location	bytes	Description
+2)	00870	;    0		11	File name and extension ( 0E5H if empty)
+2)	00880	;   11		 1	Attributes. Bits 1 or 2 make file hidden
+2)	00890	;   12		12	Zero field (for expansion)
+2)	00900	;   24		 2	Date. Bits 0-4=day, bits 5-8=month, bits 9-15=year-1980
+**************
+1)1	00870	;
+1)	00880	; The File Allocation Table uses a 12-bit entry for each allocation unit on
+1)	00890	; the disk. These entries are packed, two for every three bytes. The contents
+1)	00900	; of entry number N is found by 1) multiplying N by 1.5; 2) adding the result
+1)	00910	; to the base address of the Allocation Table; 3) fetching the 16-bit word at
+1)	00920	; this address; 4) If N was odd (so that N*1.5 was not an integer), shift the
+1)	00930	; word right four bits; 5) mask to 12 bits (AND with 0FFF hex). Entry number
+1)	00940	; zero is used as an end-of-file trap in the OS and as a flag for directory
+1)	00950	; entry size (if SMALLDIR selected). Entry 1 is reserved for future use. The
+1)	00960	; first available allocation unit is assigned entry number two, and for Drive Parameter Block
+1)	00980		ORG	0
+****
+2)1	00950	; Field definition for Drive Parameter Block
+2)	00970		ORG	0
+File 1)	DSKC:86DOS.ASM[500,500]	created: 1056 05-MAY-1981
+File 2)	DSKC:86DOS.A86[500,500]	created: 1425 16-JUNE-1981
+
+**************
+1)1	01270	BIOSSEG:	EQU	40H
+1)	01280			ORG	0
+****
+2)1	01260	BIOSSEG:	EQU	60H
+2)	01270			ORG	0
+**************
+1)1	01650	ESCTAB:	
+1)	01660		DB	"SC"	;Copy one char
+1)	01670		DB	"VN"	;Skip one char
+1)	01680		DB	"TA"	;Copy to char
+1)	01690		DB	"WB"	;Skip to char
+1)	01700		DB	"UH"	;Copy line
+1)	01710		DB	"HH"	;Kill line (no change in template)
+1)	01720		DB	"RM"	;Reedit line (new template)
+1)	01730		DB	"DD"	;Backspace
+1)	01740		DB	"P@"	;Enter insert mode
+1)	01750		DB	"QL"	;Exit insert mode
+1)	01760		DB	ESCCH,ESCCH	;Escape character
+1)	01770		DB	ESCCH,ESCCH	;End of table
+1)	01790	ESCTABLEN:EQU	$-ESCTAB
+1)	01810	HEADER:	DB	13,10,"86-DOS version 1.00"
+1)	01830		IF	DSKTEST
+1)	01840		DB	"D"
+1)	01850		ENDIF
+1)	01870		DB	13,10
+1)	01880		DB	"Copyright 1980,81 Seattle Computer Products, Inc.",13,10,"$"
+1)	01900	QUIT:
+****
+2)1	01630	ENDDOS:	DW	ENDDOS		;SEGMENT FOR COMMAND STORED HERE
+2)	01640	ESCTAB:	
+2)	01650		DB	77		;Copy one char--RIGHT ARROW
+2)	01660		DB	59		;Copy one char--F1
+2)	01670		DB	83		;Skip one char--DELETE
+2)	01680		DB	60		;Copy to char--F2
+2)	01690		DB	62		;Skip to char--F4
+2)	01700		DB	61		;Copy line--F3
+2)	01710		DB	64		;Ctrl-Z--F6
+2)	01720		DB	63		;Reedit line (new template)--F5
+2)	01730		DB	75		;Backspace--LEFT ARROW
+2)	01740		DB	82		;Toggle insert mode--INSERT
+2)	01750		DB	65		;Escape character--F7
+2)	01760		DB	65		;End of table
+2)	01780	ESCTABLEN:EQU	$-ESCTAB
+2)	01810	QUIT:
+**************
+1)1	02420		MOV	BP,SP
+1)	02430		MOV	BX,[BP+CSSAVE]
+1)	02440		SEG	CS
+1)	02450		MOV	[CSLOC],BX
+1)	02460		MOV	SP,CS
+1)	02470		MOV	SS,SP
+1)	02480		MOV	SP,STACK
+1)	02490		EI			;Stack OK now
+****
+2)1	02330		MOV	SP,CS
+File 1)	DSKC:86DOS.ASM[500,500]	created: 1056 05-MAY-1981
+File 2)	DSKC:86DOS.A86[500,500]	created: 1425 16-JUNE-1981
+
+2)	02340		MOV	SS,SP
+2)	02350	REDISP:
+2)	02360		MOV	SP,IOSTACK
+2)	02370		EI			;Stack OK now
+**************
+1)1	02570		IF	DSKTEST
+1)	02580		CMP	AH,12
+1)	02590		JL	SAMSTK
+1)	02600		MOV	SP,TESTSTK
+1)	02610	SAMSTK:
+1)	02620		ENDIF
+1)	02640		SEG	CS
+****
+2)1	02440		CMP	AH,12
+2)	02450		JLE	SAMSTK
+2)	02460		MOV	SP,DSKSTACK
+2)	02470	SAMSTK:
+2)	02480		SEG	CS
+**************
+1)1	02790		MOV	[SPSA	ENDIF
+1)	02810		PBX
+1)	02820		POP	CX
+****
+2)1	02630		MOV	[SPSAVE],AX
+2)	02640		SEG	CS
+2)	02650		MOV	AX,[NSS]
+2)	02660		SEG	CS
+2)	02670		MOV	[SSSAVE],AX
+2)	02680		ENDIF
+2)	02700		POP	AX
+2)	02710		POP	BX
+2)	02720		POP	CX
+**************
+1)1	02930		DW	ABORT		;0
+1)	02940		DW	CONIN
+****
+2)1	02830		DW	ABORT
+2)	02840		DW	CONIN
+**************
+1)1	02980		DW	LIST		;5
+1)	02990		DW	RAWIO
+****
+2)1	02880		DW	LIST
+2)	02890		DW	RAWIO
+**************
+1)1	03030		DW	BUFIN		;10
+1)	03040		DW	CONSTAT
+1)	03050		DW	VERSION
+1)	03060		DW	DSKRESET
+1)	03070		DW	SELDSK
+1)	03080		DW	OPEN		;15
+1)	03090		DW	CLOSE
+****
+2)1	02930		DW	BUFIN
+2)	02940		DW	CONSTAT
+2)	02950		DW	FLUSHKB
+File 1)	DSKC:86DOS.ASM[500,500]	created: 1056 05-MAY-1981
+File 2)	DSKC:86DOS.A86[500,500]	created: 1425 16-JUNE-1981
+
+2)	02960		DW	DSKRESET
+2)	02970		DW	SELDSK
+2)	02980		DW	OPEN
+2)	02990		DW	CLOSE
+**************
+1)1	03130		DW	SEQRD		;20
+1)	03140		DW	SEQWRT
+****
+2)1	03030		DW	SEQRD
+2)	03040		DW	SEQWRT
+**************
+1)1	03180		DW	CURDRV		;25
+1)	03190		DW	SETDMA
+****
+2)1	03080		DW	CURDRV
+2)	03090		DW	SETDMA
+**************
+1)1	03230		DW	SETATTRIB	;30
+1)	03240		DW	GETDSKPT
+****
+2)1	03130		DW	SETATTRIB
+2)	03140		DW	GETDSKPT
+**************
+1)1	03280		DW	FILESIZE	;35
+1)	03290		DW	SETRNDREC
+****
+2)1	03180		DW	FILESIZE
+2)	03190		DW	SETRNDREC
+**************
+1)1	03370	VERSION:
+1)	03380	GETIO:
+****
+2)1	03260		DW	GETDATE
+2)	03270		DW	SETDATE
+2)	03280		DW	GETTIME
+2)	03290		DW	SETTIME		;45
+2)	03310	GETIO:
+**************
+1)1	03440		MOV	AL,0
+1)	03450		RET
+1)	03480	READER:
+1)	03490		CALL	BIOSAUXIN,BIOSSEG
+****
+2)1	03370	INUSE:
+2)	03380	GETDSKPT:
+2)	03390		MOV	AL,0
+2)	03400		RET
+2)	03420	FLUSHKB:
+2)	03430		XOR	BX,BX
+2)	03440		MOV	ES,BX		;Select segment 0
+2)	03450		SEG	ES
+2)	03460		MOV	B,[41AH],1EH	;Reset KB queue head pointer
+2)	03470		SEG	ES
+2)	03480		MOV	B,[41CH],1EH	;Reset tail pointer
+2)	03490		MOV	AH,AL
+2)	03500		CMP	AL,1
+File 1)	DSKC:86DOS.ASM[500,500]	created: 1056 05-MAY-1981
+File 2)	DSKC:86DOS.A86[500,500]	created: 1425 16-JUNE-1981
+
+2)	03510		JZ	REDISPJ
+2)	03520		CMP	AL,7
+2)	03530		JZ	REDISPJ
+2)	03540		CMP	AL,8
+2)	03550		JZ	REDISPJ
+2)	03560		CMP	AL,10
+2)	03570		JZ	REDISPJ
+2)	03575		MOV	AL,0
+2)	03580		RET
+2)	03600	REDISPJ:JMP	REDISP
+2)	03620	READER:
+2)	03630	AUXIN:
+2)	03640		CALL	STATCHK
+2)	03650		CALL	BIOSAUXIN,BIOSSEG
+**************
+1)1	03540		CALL	BIOSAUXOUT,BIOSSEG
+****
+2)1	03700	AUXOUT:
+2)	03710		PUSH	AX
+2)	03720		CALL	STATCHK
+2)	03730		POP	AX
+2)	03740		CALL	BIOSAUXOUT,BIOSSEG
+**************
+1)1	03860		MOV	SI,BADMES
+1)	03870		CALL	OUTMES
+1)	03880		JMP	ERROR
+1)	03910	PACK:
+****
+2)1	04070		PUSH	AX
+2)	04080		MOV	AH,80H
+2)	04090		MOV	DI,0FFFH
+2)	04100		CALL	FATAL
+2)	04110		POP	AX
+2)	04120		RET
+2)	04150	PACK:
+**************
+1)1	04230	IOCHK:
+1)	04240		MOV	CX,5		;Check rest of name but not extension
+1)	04250		CMP	B,[DI],":"
+1)	04260		JNZ	NOCOL
+1)	04270		INC	DI		;Skip over colon
+1)	04280		DEC	CX
+1)	04290	NOCOL:
+1)	04300		MOV	AL," "
+****
+2)1	04454	DEVNAME:
+2)	04455		MOV	SI,IONAME	;List of I/O devices with file names
+2)	04456		MOV	BL,6		;BL = number of device names
+2)	04457	LOOKIO:
+2)	04458		MOV	DI,NAME1
+2)	04459		MOV	CX,4		;All device names are 4 letters
+2)	04460		REPE
+2)	04461		CMPB			;Check for name in list
+2)	04462		JZ	IOCHK		;If first 4 letters OK, check the rest
+2)	04463		ADD	SI,CX		;Point to next device name
+2)	04464		DEC	BL
+File 1)	DSKC:86DOS.ASM[500,500]	created: 1056 05-MAY-1981
+File 2)	DSKC:86DOS.A86[500,500]	created: 1425 16-JUNE-1981
+
+2)	04465		JNZ	LOOKIO
+2)	04466	CRET:
+2)	04467		STC
+2)	04468		RET
+2)	04470	IOCHK:
+2)	04480		MOV	CX,4		;Check rest of name but not extension
+2)	04490		MOV	AL," "
+**************
+1)1	04330		JNZ	FILSRCH
+1)	04340		DEC	BL
+1)	04350		RET
+1)	04370	GETFILE:
+1)	04390	; Inputs:
+****
+2)1	04520		JNZ	CRET
+2)	04530		MOV	AL,BL
+2)	04540		MOV	BX,IONUM-1
+2)	04550		XLAT			;Translate to internal device number
+2)	04560		MOV	BL,AL
+2)	04570		MOV	BH,-1
+2)	04580		RET
+2)	04600	GETFILE:
+2)	04610	; Same as GETNAME except ES:DI points to FCB on successful return
+2)	04620		CALL	MOVNAME
+2)	04630		JC	RET
+2)	04640		PUSH	DX
+2)	04650		PUSH	DS
+2)	04660		CALL	FINDNAME
+2)	04670		POP	ES
+2)	04680		POP	DI
+2)	04690		RET
+2)	04710	GETNAME:
+2)	04730	; Inputs:
+**************
+1)1	04480	;	BP = Base of drive parameters
+****
+2)1	04820	;	Zero set if attributes match (always except when creating)
+2)	04830	;	BP = Base of drive parameters
+**************
+1)1	04620		MOV	SI,IONAME	;List of I/O devices with file names
+1)	04630		MOV	BX,0FF04H	;BL = number of devices
+1)	04640	LOOKIO:
+1)	04650		MOV	DI,NAME1
+1)	04660		MOV	CX,3		;All device names are 3 letters
+1)	04670		REPE
+1)	04680		CMPB			;Check for name in list
+1)	04690		JZ	IOCHK		;If first 3 letters OK, check the rest
+1)	04700		ADD	SI,CX		;Point to next device name
+1)	04710		DEC	BL
+1)	04720		JNZ	LOOKIO
+1)	04730	FILSRCH:			;Not a device name
+1)	04740		CALL	STARTSRCH
+****
+2)1	04961		CALL	DEVNAME
+2)	04962		JNC	RET
+2)	05090		CALL	STARTSRCH
+File 1)	DSKC:86DOS.ASM[500,500]	created: 1056 05-MAY-1981
+File 2)	DSKC:86DOS.A86[500,500]	created: 1425 16-JUNE-1981
+
+**************
+1)1	05010		ADD	SI,15	
+1)	05020		RET
+****
+2)1	05370	;Check if attributes allow finding it
+2)	05380		MOV	AH,[ATTRIB]	;Attributes of search
+2)	05390		NOT	AH
+2)	05400		AND	AH,[SI]		;Compare with attributes of file
+2)	05410		ADD	SI,15	
+2)	05420		AND	AH,6		;Only look at bits 1 and 2
+2)	05430		JZ	RET
+2)	05440		TEST	B,[CREATING],-1
+2)	05450		JZ	NEXTENT
+2)	05460		RET
+**************
+1)1	05230		MOV	[LASTENT],AX
+****
+2)1	05670	GETENT:
+2)	05680		MOV	[LASTENT],AX
+**************
+1)1	05920		CALL	GETFILE
+1)	05930		JC	ERRET
+1)	05940		CMP	BH,-1		;Check if device name
+1)	05950		JZ	ERRET		;Can't delete I/O devices
+1)	05960	DELFILE:
+****
+2)1	06370		CALL	GETNAME
+2)	06375		MOV	AL,-1
+2)	06380		JC	RET
+2)	06390		CMP	BH,AL		;Check if device name
+2)	06400		JZ	RET		;Can't delete I/O devices
+2)	06410	DELFILE:
+**************
+1)1	06180		CMP	BH,-1		;Check if I/O device name
+1)	06190		JZ	ERRET		;If so, can't rename it
+1)	06200		ADD	SI,5
+****
+2)1	06650		ADD	SI,5
+**************
+1)1	06250	RENFIL:
+1)	06260		MOV	B,[DIRTYDIR],-1
+1)	06270		MOV	DI,BX
+1)	06280		MOV	SI,NAME2
+****
+2)1	06692		CMP	BH,-1		;Check if I/O device name
+2)	06694		JZ	ERRET		;If so, can't rename it
+2)	06700		MOV	SI,NAME1
+2)	06710		MOV	DI,NAME3
+2)	06720		MOV	CX,6		;Include attribute byte
+2)	06730		REP
+2)	06740		MOVW			;Copy name to search for
+2)	06750	RENFIL:
+2)	06760		MOV	DI,NAME1
+2)	06770		MOV	SI,NAME2
+**************
+1)1	06330		JZ	NOCHG
+File 1)	DSKC:86DOS.ASM[500,500]	created: 1056 05-MAY-1981
+File 2)	DSKC:86DOS.A86[500,500]	created: 1425 16-JUNE-1981
+
+1)	06340		MOV	[DI],AL
+1)	06350	NOCHG:
+1)	06360		INC	DI
+1)	06370		LOOP	NEWNAM
+1)	06380		CALL	CONTSRCH
+****
+2)1	06820		JNZ	NOCHG
+2)	06830		MOV	AL,[BX]
+2)	06840	NOCHG:
+2)	06850		STOB
+2)	06860		INC	BX
+2)	06870		LOOP	NEWNAM
+2)	06871		MOV	B,[DI],6	;Stop duplicates with any attributes
+2)	06872		CALL	DEVNAME		;Check if giving it a device name
+2)	06874		JNC	RENERR
+2)	06890		PUSH	[LASTENT]	;Save position of match
+2)	06895		MOV	[LASTENT],-1	;Search entire dirctory for duplicate
+2)	06900		CALL	CONTSRCH	;See if new name already exists
+2)	06910		POP	AX
+2)	06920		JNC	RENERR		;Error if found
+2)	06930		CALL	GETENT		;Re-read matching entry
+2)	06940		MOV	DI,BX
+2)	06950		MOV	SI,NAME1
+2)	06960		MOV	CX,11
+2)	06970		REP
+2)	06980		MOVB			;Replace old name with new
+2)	06990		MOV	B,[DIRTYDIR],-1	;Flag change in directory
+2)	07000		MOV	SI,NAME3
+2)	07010		MOV	DI,NAME1
+2)	07020		MOV	CX,6		;Include attribute byte
+2)	07030		REP
+2)	07040		MOVW			;Copy name back into search buffer
+2)	07050		CALL	CONTSRCH
+**************
+1)1	06440	ERRET:
+****
+2)1	07102	RENERR:
+2)	07104		CALL	CHKDIRWRITE
+2)	07110	ERRET:
+**************
+1)1	06520	;	DS, DX point to FCB
+1)	06530	; Outputs:
+1)	06540	;	ES = CS
+****
+2)1	07190	;	DS, DX point to FCB or extended FCB
+2)	07200	; Outputs:
+2)	07210	;	DS:DX point to normal FCB
+2)	07220	;	ES = CS
+**************
+1)1	06610		MOV	AX,CS
+****
+2)1	07290		SEG	CS
+2)	07300		MOV	B,[CREATING],0
+2)	07310		MOV	AX,CS
+**************
+1)1	06660		CALL	GETBP
+File 1)	DSKC:86DOS.ASM[500,500]	created: 1056 05-MAY-1981
+File 2)	DSKC:86DOS.A86[500,500]	created: 1425 16-JUNE-1981
+
+****
+2)1	07360		SEG	CS
+2)	07370		MOV	[EXTFCB],AL
+2)	07380		MOV	AH,0
+2)	07390		CMP	AL,-1
+2)	07400		JNZ	HAVATTRB
+2)	07410		ADD	DX,7
+2)	07420		ADD	SI,6
+2)	07430		MOV	AH,[SI-1]
+2)	07440		LODB
+2)	07450	HAVATTRB:
+2)	07460		SEG	CS
+2)	07470		MOV	[ATTRIB],AH
+2)	07480		CALL	GETBP
+**************
+1)1	06730		LODB
+1)	06740		AND	AL,7FH
+1)	06750		CMP	AL,60H
+1)	06760		JLE	CASEOK
+1)	06770		AND	AL,5FH
+1)	06780	CASEOK:
+1)	06790		CMP	AL,20H
+****
+2)1	07550		CALL	GETLET
+2)	07560		JNZ	CTRLCHK		;Is it a delimiter?
+2)	07570		CMP	AL," "		;This is the only delimiter allowed
+2)	07580		STC			;In case of error
+2)	07590		JNZ	RET
+2)	07600	CTRLCHK:
+2)	07610		CMP	AL,20H
+**************
+1)1	06970		PUSH	DX
+1)	06980		PUSH	DS
+1)	06990		CALL	GETFILE
+****
+2)1	07790		CALL	GETFILE
+**************
+1)1	07020	; in directory. DS=ES=CS, BX points to directory
+1)	07030	; entry in DIRBUF, SI points to First Cluster field, and
+1)	07040	; the top of the stack has the address and segment
+1)	07050	; of the FCB to be opened. This entry point is used
+1)	07060	; by CREATE.
+1)	07070		POP	ES
+1)	07080		POP	DI
+1)	07090		JC	ERRET
+****
+2)1	07820	; in directory. DS=CS, BX points to directory
+2)	07830	; entry in DIRBUF, SI points to First Cluster field, and
+2)	07840	; ES:DI point to the FCB to be opened. This entry point
+2)	07850	; is used by CREATE.
+2)	07860		JC	ERRET
+**************
+1)1	07870		PUSH	DX
+1)	07880		PUSH	CX
+1)	07890		PUSH	BX
+1)	07900		PUSH	AX
+File 1)	DSKC:86DOS.ASM[500,500]	created: 1056 05-MAY-1981
+File 2)	DSKC:86DOS.A86[500,500]	created: 1425 16-JUNE-1981
+
+1)	07910		CALL	DREAD
+1)	07920		OR	AL,AL
+1)	07930		POP	AX
+1)	07940		POP	BX
+1)	07950		POP	CX
+1)	07960		POP	DX
+1)	07970		JNZ	BADFAT
+1)	07990		IF	SMALLDIR
+****
+2)1	08640		PUSH	AX
+2)	08650		CALL	DSKREAD
+2)	08660		POP	AX
+2)	08670		JC	BADFAT
+2)	08690		IF	SMALLDIR
+**************
+1)1	08220		ADD	DX,CX
+****
+2)1	08920		MOV	CX,DI
+2)	08930		ADD	DX,CX
+**************
+1)1	08250		POP	BP
+1)	08260	;{Insert error code here. All FATs on drive are bad.}
+1)	08270		MOV	SI,BADFATMES
+1)	08280		CALL	HARDERR
+1)	08290		JP	FATREAD
+1)	08310	OKRET1:
+****
+2)1	08960		CALL	FIGFAT		;Reset registers
+2)	08970		JMP	DREAD		;Try first FAT once more
+2)	08990	OKRET1:
+**************
+1)1	08370		CMP	B,[DI+FILDIRBLK],-1  ;Check for I/O device
+****
+2)1	09050		CMP	B,[DI],-1
+2)	09060		JNZ	NORMFCB3
+2)	09070		ADD	DI,7
+2)	09080	NORMFCB3:
+2)	09090		CMP	B,[DI+FILDIRBLK],-1  ;Check for I/O device
+**************
+1)1	08620		PUSH	DX
+1)	08630		PUSH	DS
+1)	08640		CALL	GETFILE
+1)	08650		POP	ES
+1)	08660		POP	DI
+1)	08670	BADCLOSEJ:
+****
+2)1	09340		CALL	GETFILE
+2)	09350	BADCLOSEJ:
+**************
+1)1	09710		PUSH	DX
+****
+2)1	10390		SEG	CS
+2)	10400		MOV	B,[CREATING],1
+2)	10410		PUSH	DX
+**************
+1)1	09820		POP	DS
+File 1)	DSKC:86DOS.ASM[500,500]	created: 1056 05-MAY-1981
+File 2)	DSKC:86DOS.A86[500,500]	created: 1425 16-JUNE-1981
+
+****
+2)1	10520	ERRPOP:
+2)	10530		POP	DS
+**************
+1)1	09890		CMP	BH,-1		;Check if file is I/O device
+1)	09900		JZ	OPENJMP		;If so, no action
+1)	09910		XOR	CX,CX
+1)	09920		MOV	[SI+2],CX
+1)	09930		MOV	AX,[DATE]
+1)	09950		IF	SMALLDIR
+1)	09960		MOV	[SI+4],CL
+1)	09970		CMP	B,[BP+DIRSIZ],-1
+1)	09980		JZ	SMLENT
+1)	09990		MOV	[SI+5],CL
+1)	10000		MOV	[SI-2],AX
+1)	10010	SMLENT:
+1)	10020		ENDIF
+1)	10040		IF	1-SMALLDIR
+1)	10050		MOV	[SI+4],CX
+1)	10060		MOV	[SI-2],AX
+1)	10070		ENDIF
+1)	10090		XCHG	CX,[SI]
+1)	10100		PUSH	SI
+1)	10110		PUSH	BX
+1)	10120		JCXZ	WRTBACK
+1)	10130		CMP	CX,[BP+MAXCLUS]
+1)	10140		JA	WRTBACK
+1)	10150		MOV	BX,CX
+1)	10160		LEA	SI,[BP+FAT]
+1)	10170		CALL	RELEASE
+1)	10180		CALL	FATWRT
+1)	10190		JP	WRTBACK
+1)	10210	FREESPOT:
+****
+2)1	10600		JNZ	ERRPOP		;Error if attributes don't match
+2)	10610		CMP	BH,-1		;Check if file is I/O device
+2)	10620		JZ	OPENJMP		;If so, no action
+2)	10630		MOV	CX,[SI]		;Get pointer to clusters
+2)	10640		JCXZ	FREESPOT
+2)	10650		CMP	CX,[BP+MAXCLUS]
+2)	10660		JA	FREESPOT
+2)	10670		PUSH	BX
+2)	10680		MOV	BX,CX
+2)	10690		LEA	SI,[BP+FAT]
+2)	10700		CALL	RELEASE		;Free any data already allocated
+2)	10710		CALL	FATWRT
+2)	10720		POP	BX
+2)	10730	FREESPOT:
+**************
+1)1	10280		XOR	AX,AX
+1)	10300		IF	SMALLDIR
+****
+2)1	10810		IF	SMALLDIR
+**************
+1)1	10350		JP	SMALLENT
+****
+File 1)	DSKC:86DOS.ASM[500,500]	created: 1056 05-MAY-1981
+File 2)	DSKC:86DOS.A86[500,500]	created: 1425 16-JUNE-1981
+
+2)1	10860		XOR	AX,AX
+2)	10870		JP	SMALLENT
+**************
+1)1	10390		MOV	CL,13
+1)	10400		REP
+1)	10410		STOB
+1)	10420		MOV	AX,[DATE]
+1)	10430		STOW
+****
+2)1	10910		MOV	AL,[ATTRIB]
+2)	10920		STOB
+2)	10930		XOR	AX,AX
+2)	10940		MOV	CL,6
+2)	10950		REP
+2)	10960		STOW
+2)	10970		CALL	DATE16
+2)	10980		STOW
+**************
+1)1	10510	WRTBACK:
+1)	10520		CALL	DIRWRITE
+****
+2)1	11060		CALL	DIRWRITE
+**************
+1)1	10570		JMP	DOOPEN
+****
+2)1	11110		POP	ES
+2)	11120		POP	DI
+2)	11130		JMP	DOOPEN
+**************
+1)1	10940	; Outputs:
+1)	10950	;	AL = 0 if no error, otherwise non-zero
+1)	10960	; BP preserved. All other registers destroyed.
+1)	10980		MOV	AL,[BP+DRVNUM]
+****
+2)1	11500	; BP preserved. All other registers destroyed.
+2)	11520		CALL	DSKREAD
+2)	11530		JNC	RET
+2)	11540		SEG	CS
+2)	11550		MOV	B,[READOP],0
+2)	11560		CALL	HARDERR
+2)	11570		CMP	AL,1		;Check for retry
+2)	11580		JZ	DREAD
+2)	11590		RET			;Ignore otherwise
+2)	11610	HARDERR:
+2)	11620	;Hard disk error handler. Entry conditions:
+2)	11630	;	DS:BX = Original disk transfer address
+2)	11640	;	DX = Original logical sector number
+2)	11650	;	CX = Number of sectors to go (first one gave the error)
+2)	11660	;	AX = Hardware error code
+2)	11670	;	DI = Original sector transfer count
+2)	11680	;	BP = Base of drive parameters
+2)	11690	;	[READOP] = 0 for read, 1 for write
+2)	11710		XCHG	AX,DI		;Error code in DI, count in AX
+2)	11720		SUB	AX,CX		;Number of sectors successfully transferred
+2)	11730		ADD	DX,AX		;First sector number to retry
+2)	11740		PUSH	DX
+File 1)	DSKC:86DOS.ASM[500,500]	created: 1056 05-MAY-1981
+File 2)	DSKC:86DOS.A86[500,500]	created: 1425 16-JUNE-1981
+
+2)	11750		MUL	AX,[BP+SECSIZ]	;Number of bytes transferred
+2)	11760		POP	DX
+2)	11770		ADD	BX,AX		;First address for retry
+2)	11780		MOV	AH,0		;Flag disk section in error
+2)	11790		CMP	DX,[BP+FIRFAT]	;In reserved area?
+2)	11800		JB	ERRINT
+2)	11810		INC	AH		;Flag for FAT
+2)	11820		CMP	DX,[FIRDIR]	;In FAT?
+2)	11830		JB	ERRINT
+2)	11840		INC	AH
+2)	11850		CMP	DX,[FIRREC]	;In directory?
+2)	11860		JB	ERRINT
+2)	11870		INC	AH		;Must be in data area
+2)	11880	ERRINT:
+2)	11890		SHL	AH		;Make room for read/write bit
+2)	11900		SEG	CS
+2)	11910		OR	AH,[READOP]
+2)	11920	FATAL:
+2)	11930		MOV	AL,[BP+DRVNUM]	;Get drive number
+2)	11940		PUSH	BP		;The only thing we preserve
+2)	11950		SEG	CS
+2)	11960		MOV	[CONTSTK],SP
+2)	11970		DI			;Prepare to play with stack
+2)	11980		SEG	CS
+2)	11990		MOV	SS,[SSSAVE]
+2)	12000		SEG	CS
+2)	12010		MOV	SP,[SPSAVE]	;User stack pointer restored
+2)	12020		INT	24H		;Fatal error interrupt vector
+2)	12030		SEG	CS
+2)	12040		MOV	[SPSAVE],SP
+2)	12050		SEG	CS
+2)	12060		MOV	[SSSAVE],SS
+2)	12070		MOV	SP,CS
+2)	12080		MOV	SS,SP
+2)	12090		SEG	CS
+2)	12100		MOV	SP,[CONTSTK]
+2)	12110		EI
+2)	12120		POP	BP
+2)	12130		CMP	AL,2
+2)	12140		JZ	ERROR
+2)	12150		RET
+2)	12170	DSKREAD:
+2)	12180		MOV	AL,[BP+DRVNUM]
+**************
+1)1	11080		JC	HARDREAD
+1)	11090		XOR	AL,AL
+1)	11100		RET
+1)	11120	HARDREAD:
+1)	11130		MOV	SI,RDERRMES
+1)	11140		CALL	HARDERR
+1)	11150		JP	DREAD
+1)	11180	CHKDIRWRITE:
+****
+2)1	12280		RET
+2)	12310	CHKDIRWRITE:
+**************
+File 1)	DSKC:86DOS.ASM[500,500]	created: 1056 05-MAY-1981
+File 2)	DSKC:86DOS.A86[500,500]	created: 1425 16-JUNE-1981
+
+1)1	11490	; Outputs:
+1)	11500	;	AL = 0 if no error, otherwise non-zero
+1)	11510	; BP preserved. All other registers destroyed.
+1)	11530		MOV	AL,[BP+DRVNUM]
+1)	11540	WRTDRV:
+1)	11550		PUSH	AX
+1)	11560		PUSH	BP
+****
+2)1	12620	; BP preserved. All other registers destroyed.
+2)	12640		MOV	AL,[BP+DRVNUM]
+2)	12650		PUSH	BP
+**************
+1)1	11650		POP	AX
+1)	11660		JC	HARDWRITE
+1)	11670		XOR	AL,AL
+1)	11680		RET
+1)	11690	HARDWRITE:
+1)	11700		MOV	SI,WRTERRMES
+1)	11710		CALL	HARDERR
+1)	11720		JP	WRTDRV
+1)	11750	HARDERR:
+1)	11760		SUB	DI,CX
+1)	11770		ADD	DX,DI
+1)	11780		CALL	SHFTDI7
+1)	11790		ADD	BX,DI
+1)	11800		MOV	AH,AL		;Save drive number
+1)	11810		CALL	OUTMES
+1)	11820	GETINSTR:
+1)	11830		CALL	IN
+1)	11840		OR	AL,20H
+1)	11850		CMP	AL,"a"
+1)	11860		JZ	ERROR
+1)	11870		CMP	AL,"r"
+1)	11880		JZ	RETRY
+1)	11890		CMP	AL,"i"
+1)	11900		JZ	IGNORE
+1)	11910		CMP	AL,"c"
+1)	11920		JNZ	GETINSTR
+1)	11930	CONTINUE:
+1)	11940		POP	AX
+1)	11950		MOV	AL,1
+1)	11960		RET
+1)	11970	IGNORE:
+1)	11980		POP	AX
+1)	11990		MOV	AL,0
+1)	12000		RET
+1)	12010	RETRY:
+1)	12020		MOV	AL,AH		;Restore drive number
+1)	12030		RET
+****
+2)1	12740		JNC	RET
+2)	12750		SEG	CS
+2)	12760		MOV	B,[READOP],1
+2)	12770		CALL	HARDERR
+2)	12780		CMP	AL,1		;Check for retry
+2)	12790		JZ	DWRITE
+File 1)	DSKC:86DOS.ASM[500,500]	created: 1056 05-MAY-1981
+File 2)	DSKC:86DOS.A86[500,500]	created: 1425 16-JUNE-1981
+
+2)	12800		RET
+**************
+1)1	12080		MOV	DS,[CSLOC]
+1)	12090		XOR	AX,AX
+****
+2)1	12840		LDS	SI,[SPSAVE]
+2)	12850		MOV	DS,[SI+CSSAVE]
+2)	12860		XOR	AX,AX
+**************
+1)1	13120		MOV	AX,[DI+RR]
+****
+2)1	13890		CMP	B,[DI],-1
+2)	13900		JNZ	NORMFCB1
+2)	13910		ADD	DI,7
+2)	13920	NORMFCB1:
+2)	13930		MOV	AX,[DI+RR]
+**************
+1)1	13180		MOV	B,[DSKERR],-2
+1)	13190		POP	BX
+****
+2)1	13990		MOV	B,[DSKERR],4
+2)	14000		POP	BX
+**************
+1)1	13880		DIV	AX,[BP+SECSIZ]
+1)	13890		MOV	[SECPOS],AX
+****
+2)1	14690		MOV	BX,[BP+SECSIZ]
+2)	14700		CMP	DX,BX		;See if divide will overflow
+2)	14710		JNC	EOFERR
+2)	14720		DIV	AX,BX
+2)	14730		MOV	[SECPOS],AX
+**************
+1)1	14020		JZ	OK		;Must stay within 64K
+1)	14030		MOV	AX,[DMAADD]
+1)	14040		NEG	AX		;Amount of room left in segment
+1)	14050		XOR	DX,DX
+1)	14060		DIV	AX,SI		;How many records will fit?
+1)	14070		MUL	AX,SI		;Translate that back into bytes
+****
+2)1	14860		JZ	OK		;Must be less than 64K
+2)	14870		MOV	AX,[DMAADD]
+2)	14880		NEG	AX		;Amount of room left in segment
+2)	14890		JNZ	PARTSEG		;All 64K available?
+2)	14900		DEC	AX		;If so, reduce it by one
+2)	14910	PARTSEG:
+2)	14920		XOR	DX,DX
+2)	14930		DIV	AX,SI		;How many records will fit?
+2)	14940		MOV	[RECCNT],AX
+2)	14950		MUL	AX,SI		;Translate that back into bytes
+**************
+1)1	15170		OR	AL,AL
+1)	15180		JNZ	SETBUF
+1)	15190		CMP	DX,[BUFSECNO]
+****
+2)1	16050		MOV	[PREREAD],AL
+2)	16060		CMP	DX,[BUFSECNO]
+File 1)	DSKC:86DOS.ASM[500,500]	created: 1056 05-MAY-1981
+File 2)	DSKC:86DOS.A86[500,500]	created: 1425 16-JUNE-1981
+
+**************
+1)1	15280		MOV	AL,[BUFDRVNO]
+1)	15290		MOV	BX,[BUFFER]
+****
+2)1	16150		PUSH	BP
+2)	16160		MOV	BP,[BUFDRVBP]
+2)	16170		MOV	BX,[BUFFER]
+**************
+1)1	15320		CALL	WRTDRV
+1)	15330		POP	DX
+1)	15340	RDSEC:
+1)	15350		MOV	BX,[BUFFER]
+****
+2)1	16200		CALL	DWRITE
+2)	16210		POP	BP
+2)	16220		POP	DX
+2)	16230	RDSEC:
+2)	16240		TEST	B,[PREREAD],-1
+2)	16250		JNZ	SETBUF
+2)	16260		MOV	BX,[BUFFER]
+**************
+1)1	15450	FINBUF:
+****
+2)1	16360		MOV	[BUFDRVBP],BP
+2)	16370	FINBUF:
+**************
+1)1	16560		CALL	BIOSAUXIN,BIOSSEG
+1)	16570		STOB
+****
+2)1	17480		CALL	AUXIN
+2)	17490		STOB
+**************
+1)1	18310	WRTLST:
+****
+2)1	19230		DEC	BL
+2)	19240		JNZ	ENDWRDEV	;Done if device is NUL
+2)	19250	WRTLST:
+**************
+1)1	18350		CALL	BIOSPRINT,BIOSSEG
+1)	18360		LOOP	WRTLST
+****
+2)1	19290		CALL	LISTOUT
+2)	19300		LOOP	WRTLST
+**************
+1)1	18410		CALL	BIOSAUXOUT,BIOSSEG
+1)	18420		CMP	AL,1AH
+****
+2)1	19350		CALL	AUXOUT
+2)	19360		CMP	AL,1AH
+**************
+1)1	18900		SEG	CS
+1)	18910		MOV	BX,[DATE]
+1)	18920		MOV	[DI+FDATE],BX
+1)	18930		CALL	SETUP
+1)	18940		SEG	ES
+****
+File 1)	DSKC:86DOS.ASM[500,500]	created: 1056 05-MAY-1981
+File 2)	DSKC:86DOS.A86[500,500]	created: 1425 16-JUNE-1981
+
+2)1	19840		CALL	SETUP
+2)	19850		CALL	DATE16
+2)	19860		SEG	ES
+2)	19870		MOV	[DI+FDATE],AX
+2)	19880		SEG	ES
+**************
+1)1	19120		MOV	DX,[DI+FILSIZ]
+1)	19130		DIV	AX,[BP+SECSIZ]
+****
+2)1	20060		MOV	DX,[DI+FILSIZ+2]
+2)	20070		DIV	AX,[BP+SECSIZ]
+**************
+1)1	19260		JCXZ	HAVSTART
+1)	19270		PUSH	CX		;No. of clusters short of first
+****
+2)1	20200		JCXZ	HAVSTART	;See if no more data
+2)	20210		PUSH	CX		;No. of clusters short of first
+**************
+1)1	21460		MOV	CX,1
+****
+2)1	22400		CMP	B,[DI],-1
+2)	22410		JNZ	NORMFCB2
+2)	22420		ADD	DI,7
+2)	22430	NORMFCB2:
+2)	22440		MOV	CX,1
+**************
+1)1	22920		PUSH	DX
+1)	22930		PUSH	DS
+1)	22940		CALL	GETFILE
+****
+2)1	23900		CALL	GETFILE
+**************
+1)1	22980		POP	ES
+1)	22990		POP	DI
+1)	23000		JC	KILLSRCH
+****
+2)1	23940		JC	KILLSRCH
+**************
+1)1	23100		MOV	AL,[BP+DRVNUM]
+****
+2)1	24040		MOV	AX,00FFH
+2)	24050		CMP	AL,[EXTFCB]
+2)	24060		JNZ	NORMFCB
+2)	24070		STOW
+2)	24080		INC	AL
+2)	24090		STOW
+2)	24100		STOW
+2)	24110		MOV	AL,[ATTRIB]
+2)	24120		STOB
+2)	24130	NORMFCB:
+2)	24140		MOV	AL,[BP+DRVNUM]
+**************
+1)1	23530		SUB	SI,3		;Point to device name
+1)	23540		MOVW
+1)	23550		MOVB
+1)	23560		MOV	AX,2020H
+File 1)	DSKC:86DOS.ASM[500,500]	created: 1056 05-MAY-1981
+File 2)	DSKC:86DOS.A86[500,500]	created: 1425 16-JUNE-1981
+
+1)	23570		MOV	CX,4
+1)	23580		REP
+1)	23590		STOW			;Fill with 8 blanks
+1)	23600		XOR	AX,AX
+****
+2)1	24570		SUB	SI,4		;Point to device name
+2)	24580		MOVW
+2)	24590		MOVW
+2)	24600		MOV	AX,2020H
+2)	24610		MOV	CX,3
+2)	24620		REP
+2)	24630		STOW			;Fill with 6 blanks
+2)	24640		STOB			;And a 7th
+2)	24650		XOR	AX,AX
+**************
+1)1	23780		JMP	SAVPLCE
+1)	23810	FILESIZE: ;System call 35
+1)	23820		PUSH	DS
+1)	23830		PUSH	DX
+1)	23840		CALL	GETFILE
+1)	23850		POP	DI
+1)	23860		POP	ES
+1)	23870		MOV	AL,-1
+****
+2)1	24830		POP	ES
+2)	24840		POP	DI
+2)	24850		JMP	SAVPLCE
+2)	24880	FILESIZE: ;System call 35
+2)	24890		CALL	GETFILE
+2)	24900		MOV	AL,-1
+**************
+1)1	24610	GETDSKPT: ;System call 31
+1)	24620		SEG	CS
+1)	24630		MOV	BX,[CURDRVPT]
+1)	24640		SEG	CS
+1)	24650		LDS	SI,[SPSAVE]
+1)	24660		MOV	[SI+BXSAVE],BX
+1)	24670		MOV	[SI+DSSAVE],CS
+1)	24680		RET
+1)	24710	DSKRESET: ;System call 13
+****
+2)1	25640	DSKRESET: ;System call 13
+**************
+1)1	24810		MOV	CL,[NUMDRV]
+****
+2)1	25740		MOV	AX,[BUFDRVNO]
+2)	25750		OR	AH,AH
+2)	25760		JZ	NOBUF
+2)	25770		CBW
+2)	25780		MOV	BX,AX
+2)	25790		SHL	BX
+2)	25800		MOV	BP,[BX+DRVTAB]
+2)	25810		MOV	B,[DIRTYBUF],0
+2)	25820		MOV	DX,[BUFSECNO]
+2)	25830		MOV	BX,BUFFER
+2)	25840		MOV	CX,1
+File 1)	DSKC:86DOS.ASM[500,500]	created: 1056 05-MAY-1981
+File 2)	DSKC:86DOS.A86[500,500]	created: 1425 16-JUNE-1981
+
+2)	25850		CALL	DWRITE
+2)	25860	NOBUF:
+2)	25870		MOV	CL,[NUMDRV]
+**************
+1)1	24930		MOV	AX,[BUFDRVNO]
+1)	24940		OR	AH,AH
+1)	24950		JZ	RET
+1)	24960		CBW
+1)	24970		MOV	BX,AX
+1)	24980		SHL	BX
+1)	24990		MOV	BP,[BX+DRVTAB]
+1)	25000		MOV	B,[DIRTYBUF],0
+1)	25010		MOV	DX,[BUFSECNO]
+1)	25020		MOV	BX,BUFFER
+1)	25030		MOV	CX,1
+1)	25040		JMP	DWRITE
+1)	25070	CURDRV:	;System call 25
+****
+2)1	25990		RET
+2)	26020	CURDRV:	;System call 25
+**************
+1)1	25140	INUSE:	;System call 24
+1)	25150		MOV	AX,CS
+1)	25160		MOV	DS,AX
+1)	25170		MOV	CL,[NUMDRV]
+1)	25180		MOV	CH,0
+1)	25190		MOV	SI,CX
+1)	25200		SHL	SI
+1)	25210		ADD	SI,CURDRVPT
+1)	25220		MOV	BX,0
+1)	25230		DOWN
+1)	25240	CHKUSE:
+1)	25250		LODW
+1)	25260		MOV	BP,AX
+1)	25270		CMP	B,[BP+DIRTYFAT],-1	;Carry set if not equal
+1)	25280		RCL	BX
+1)	25290		LOOP	CHKUSE
+1)	25300		MOV	AL,BL
+1)	25310		RET
+1)	25340	SETRNDREC: ;System call 36
+****
+2)1	26090	SETRNDREC: ;System call 36
+**************
+1)1	25380		RET
+****
+2)1	26130		CMP	[DI+RECSIZ],64
+2)	26140		JAE	RET
+2)	26150		MOV	[DI+36],DH	;Set 4th byte only if record size < 64
+2)	26160		RET
+**************
+1)1	25870		JZ	BACKSP
+1)	25880		CMP	AL,8
+1)	25890		JZ	BACKSP
+1)	25900		CMP	AL,13
+****
+2)1	26650		JZ	BACKSPJ
+File 1)	DSKC:86DOS.ASM[500,500]	created: 1056 05-MAY-1981
+File 2)	DSKC:86DOS.A86[500,500]	created: 1425 16-JUNE-1981
+
+2)	26660		CMP	AL,8
+2)	26670		JZ	BACKSPJ
+2)	26680		CMP	AL,13
+**************
+1)1	25960		CMP	AL,ESCCH
+****
+2)1	26740		CMP	AL,1BH
+2)	26750		JZ	KILNEW		;WANT esc TO DO SAME AS cntrl-X
+2)	26760		CMP	AL,ESCCH
+**************
+1)1	26000		JAE	GETCH
+1)	26010		STOB
+****
+2)1	26800		JAE	BELL
+2)	26810		STOB
+**************
+1)1	26120	ESC:
+1)	26130		CALL	IN
+1)	26140		MOV	CL,ESCTABLEN
+1)	26150		PUSH	DI
+1)	26160		MOV	DI,ESCTAB
+****
+2)1	26920	BELL:
+2)	26930		MOV	AL,7
+2)	26940		CALL	OUTCH
+2)	26950		JP	GETCH
+2)	26970	BACKSPJ:JP	BACKSP
+2)	26990	ESC:
+2)	27000		CALL	IN
+2)	27010		PUSH	DI
+2)	27020		MOV	CL,ESCTABLEN
+2)	27030		MOV	DI,ESCTAB
+**************
+1)1	26200		AND	CL,0FEH
+1)	26210		MOV	BP,CX
+1)	26220		SEG	CS		;To work in init
+****
+2)1	27070		MOV	BP,CX
+2)	27080		SHL	BP
+2)	27090		SEG	CS		;To work in init
+**************
+1)1	27420		CMP	DH,DL
+****
+2)1	28290		MOV	AH,0		;Turn off insert mode when copying
+2)	28300		CMP	DH,DL
+**************
+1)1	28080	ENTERINS:
+1)	28090		MOV	AH,-1
+1)	28100		JMP	GETCH
+1)	28120	EXITINS:
+1)	28130		MOV	AH,0
+1)	28140		JMP	GETCH
+1)	28160	ESCFUNC:
+****
+2)1	28960	TOGGLINS:
+2)	28970		NOT	AH
+File 1)	DSKC:86DOS.ASM[500,500]	created: 1056 05-MAY-1981
+File 2)	DSKC:86DOS.A86[500,500]	created: 1425 16-JUNE-1981
+
+2)	28980		JMP	GETCH
+2)	29000	CTRLZ:
+2)	29010		MOV	AL,1AH
+2)	29020		JMP	SAVCH
+2)	29040	ESCFUNC:
+**************
+1)1	28190		DW	EXITINS
+1)	28200		DW	ENTERINS
+1)	28210		DW	BACKSP
+1)	28220		DW	REEDIT
+1)	28230		DW	KILNEW
+1)	28240		DW	COPYLIN
+****
+2)1	29070		DW	TOGGLINS
+2)	29080		DW	BACKSP
+2)	29090		DW	REEDIT
+2)	29100		DW	CTRLZ
+2)	29110		DW	COPYLIN
+**************
+1)1	28300	BUFOUT:
+****
+2)1	29160		DW	COPYONE
+2)	29180	BUFOUT:
+**************
+1)1	28520		CALL	BIOSOUT,BIOSSEG
+****
+2)1	29400		PUSH	AX
+2)	29410		CALL	STATCHK
+2)	29420		POP	AX
+2)	29430		CALL	BIOSOUT,BIOSSEG
+**************
+1)1	28550		JZ	STATCHK
+1)	28560		CALL	BIOSPRINT,BIOSSEG
+1)	28570	STATCHK:
+****
+2)1	29460		JZ	RET
+2)	29470		CALL	BIOSPRINT,BIOSSEG
+2)	29480		RET
+2)	29500	NOSTOP:
+2)	29510		CMP	AL,"P"-"@"
+2)	29520		JZ	INCHK
+2)	29530		CMP	AL,"C"-"@"
+2)	29540		JZ	INCHK
+2)	29550		RET
+2)	29570	STATCHK:
+**************
+1)1	28600	INCHK:
+1)	28610		CALL	BIOSIN,BIOSSEG
+1)	28620		CMP	AL,'S'-'@'
+1)	28630		JNZ	NOSTOP
+1)	28640		CALL	BIOSIN,BIOSSEG
+1)	28650	NOSTOP:
+1)	28660		CMP	AL,'P'-'@'
+1)	28670		JZ	PRINTON
+1)	28680		CMP	AL,'N'-'@'
+1)	28690		JZ	PRINTOFF
+File 1)	DSKC:86DOS.ASM[500,500]	created: 1056 05-MAY-1981
+File 2)	DSKC:86DOS.A86[500,500]	created: 1425 16-JUNE-1981
+
+1)	28700		CMP	AL,'C'-'@'
+****
+2)1	29600		CMP	AL,'S'-'@'
+2)	29610		JNZ	NOSTOP
+2)	29620		CALL	BIOSIN,BIOSSEG	;Eat Ctrl-S character
+2)	29630	INCHK:
+2)	29640		CALL	BIOSIN,BIOSSEG
+2)	29650		CMP	AL,'P'-'@'
+2)	29660		JZ	PRINTOGL
+2)	29670		CMP	AL,'C'-'@'
+**************
+1)1	28810	; repeated, except for console output (function 2), which has already output
+1)	28820	; its character before the interrupt.
+1)	28830		SEG	CS
+****
+2)1	29780	; repeated.
+2)	29790		SEG	CS
+**************
+1)1	29090		CMP	AH,2		;Check if function was console output
+1)	29100		JZ	SETAL
+1)	29110		JMP	COMMAND		;Repeat command otherwise
+1)	29120	SETAL:
+1)	29130		MOV	AL,DL
+1)	29140		IRET			;Return to user program
+1)	29160	PRINTON:
+1)	29170		SEG	CS
+1)	29180		MOV	B,[PFLAG],1
+1)	29190		RET
+1)	29200	PRINTOFF:
+1)	29210		SEG	CS
+1)	29220		MOV	B,[PFLAG],0
+1)	29230		RET
+****
+2)1	30050		JMP	COMMAND		;Repeat command otherwise
+2)	30070	PRINTOGL:
+2)	30080		SEG	CS
+2)	30090		XOR	B,[PFLAG],1
+2)	30100		XOR	AL,AL		;Set zero flag--character not received
+2)	30110		RET
+**************
+1)1	29590		JZ	RET
+****
+2)1	30470		MOV	AL,0
+2)	30480		JZ	RET
+**************
+1)1	29820		JZ	RET
+****
+2)1	30710		MOV	AL,0
+2)	30720		JZ	RET
+**************
+1)1	29920		CALL	BIOSPRINT,BIOSSEG
+****
+2)1	30820	LISTOUT:
+2)	30830		PUSH	AX
+2)	30840		CALL	STATCHK
+2)	30850		POP	AX
+File 1)	DSKC:86DOS.ASM[500,500]	created: 1056 05-MAY-1981
+File 2)	DSKC:86DOS.A86[500,500]	created: 1425 16-JUNE-1981
+
+2)	30860		CALL	BIOSPRINT,BIOSSEG
+**************
+1)1	30220		CMP	B,[SI+1],":"	;Check for potential drive specifier
+1)	30230		JNZ	DEFAULT
+1)	30240		CALL	GETLET
+1)	30250		SUB	AL,"@"		;Convert drive letter to binary drive number
+1)	30260		JZ	NODRV		;Valid drive numbers are 1-15
+1)	30270		INCcifier--back up pointer
+1)	30280	DEFAULT:
+1)	30290		XOR	AL,AL
+1)	30300	HAVDRV:
+****
+2)1	31160		MOV	AL,0
+2)	31170		CMP	B,[SI],20H	;Check for termination character
+2)	31180		JB	HAVDRV
+2)	31190		CMP	B,[SI+1],":"	;Check for potential drive specifier
+2)	31200		JNZ	HAVDRV
+2)	31210		CALL	GETLET
+2)	31220		SUB	AL,"@"		;Convert drive letter to binary drive number
+2)	31230		JBE	BADDRV		;Valid drive numbers are 1-15
+2)	31240		SEG	CS
+2)	31250		CMP	AL,[NUMDRV]
+2)	31260		JA	BADDRV
+2)	31270		INC	SI		;Skip over colon
+2)	31280	HAVDRV:
+**************
+1)1	30490	GETWORD:
+****
+2)1	31470	BADDRV:
+2)	31480		MOV	AL,-1
+2)	31490		RET
+2)	31510	GETWORD:
+**************
+1)1	30780		CMP	AL,"a"
+****
+2)1	31800		AND	AL,7FH
+2)	31810		CMP	AL,"a"
+**************
+1)1	30960		CMP	AL,9		;Filter out TABs too
+****
+2)1	31990		CMP	AL,'"'
+2)	32000		JZ	RET
+2)	32010		CMP	AL,"+"
+2)	32020		JZ	RET
+2)	32030		CMP	AL,"/"
+2)	32040		JZ	RET
+2)	32050		CMP	AL,"["
+2)	32060		JZ	RET
+2)	32070		CMP	AL,"]"
+2)	32080		JZ	RET
+2)	32090		CMP	AL,9		;Filter out TABs too
+**************
+1)1	31160		MOV	DS,[CSLOC]
+1)	31170		XOR	SI,SI
+****
+2)1	32290		LDS	SI,[SPSAVE]
+File 1)	DSKC:86DOS.ASM[500,500]	created: 1056 05-MAY-1981
+File 2)	DSKC:86DOS.A86[500,500]	created: 1425 16-JUNE-1981
+
+2)	32300		MOV	DS,[SI+CSSAVE]
+2)	32310		XOR	SI,SI
+**************
+1)1	31830	; Default handler for division overflow trap
+1)	31840	DIVOV:
+1)	31850		XOR	DX,DX		;Say no remainder
+1)	31860		MOV	AX,-1		;But large quotient
+1)	31870		IRET
+1)	31900	;***** DATA AREA *****
+1)	31920	BADMES:	DB	13,10,"Bad FAT",13,10,"$"
+1)	31930	BADFATMES:DB	13,10,"All FATs on disk are bad",13,10,"$"
+1)	31940	RDERRMES:DB	13,10,"Disk read error",13,10,"$"
+1)	31950	WRTERRMES:DB	13,10,"Disk write error",13,10,"$"
+1)	31960	IONAME:	DB	"PRN","LST","AUX","CON"
+1)	31980	CARPOS:	DB	0
+1)	31990	STARTPOS:DB	0
+1)	32000	PFLAG:	DB	0
+1)	32010	DIRTYDIR:DB	0	;Dirty buffer flag
+****
+2)1	32960	DATE16:
+2)	32970		PUSH	CX
+2)	32980		PUSH	DX
+2)	32990		PUSH	BX
+2)	33000		CALL	READTIME
+2)	33010		POP	BX
+2)	33020		POP	DX
+2)	33030		POP	CX
+2)	33040		MOV	AX,[MONTH]	;Fetch month and year
+2)	33050		SHL	AL		;Push month to left to make room for day
+2)	33060		SHL	AL
+2)	33070		SHL	AL
+2)	33080		SHL	AL
+2)	33090		SHL	AX
+2)	33100		OR	AL,[DAY]
+2)	33110		RET
+2)	33130	READTIME:
+2)	33140	;Gets tick count in CX:DX. Causes date rollover if new day has started
+2)	33150	;since last call. Destroys AX, BX.
+2)	33160		MOV	AH,0		;Request get time
+2)	33170		INT	1AH		;Time-of-day interrupt
+2)	33180		OR	AL,AL		;See if day has changed
+2)	33190		JZ	RET
+2)	33200		ADD	AL,[DAY]
+2)	33210		MOV	[DAY],AL
+2)	33220		MOV	AH,AL
+2)	33230		MOV	AL,[MONTH]
+2)	33240		MOV	BX,DAYTAB-1	;Table of days in each month
+2)	33250		XLAT			;Get number of days in current month
+2)	33260		SUB	AH,AL		;Have we rolled into next month?
+2)	33270		JBE	RET
+2)	33280		MOV	[DAY],AH	;Yes-store day of new month
+2)	33290		MOV	AL,[MONTH]
+2)	33300		INC	AL
+2)	33310		MOV	[MONTH],AL
+2)	33320		CMP	AL,12		;Have we rolled into next year?
+2)	33330		JBE	RET
+File 1)	DSKC:86DOS.ASM[500,500]	created: 1056 05-MAY-1981
+File 2)	DSKC:86DOS.A86[500,500]	created: 1425 16-JUNE-1981
+
+2)	33340		MOV	B,[MONTH],1	;Set first month to January
+2)	33350		MOV	AL,[YEAR]
+2)	33360		INC	AL
+2)	33370	SETYEAR:
+2)	33380	;Set year with value in AL. Adjust length of February for this year.
+2)	33390		MOV	[YEAR],AL
+2)	33400		AND	AL,3		;Check for leap year
+2)	33410		MOV	AL,28
+2)	33420		JNZ	SAVFEB		;28 days if no leap year
+2)	33430		INC	AL		;Add leap day
+2)	33440	SAVFEB:
+2)	33450		MOV	[DAYTAB+1],AL	;Store for February
+2)	33460		RET
+2)	33480	DAYTAB:	;Days of each month
+2)	33490		DB	31		;January
+2)	33500		DB	28		;February--reset each time year changes
+2)	33510		DB	31		;March
+2)	33520		DB	30		;April
+2)	33530		DB	31		;May
+2)	33540		DB	30		;June
+2)	33550		DB	31		;July
+2)	33560		DB	31		;August
+2)	33570		DB	30		;September
+2)	33580		DB	31		;October
+2)	33590		DB	30		;November
+2)	33600		DB	31		;December
+2)	33620	GETDATE: ;Function call 42
+2)	33630		PUSH	CS
+2)	33640		POP	DS
+2)	33650		CALL	READTIME	;Check for rollover to next day
+2)	33660		MOV	AX,[YEAR]
+2)	33670		MOV	BX,[DAY]
+2)	33680		LDS	SI,[SPSAVE]	;Get pointer to user registers
+2)	33690		MOV	[SI+DXSAVE],BX	;DH=month, DL=day
+2)	33700		ADD	AX,1980		;Put bias back
+2)	33710		MOV	[SI+CXSAVE],AX	;CX=year
+2)	33720		XOR	AL,AL
+2)	33730		RET
+2)	33750	SETDATE: ;Function call 43
+2)	33760		MOV	AL,-1		;Be ready to flag an error
+2)	33770		SUB	CX,1980		;Fix bias in year
+2)	33780		JC	RET		;Error if not big enough
+2)	33790		CMP	CX,119		;Year must be less than 2100
+2)	33800		JA	RET
+2)	33810		OR	DH,DH
+2)	33820		JZ	RET
+2)	33830		OR	DL,DL
+2)	33840		JZ	RET		;Error if either month or day is 0
+2)	33850		CMP	DH,12		;Check against max. month
+2)	33860		JA	RET
+2)	33870		PUSH	CS
+2)	33880		POP	DS
+2)	33890		CMP	DH,2		;Check for Feb.--needs special handling
+2)	33900		JNE	DAYCHK
+2)	33910		CMP	DL,29
+2)	33920		JA	RET		;Max 29 days in Feb.
+File 1)	DSKC:86DOS.ASM[500,500]	created: 1056 05-MAY-1981
+File 2)	DSKC:86DOS.A86[500,500]	created: 1425 16-JUNE-1981
+
+2)	33930		JB	DAYOK		;If 28 or less, definitely OK
+2)	33940		TEST	CL,3		;Check for leap year
+2)	33950		JZ	DAYOK		;If it is, 29 days OK
+2)	33960		RET			;Error if it's not
+2)	33970	DAYCHK:
+2)	33980		MOV	AL,DH
+2)	33990		MOV	BX,DAYTAB-1
+2)	34000		XLAT			;Look up days in month
+2)	34010		CMP	AL,DL
+2)	34020		MOV	AL,-1		;Restore error flag, just in case
+2)	34030		JB	RET		;Error if too many days
+2)	34040	DAYOK:
+2)	34050		PUSH	DX
+2)	34060		PUSH	CX
+2)	34070		MOV	AH,0
+2)	34080		INT	1AH		;Read time to clear day overflow
+2)	34090		POP	AX		;Year
+2)	34100		CALL	SETYEAR
+2)	34110		POP	[DAY]		;Set both day and month
+2)	34120		XOR	AL,AL		;Flag OK
+2)	34130		RET
+2)	34150	;***************************************
+2)	34160	; Time Functions
+2)	34170	;
+2)	34180	; Uses clock with 1,193,180/65536 ticks per second. User sees only
+2)	34190	; time in hours, minutes, seconds, and 1/100 second, in registers
+2)	34200	; CH, CL, DH, DL respectively. (Each is a binary number.) To
+2)	34210	; convert, ticks are multiplied by  (5 * 2**16)/59659, which is the
+2)	34220	; reciprocal of the tick rate. To convert the other way, 1/100 secs
+2)	34230	; is multiplied by  59659/(5 * 2**16).
+2)	34250	GETTIME: ;Function call 44
+2)	34260		PUSH	CS
+2)	34270		POP	DS
+2)	34280		CALL	READTIME	;Get tick count in CX:DX
+2)	34290	;First multiply by 5
+2)	34300		MOV	AX,CX
+2)	34310		MOV	BX,DX
+2)	34320		SHL	DX
+2)	34330		RCL	CX		;Times 2
+2)	34340		SHL	DX
+2)	34350		RCL	CX		;Times 4
+2)	34360		ADD	DX,BX
+2)	34370		ADC	AX,CX		;Times 5
+2)	34380		XCHG	AX,DX
+2)	34390		MOV	CX,59659
+2)	34400		DIV	AX,CX
+2)	34410		MOV	BX,AX		;Save quotient
+2)	34420		XOR	AX,AX		;Extend precision
+2)	34430		DIV	AX,CX
+2)	34440	;Rounding based on the remainder may be added here
+2)	34450	;The result in BX:AX is time in 1/100 second.
+2)	34460		MOV	DX,BX
+2)	34470		MOV	CX,200		;Extract 1/100's
+2)	34480	;Division by 200 is necessary to ensure no overflow--max result
+2)	34490	;is number of seconds in a day/2 = 43200.
+2)	34500		DIV	AX,CX
+File 1)	DSKC:86DOS.ASM[500,500]	created: 1056 05-MAY-1981
+File 2)	DSKC:86DOS.A86[500,500]	created: 1425 16-JUNE-1981
+
+2)	34510		CMP	DL,100		;Remainder over 100?
+2)	34520		JB	NOADJ
+2)	34530		SUB	DL,100		;Keep 1/100's less than 100
+2)	34540	NOADJ:
+2)	34550		CMC			;If we subtracted 100, carry is now set
+2)	34560		MOV	BL,DL		;Save 1/100's
+2)	34570	;To compensate for dividing by 200 instead of 100, we now multiply
+2)	34580	;by two, shifting a one in if the remainder had exceeded 100.
+2)	34590		RCL	AX
+2)	34600		MOV	DL,0
+2)	34610		RCL	DX
+2)	34620		MOV	CX,60		;Divide out seconds
+2)	34630		DIV	AX,CX
+2)	34640		MOV	BH,DL		;Save the seconds
+2)	34650		DIV	AL,CL		;Break into hours and minutes
+2)	34660		XCHG	AL,AH
+2)	34670	;Time is now in AX:BX (hours, minutes, seconds, 1/100 sec)
+2)	34680		LDS	SI,[SPSAVE]	;Get pointer to user registers
+2)	34690		MOV	[SI+DXSAVE],BX
+2)	34700		MOV	[SI+CXSAVE],AX
+2)	34710		XOR	AL,AL
+2)	34720		RET
+2)	34740	SETTIME: ;Function call 45
+2)	34750	;Time is in CX:DX in hours, minutes, seconds, 1/100 sec
+2)	34760		MOV	AL,-1		;Flag in case of error
+2)	34770		CMP	CH,24		;Check hours
+2)	34780		JAE	RET
+2)	34790		CMP	CL,60		;Check minutes
+2)	34800		JAE	RET
+2)	34810		CMP	DH,60		;Check seconds
+2)	34820		JAE	RET
+2)	34830		CMP	DL,100		;Check 1/100's
+2)	34840		JAE	RET
+2)	34850		MOV	AL,60
+2)	34860		MUL	AL,CH		;Hours to minutes
+2)	34870		MOV	CH,0
+2)	34880		ADD	AX,CX		;Total minutes
+2)	34890		MOV	CX,6000		;60*100
+2)	34900		MOV	BX,DX		;Get out of the way of the multiply
+2)	34910		MUL	AX,CX		;Convert to 1/100 sec
+2)	34920		MOV	CX,AX
+2)	34930		MOV	AL,100
+2)	34940		MUL	AL,BH		;Convert seconds to 1/100 sec
+2)	34950		ADD	CX,AX		;Combine seconds with hours and min.
+2)	34960		ADC	DX,0		;Ripple carry
+2)	34970		MOV	BH,0
+2)	34980		ADD	CX,BX		;Combine 1/100 sec
+2)	34990		ADC	DX,0
+2)	35000	;DX:CX is time in 1/100 sec
+2)	35010		XCHG	AX,DX
+2)	35020		XCHG	AX,CX		;Now time is in CX:AX
+2)	35030		MOV	BX,59659
+2)	35040		MUL	AX,BX		;Multiply low half
+2)	35050		XCHG	DX,CX
+2)	35060		XCHG	AX,DX		;CX->AX, AX->DX, DX->CX
+2)	35070		MUL	AX,BX		;Multiply high half
+File 1)	DSKC:86DOS.ASM[500,500]	created: 1056 05-MAY-1981
+File 2)	DSKC:86DOS.A86[500,500]	created: 1425 16-JUNE-1981
+
+2)	35080		ADD	AX,CX		;Combine overlapping products
+2)	35090		ADC	DX,0
+2)	35100		XCHG	AX,DX		;AX:DX=time*59659
+2)	35110		MOV	BX,5
+2)	35120		DIV	AL,BL		;Divide high half by 5
+2)	35130		MOV	CL,AL
+2)	35140		MOV	CH,0
+2)	35150		MOV	AL,AH		;Remainder of divide-by-5
+2)	35160		CBW
+2)	35170		XCHG	AX,DX		;Use it to extend low half
+2)	35180		DIV	AX,BX		;Divde low half by 5
+2)	35190		MOV	DX,AX
+2)	35200	;CX:DX now has time in ticks
+2)	35210		MOV	AH,1
+2)	35220		INT	1AH		;Set clock
+2)	35230		XOR	AL,AL		;Return no error
+2)	35240		RET
+2)	35260	;***** DATA AREA *****
+2)	35280	;Device number mapping
+2)	35290	;0,1 = CON, AUX (Bidirectional devices)
+2)	35300	;2,3 = Printer, bit bucket (output only)
+2)	35320	IONAME:	DB	"PRN ","LPT1","AUX ","COM1","CON ","NUL "
+2)	35330	IONUM:	DB	3,0,1,1,2,2
+2)	35350	CARPOS:	DB	0
+2)	35360	INSFLG:	DB	0
+2)	35370	STARTPOS:DB	0
+2)	35380	PFLAG:	DB	0
+2)	35390	DAY:	DB	0
+2)	35400	MONTH:	DB	0
+2)	35410	YEAR:	DW	0
+2)	35420	DIRTYDIR:DB	0	;Dirty buffer flag
+**************
+1)1	32120	DIRBUFID:DW	-1
+1)	32130	DATE:	DS	2
+1)	32140	CURDRVPT:DS	2
+****
+2)1	35530	BUFDRVBP:DS	2
+2)	35540	DIRBUFID:DW	-1
+2)	35550	CURDRVPT:DS	2
+**************
+1)1	32290	NAME2:	DS	11
+1)	32300	TEMP:
+1)	32310	CSLOC:	DS	2
+1)	32320	SPSAVE:	DS	2
+1)	32330	SSSAVE:	DS	2
+1)	32340	SECCLUSPOS:DS	1	;Position of first sector within cluster
+****
+2)1	35700	ATTRIB:	DS	1	;Search attributes
+2)	35710	NAME2:	DS	11
+2)	35715	NAME3:	DS	12
+2)	35720	EXTFCB:	DS	1
+2)	35730	CREATING:DS	1
+2)	35740	TEMP:
+2)	35750	SPSAVE:	DS	2
+2)	35760	SSSAVE:	DS	2
+2)	35770	CONTSTK:DS	2
+File 1)	DSKC:86DOS.ASM[500,500]	created: 1056 05-MAY-1981
+File 2)	DSKC:86DOS.A86[500,500]	created: 1425 16-JUNE-1981
+
+2)	35780	SECCLUSPOS:DS	1	;Position of first sector within cluster
+**************
+1)1	32380		ALIGN
+****
+2)1	35810	PREREAD:DS	1		;0 means must preread; 1 means optional
+2)	35820	READOP:	DS	1
+2)	35840		ALIGN
+**************
+1)1	32490	BYTCNT1:DS	2		;No. of bytes in first sector
+1)	32500	BYTCNT2:DS	2		;No. of bytes in last sector
+1)	32510	SECCNT:	DS	2		;No. of whole sectors
+1)	32530		DS	60	;Stack space
+1)	32540	STACK:
+1)	32560		IF	DSKTEST
+****
+2)1	35950	BYTCNT1:DS	2		;No. of bytes in first sector
+2)	35960	BYTCNT2:DS	2		;No. of bytes in last sector
+2)	35970	SECCNT:	DS	2		;No. of whole sectors
+2)	35990		DS	100H	;Stack space
+2)	36000	IOSTACK:
+2)	36010		DS	100H
+2)	36020	DSKSTACK:
+2)	36040		IF	DSKTEST
+**************
+1)1	32590		DS	60
+1)	32600	TESTSTK:
+1)	32610		ENDIF
+****
+2)1	36070		ENDIF
+**************
+1)1	33840		ADD	AX,[BP+DIRSEC]	;Add number of dir. sectores for 32-byte entry
+1)	33850		STOW			;FIRREC2
+****
+2)1	37300		ADD	AX,[BP+DIRSEC]	;Add number of dir. sectors for 32-byte entry
+2)	37310		STOW			;FIRREC2
+**************
+1)1	34330		MOV	[0],DIVOV	;Set default divide trap address
+1)	34340		MOV	[2],AX
+1)	34350		MOV	CX,9
+****
+2)1	37790		MOV	CX,9
+**************
+1)1	34550		MOV	CX,DX
+1)	34560		MOV	BX,0FH
+1)	34570	MEMSCAN:
+1)	34580		INC	CX
+1)	34590		JZ	HAVMEM
+1)	34600		MOV	DS,CX
+1)	34610		MOV	AL,[BX]
+1)	34620		NOT	AL
+1)	34630		MOV	[BX],AL
+1)	34640		CMP	AL,[BX]
+1)	34650		NOT	AL
+1)	34660		MOV	[BX],AL
+1)	34670		JZ	MEMSCAN
+1)	34680	HAVMEM:
+File 1)	DSKC:86DOS.ASM[500,500]	created: 1056 05-MAY-1981
+File 2)	DSKC:86DOS.A86[500,500]	created: 1425 16-JUNE-1981
+
+1)	34690		SEG	CS
+1)	34700		MOV	[ENDMEM],CX
+1)	34710		XOR	CX,CX
+****
+2)1	37990		INT	12H		;Get memory size--1K blocks in AX
+2)	38000		MOV	CL,6
+2)	38010		SHL	AX,CL		;Convert to 16-byte blocks (segment no.)
+2)	38020		SEG	CS
+2)	38030		MOV	[ENDMEM],AX
+2)	38040		XOR	CX,CX
+**************
+1)1	34750		MOV	SI,HEADER
+1)	34760		CALL	OUTMES
+1)	34770		PUSH	CS
+****
+2)1	38080		PUSH	CS
+**************
+1)1	34810		PUSH	DX
+1)	34820	GETDAT:
+1)	34830		MOV	SI,DATMES
+1)	34840		CALL	OUTMES
+1)	34850		MOV	DX,DATBUF
+1)	34860		CALL	BUFIN
+1)	34870		CALL	CRLF
+1)	34880		MOV	SI,DATBUF+2
+1)	34890		MOV	DX,12
+1)	34900		CALL	MYD
+1)	34910		JC	GETDAT
+1)	34920		MOV	CL,5
+1)	34930		SHL	AX,CL
+1)	34940		MOV	[DATE],AX
+1)	34950		MOV	DX,31
+1)	34960		CALL	MYD
+1)	34970		JC	GETDAT
+1)	34980		OR	[DATE],AL
+1)	34990		MOV	DX,2100
+1)	35000		CALL	MYD
+1)	35010		JC	GETDAT
+1)	35020		SUB	AX,80
+1)	35030		JC	GETDAT
+1)	35040		CMP	AX,19
+1)	35050		JBE	SAVYR
+1)	35060		SUB	AX,1900
+1)	35070		JC	GETDAT
+1)	35080	SAVYR:
+1)	35090		SHL	AL
+1)	35100		OR	[DATE+1],AL
+1)	35110	;Move the FATs into position and adjust the drive pointer table
+1)	35120		POP	DX
+1)	35130		POP	SI
+****
+2)1	38120		MOV	[ENDDOS],DX
+2)	38130	;Move FATs into position. Segment of COMMAND still in DX.
+2)	38140		POP	SI
+**************
+1)1	35700	MYD:
+File 1)	DSKC:86DOS.ASM[500,500]	created: 1056 05-MAY-1981
+File 2)	DSKC:86DOS.A86[500,500]	created: 1425 16-JUNE-1981
+
+1)	35710	;SI points to input buffer. Get decimal number < DX and return it
+1)	35720	;in AX. Carry set on error.
+1)	35730		XOR	BX,BX
+1)	35740		MOV	AH,0
+1)	35750	GETDIG:
+1)	35760		LODB
+1)	35770		SUB	AL,"0"
+1)	35780		JC	CHKRET
+1)	35790		CMP	AL,10
+1)	35800		JNC	CHKRET
+1)	35810		SHL	BX
+1)	35820		MOV	CX,BX
+1)	35830		SHL	BX
+1)	35840		SHL	BX
+1)	35850		ADD	BX,CX
+1)	35860		ADD	BX,AX
+1)	35870		JP	GETDIG
+1)	35880	CHKRET:
+1)	35890		MOV	AX,BX
+1)	35900		OR	AX,AX
+1)	35910		STC
+1)	35920		JZ	RET
+1)	35930		CMP	DX,AX
+1)	35940		RET
+1)	35960	DRVCNT:	DB	0
+1)	35980	DATMES:	DB	"Enter today's date (m-d-y): $"
+1)	35990	DATBUF:	DB	12,8,"04-28-81",13
+1)	36000		DS	5
+1)	36020	SDIRSEC:DS	2
+1)	36040	MEMSTRT:
+1)	36050	ADJFAC:	EQU	DIRBUF-MEMSTRT
+****
+2)1	38710	DRVCNT:	DB	0
+2)	38720	SDIRSEC:DS	1
+2)	38740	MEMSTRT:
+2)	38750	ADJFAC:	EQU	DIRBUF-MEMSTRT
+**************

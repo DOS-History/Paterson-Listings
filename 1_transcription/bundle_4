@@ -1,0 +1,3764 @@
+   888888888            666666666         DDDDDDDDDDDD            OOOOOOOOO            SSSSSSSSSSSS
+   888888888            666666666         DDDDDDDDDDDD            OOOOOOOOO            SSSSSSSSSSSS
+   888888888            666666666         DDDDDDDDDDDD            OOOOOOOOO            SSSSSSSSSSSS
+888         888      666                  DDD         DDD      OOO         OOO      SSS            
+888         888      666                  DDD         DDD      OOO         OOO      SSS            
+888         888      666                  DDD         DDD      OOO         OOO      SSS            
+888         888      666                  DDD         DDD      OOO         OOO      SSS            
+888         888      666                  DDD         DDD      OOO         OOO      SSS            
+888         888      666                  DDD         DDD      OOO         OOO      SSS            
+   888888888         666666666666         DDD         DDD      OOO         OOO         SSSSSSSSS   
+   888888888         666666666666         DDD         DDD      OOO         OOO         SSSSSSSSS   
+   888888888         666666666666         DDD         DDD      OOO         OOO         SSSSSSSSS   
+888         888      666         666      DDD         DDD      OOO         OOO                  SSS
+888         888      666         666      DDD         DDD      OOO         OOO                  SSS
+888         888      666         666      DDD         DDD      OOO         OOO                  SSS
+888         888      666         666      DDD         DDD      OOO         OOO                  SSS
+888         888      666         666      DDD         DDD      OOO         OOO                  SSS
+888         888      666         666      DDD         DDD      OOO         OOO                  SSS
+   888888888            666666666         DDDDDDDDDDDD            OOOOOOOOO         SSSSSSSSSSSS   
+   888888888            666666666         DDDDDDDDDDDD            OOOOOOOOO         SSSSSSSSSSSS   
+   888888888            666666666         DDDDDDDDDDDD            OOOOOOOOO         SSSSSSSSSSSS   
+
+
+
+
+   AAAAAAAAA            SSSSSSSSSSSS      MMM         MMM
+   AAAAAAAAA            SSSSSSSSSSSS      MMM         MMM
+   AAAAAAAAA            SSSSSSSSSSSS      MMM         MMM
+AAA         AAA      SSS                  MMMMMM   MMMMMM
+AAA         AAA      SSS                  MMMMMM   MMMMMM
+AAA         AAA      SSS                  MMMMMM   MMMMMM
+AAA         AAA      SSS                  MMM   MMM   MMM
+AAA         AAA      SSS                  MMM   MMM   MMM
+AAA         AAA      SSS                  MMM   MMM   MMM
+AAA         AAA         SSSSSSSSS         MMM         MMM
+AAA         AAA         SSSSSSSSS         MMM         MMM
+AAA         AAA         SSSSSSSSS         MMM         MMM
+AAAAAAAAAAAAAAA                  SSS      MMM         MMM
+AAAAAAAAAAAAAAA                  SSS      MMM         MMM
+AAAAAAAAAAAAAAA                  SSS      MMM         MMM
+AAA         AAA                  SSS      MMM         MMM
+AAA         AAA                  SSS      MMM         MMM
+AAA         AAA                  SSS      MMM         MMM
+AAA         AAA      SSSSSSSSSSSS         MMM         MMM
+AAA         AAA      SSSSSSSSSSSS         MMM         MMM
+AAA         AAA      SSSSSSSSSSSS         MMM         MMM
+
+
+
+
+ *START* User ROS BASIC [500,500]  Job  86DOS Seq. 7115 Date 16-Jun-81 15:13:30 Monitor Microsoft 1091 603a4d80j *START*
+File: DSKC:86DOS.ASM<055>[500,500] Created: 15-Jun-81 03:18:51 Printed: 16-Jun-81 15:17:10
+QUEUE Switches:  /FILE:ASCII /COPIES:1 /SPACING:1 /LIMIT:565 /FORMS:NORMAL
+   888888888            666666666         DDDDDDDDDDDD            OOOOOOOOO            SSSSSSSSSSSS
+   888888888            666666666         DDDDDDDDDDDD            OOOOOOOOO            SSSSSSSSSSSS
+   888888888            666666666         DDDDDDDDDDDD            OOOOOOOOO            SSSSSSSSSSSS
+888         888      666                  DDD         DDD      OOO         OOO      SSS            
+888         888      666                  DDD         DDD      OOO         OOO      SSS            
+888         888      666                  DDD         DDD      OOO         OOO      SSS            
+888         888      666                  DDD         DDD      OOO         OOO      SSS            
+888         888      666                  DDD         DDD      OOO         OOO      SSS            
+888         888      666                  DDD         DDD      OOO         OOO      SSS            
+   888888888         666666666666         DDD         DDD      OOO         OOO         SSSSSSSSS   
+   888888888         666666666666         DDD         DDD      OOO         OOO         SSSSSSSSS   
+   888888888         666666666666         DDD         DDD      OOO         OOO         SSSSSSSSS   
+888         888      666         666      DDD         DDD      OOO         OOO                  SSS
+888         888      666         666      DDD         DDD      OOO         OOO                  SSS
+888         888      666         666      DDD         DDD      OOO         OOO                  SSS
+888         888      666         666      DDD         DDD      OOO         OOO                  SSS
+888         888      666         666      DDD         DDD      OOO         OOO                  SSS
+888         888      666         666      DDD         DDD      OOO         OOO                  SSS
+   888888888            666666666         DDDDDDDDDDDD            OOOOOOOOO         SSSSSSSSSSSS   
+   888888888            666666666         DDDDDDDDDDDD            OOOOOOOOO         SSSSSSSSSSSS   
+   888888888            666666666         DDDDDDDDDDDD            OOOOOOOOO         SSSSSSSSSSSS   
+
+
+
+
+   AAAAAAAAA            SSSSSSSSSSSS      MMM         MMM
+   AAAAAAAAA            SSSSSSSSSSSS      MMM         MMM
+   AAAAAAAAA            SSSSSSSSSSSS      MMM         MMM
+AAA         AAA      SSS                  MMMMMM   MMMMMM
+AAA         AAA      SSS                  MMMMMM   MMMMMM
+AAA         AAA      SSS                  MMMMMM   MMMMMM
+AAA         AAA      SSS                  MMM   MMM   MMM
+AAA         AAA      SSS                  MMM   MMM   MMM
+AAA         AAA      SSS                  MMM   MMM   MMM
+AAA         AAA         SSSSSSSSS         MMM         MMM
+AAA         AAA         SSSSSSSSS         MMM         MMM
+AAA         AAA         SSSSSSSSS         MMM         MMM
+AAAAAAAAAAAAAAA                  SSS      MMM         MMM
+AAAAAAAAAAAAAAA                  SSS      MMM         MMM
+AAAAAAAAAAAAAAA                  SSS      MMM         MMM
+AAA         AAA                  SSS      MMM         MMM
+AAA         AAA                  SSS      MMM         MMM
+AAA         AAA                  SSS      MMM         MMM
+AAA         AAA      SSSSSSSSSSSS         MMM         MMM
+AAA         AAA      SSSSSSSSSSSS         MMM         MMM
+AAA         AAA      SSSSSSSSSSSS         MMM         MMM
+
+
+
+
+ *START* User ROS BASIC [500,500]  Job  86DOS Seq. 7115 Date 16-Jun-81 15:13:30 Monitor Microsoft 1091 603a4d80j *START*
+File: DSKC:86DOS.ASM<055>[500,500] Created: 15-Jun-81 03:18:51 Printed: 16-Jun-81 15:17:17
+QUEUE Switches:  /FILE:ASCII /COPIES:1 /SPACING:1 /LIMIT:565 /FORMS:NORMAL
+00010	
+00020	; 86-DOS  High-performance operating system for the 8086  version 1.00 04/28/81
+00030	;	by Tim Paterson
+00040	
+00050	; ****************** Revision History *************************
+00060	;          >> EVERY change must noted below!! <<
+00070	;
+00080	; 0.34 12/29/80 General release, updating all past customers
+00090	; 0.42 02/25/81 32-byte directory entries added
+00100	; 0.56 03/23/81 Variable record and sector sizes
+00110	; 0.60 03/27/81 Ctrl-C exit changes, including register save on user stack
+00120	; 0.74 04/15/81 Recognize I/O devices with file names
+00130	; 0.75 04/17/81 Improve and correct buffer handling
+00140	; 0.76 04/23/81 Correct directory size when not 2^N entries
+00150	; 0.80 04/27/81 Add console input without echo, Functions 7 & 8
+00160	; 1.00 04/28/81 Renumber for general release
+00170	;
+00180	; *************************************************************
+00190	
+00200	; Use the switch below to generate code to accept the old 16-byte
+00210	; directory entry as well as the new 32-byte entry.
+00220	
+00230	SMALLDIR:	EQU	1	;1 to enable, 0 to disable
+00240	
+00250	
+00260	; Turn on switch below to allow testing disk code with DEBUG. It sets
+00270	; up a different stack for disk I/O (functions > 11) than that used for
+00280	; character I/O which effectively makes the DOS re-entrant.
+00290	
+00300	DSKTEST:	EQU	0	;1 to enable, 0 to disable
+00310	
+00320	
+00330	; Interrupt Entry Points:
+00340	
+00350	; INTBASE:	ABORT
+00360	; INTBASE+4:	COMMAND
+00370	; INTBASE+8:	BASE EXIT ADDRESS
+00380	; INTBASE+C:	CONTROL-C ABORT
+00390	; INTBASE+10H:	FATAL ERROR ABORT
+00400	; INTBASE+14H:	BIOS DISK READ
+00410	; INTBASE+18H:	BIOS DISK WRITE
+00420	; INTBASE+40H:	Long jump to CALL entry point
+00430	
+00440	
+00450	MAXCALL:EQU	36
+00460	MAXCOM:	EQU	41
+00470	ESCCH:	EQU	1BH
+00480	INTBASE:EQU	80H
+00490	INTTAB:	EQU	20H
+00500	ENTRYPOINTSEG:	EQU	0CH
+00510	ENTRYPOINT:	EQU	INTBASE+40H
+00520	CONTC:	EQU	INTTAB+3
+00530	EXIT:	EQU	INTBASE+8
+00540	LONGJUMP:EQU	0EAH
+00550	LONGCALL:EQU	9AH
+00560	MAXDIF:	EQU	0FFFH
+00570	SAVEXIT:EQU	10
+00580	
+00590	; Field definition for FCBs
+00600	
+00610		ORG	0
+00620		DS	12		;Drive code and name
+00630	EXTENT:	DS	2
+00640	RECSIZ:	DS	2		;Size of record (user settable)
+00650	FILSIZ:	DS	4		;Size of file in bytes
+00660	FDATE:	DS	2		;Date of last writing
+00670	FILDIRBLK:DS	2		;Location in directory
+00680	FIRCLUS:DS	2		;First cluster of file
+00690	LSTCLUS:DS	2		;Last cluster accessed
+00700	CLUSPOS:DS	2		;Position of last cluster accessed
+00710	DIRTYFIL:DS	1		;File has been written to if <>0
+00720		ORG	32
+00730	NR:	DS	1		;Next record
+00740	RR:	DS	3		;Random record
+00750	
+00760	
+00770	; Description of 32-byte directory entry (same as returned by SEARCH FIRST
+00780	; and SEARCH NEXT, functions 17 and 18).
+00790	;
+00800	; Location	bytes	Description
+00810	;
+00820	;    0		11	File name and extension ( 0E5H if empty)
+00830	;   11		13	Zero field (for expansion)
+00840	;   24		 2	Date. Bits 0-4=day, bits 5-8=month, bits 9-15=year-1980
+00850	;   26		 2	First allocation unit ( < 4080 )
+00860	;   28		 4	File size, in bytes (LSB first, 30 bits max.)
+00870	;
+00880	; The File Allocation Table uses a 12-bit entry for each allocation unit on
+00890	; the disk. These entries are packed, two for every three bytes. The contents
+00900	; of entry number N is found by 1) multiplying N by 1.5; 2) adding the result
+00910	; to the base address of the Allocation Table; 3) fetching the 16-bit word at
+00920	; this address; 4) If N was odd (so that N*1.5 was not an integer), shift the
+00930	; word right four bits; 5) mask to 12 bits (AND with 0FFF hex). Entry number
+00940	; zero is used as an end-of-file trap in the OS and as a flag for directory
+00950	; entry size (if SMALLDIR selected). Entry 1 is reserved for future use. The
+00960	; first available allocation unit is assigned entry number two, and for Drive Parameter Block
+00970	
+00980		ORG	0
+00990	DRVNUM:	DS	1		;Drive number
+01000	SECSIZ:	DS	2		;Size of physical sector in bytes
+01010	CLUSMSK:DS	1		;Sectors/cluster - 1
+01020	CLUSSHFT:DS	1		;Log2 of sectors/cluster
+01030	FIRFAT:	DS	2		;Starting record of FATs
+01040	FATCNT:	DS	1		;Number of FATs for this drive
+01050	MAXENT:	DS	2		;Number of directory entries
+01060	DIRSEC:				;Number of dir. sectors (init temporary)
+01070	FIRREC:	DS	2		;First sector of first cluster
+01080	DSKSIZ:				;Size of disk (temp used during init only)
+01090	MAXCLUS:DS	2		;Number of clusters on drive + 1
+01100	FATSIZ:	DS	1		;Number of records occupied by FAT
+01110	FIRDIR:	DS	2		;Starting record of directory
+01120	
+01130		IF	SMALLDIR
+01140	FIRREC1:DS	2		;First data sector with 16-byte dir. entries
+01150	MAXCLUS1:DS	2		;No. of clusters + 1 with 16-byte dir. entries
+01160	FIRREC2:DS	2		;First data sector with 32-byte dir. entries
+01170	MAXCLUS2:DS	2		;No. of clusters + 1 with 32-byte dir entries
+01180		ENDIF
+01190	
+01200	DIRTYFAT:DS	1		;1=FAT has been changed, -1=never been read
+01210	FAT:				;Start of FAT
+01220	DIRSIZ:				;-1=small dir. entry, else large
+01230	
+01240	
+01250	; BIOS entry point defintions
+01260	
+01270	BIOSSEG:	EQU	40H
+01280			ORG	0
+01290			DS	3
+01300	BIOSSTAT:	DS	3
+01310	BIOSIN:		DS	3
+01320	BIOSOUT:	DS	3
+01330	BIOSPRINT:	DS	3
+01340	BIOSAUXIN:	DS	3
+01350	BIOSAUXOUT:	DS	3
+01360	BIOSREAD:	DS	3
+01370	BIOSWRITE:	DS	3
+01380	BIOSDSKCHG:	DS	3
+01390	
+01400	
+01410	; Location of user registers relative user stack pointer
+01420	
+01430		ORG	0
+01440	AXSAVE:	DS	2
+01450	BXSAVE:	DS	2
+01460	CXSAVE:	DS	2
+01470	DXSAVE:	DS	2
+01480	SISAVE:	DS	2
+01490	DISAVE:	DS	2
+01500	BPSAVE:	DS	2
+01510	DSSAVE:	DS	2
+01520	ESSAVE:	DS	2
+01530	IPSAVE:	DS	2
+01540	CSSAVE:	DS	2
+01550	FSAVE:	DS	2
+01560	
+01570	
+01580	; Start of code
+01590	
+01600		ORG	0
+01610		PUT	100H
+01620	
+01630		JMP	DOSINIT
+01640	
+01650	ESCTAB:	
+01660		DB	"SC"	;Copy one char
+01670		DB	"VN"	;Skip one char
+01680		DB	"TA"	;Copy to char
+01690		DB	"WB"	;Skip to char
+01700		DB	"UH"	;Copy line
+01710		DB	"HH"	;Kill line (no change in template)
+01720		DB	"RM"	;Reedit line (new template)
+01730		DB	"DD"	;Backspace
+01740		DB	"P@"	;Enter insert mode
+01750		DB	"QL"	;Exit insert mode
+01760		DB	ESCCH,ESCCH	;Escape character
+01770		DB	ESCCH,ESCCH	;End of table
+01780	
+01790	ESCTABLEN:EQU	$-ESCTAB
+01800	
+01810	HEADER:	DB	13,10,"86-DOS version 1.00"
+01820	
+01830		IF	DSKTEST
+01840		DB	"D"
+01850		ENDIF
+01860	
+01870		DB	13,10
+01880		DB	"Copyright 1980,81 Seattle Computer Products, Inc.",13,10,"$"
+01890	
+01900	QUIT:
+01910		MOV	AH,0
+01920		JP	SAVREGS
+01930	
+01940	COMMAND: ;Interrupt call entry point
+01950		CMP	AH,MAXCOM
+01960		JBE	SAVREGS
+01970	BADCALL:
+01980		MOV	AL,0
+01990	IRET:	IRET
+02000	
+02010	ENTRY:	;System call entry point and dispatcher
+02020		POP	AX		;IP from the long call at 5
+02030		POP	AX		;Segment from the long call at 5
+02040		SEG	CS
+02050		POP	[TEMP]		;IP from the CALL 5
+02060		PUSHF			;Start re-ordering the stack
+02070		DI
+02080		PUSH	AX		;Save segment
+02090		SEG	CS
+02100		PUSH	[TEMP]		;Stack now ordered as if INT had been used
+02110		CMP	CL,MAXCALL	;This entry point doesn't get as many calls
+02120		JA	BADCALL
+02130		MOV	AH,CL
+02140	SAVREGS:
+02150		PUSH	ES
+02160		PUSH	DS
+02170		PUSH	BP
+02180		PUSH	DI
+02190		PUSH	SI
+02200		PUSH	DX
+02210		PUSH	CX
+02220		PUSH	BX
+02230		PUSH	AX
+02240	
+02250		IF	DSKTEST
+02260		SEG	CS
+02270		MOV	AX,[SPSAVE]
+02280		SEG	CS
+02290		MOV	[NSP],AX
+02300		SEG	CS
+02310		MOV	AX,[SSSAVE]
+02320		SEG	CS
+02330		MOV	[NSS],AX
+02340		POP	AX
+02350		PUSH	AX
+02360		ENDIF
+02370	
+02380		SEG	CS
+02390		MOV	[SPSAVE],SP
+02400		SEG	CS
+02410		MOV	[SSSAVE],SS
+02420		MOV	BP,SP
+02430		MOV	BX,[BP+CSSAVE]
+02440		SEG	CS
+02450		MOV	[CSLOC],BX
+02460		MOV	SP,CS
+02470		MOV	SS,SP
+02480		MOV	SP,STACK
+02490		EI			;Stack OK now
+02500		SEG	CS
+02510		MOV	[FUNC],AH
+02520		MOV	BL,AH
+02530		MOV	BH,0
+02540		SHL	BX
+02550		UP
+02560	
+02570		IF	DSKTEST
+02580		CMP	AH,12
+02590		JL	SAMSTK
+02600		MOV	SP,TESTSTK
+02610	SAMSTK:
+02620		ENDIF
+02630	
+02640		SEG	CS
+02650		CALL	[BX+DISPATCH]
+02660	LEAVE:
+02670		DI
+02680		SEG	CS
+02690		MOV	SP,[SPSAVE]
+02700		SEG	CS
+02710		MOV	SS,[SSSAVE]
+02720		MOV	BP,SP
+02730		MOV	[BP+AXSAVE],AL
+02740	
+02750		IF	DSKTEST
+02760		SEG	CS
+02770		MOV	AX,[NSP]
+02780		SEG	CS
+02790		MOV	[SPSA	ENDIF
+02800	
+02810		PBX
+02820		POP	CX
+02830		POP	DX
+02840		POP	SI
+02850		POP	DI
+02860		POP	BP
+02870		POP	DS
+02880		POP	ES
+02890		IRET
+02900	
+02910	DISPATCH:
+02920	; Standard Functions
+02930		DW	ABORT		;0
+02940		DW	CONIN
+02950		DW	CONOUT
+02960		DW	READER
+02970		DW	PUNCH
+02980		DW	LIST		;5
+02990		DW	RAWIO
+03000		DW	RAWINP
+03010		DW	IN
+03020		DW	PRTBUF
+03030		DW	BUFIN		;10
+03040		DW	CONSTAT
+03050		DW	VERSION
+03060		DW	DSKRESET
+03070		DW	SELDSK
+03080		DW	OPEN		;15
+03090		DW	CLOSE
+03100		DW	SRCHFRST
+03110		DW	SRCHNXT
+03120		DW	DELETE
+03130		DW	SEQRD		;20
+03140		DW	SEQWRT
+03150		DW	CREATE
+03160		DW	RENAME
+03170		DW	INUSE
+03180		DW	CURDRV		;25
+03190		DW	SETDMA
+03200		DW	GETFATPT
+03210		DW	WRTPROT
+03220		DW	GETRDONLY
+03230		DW	SETATTRIB	;30
+03240		DW	GETDSKPT
+03250		DW	USERCODE
+03260		DW	RNDRD
+03270		DW	RNDWRT
+03280		DW	FILESIZE	;35
+03290		DW	SETRNDREC
+03300	; Extended Functions
+03310		DW	SETVECT
+03320		DW	NEWBASE
+03330		DW	BLKRD
+03340		DW	BLKWRT		;40
+03350		DW	MAKEFCB
+03360	
+03370	VERSION:
+03380	GETIO:
+03390	SETIO:
+03400	WRTPROT:
+03410	GETRDONLY:
+03420	SETATTRIB:
+03430	USERCODE:
+03440		MOV	AL,0
+03450		RET
+03460	
+03470	
+03480	READER:
+03490		CALL	BIOSAUXIN,BIOSSEG
+03500		RET
+03510	
+03520	PUNCH:
+03530		MOV	AL,DL
+03540		CALL	BIOSAUXOUT,BIOSSEG
+03550		RET
+03560	
+03570	
+03580	UNPACK:
+03590	
+03600	; Inputs:
+03610	;	DS = CS
+03620	;	BX = Cluster number
+03630	;	BP = Base of drive parameters
+03640	;	SI = Pointer to drive FAT
+03650	; Outputs:
+03660	;	DI = Contents of FAT for given cluster
+03670	;	Zero set means DI=0 (free cluster)
+03680	; No other registers affected. Fatal error if cluster too big.
+03690	
+03700		CMP	BX,[BP+MAXCLUS]
+03710		JA	HURTFAT
+03720		LEA	DI,[SI+BX]
+03730		SHR	BX
+03740		MOV	DI,[DI+BX]
+03750		JNC	HAVCLUS
+03760		SHR	DI
+03770		SHR	DI
+03780		SHR	DI
+03790		SHR	DI
+03800		STC
+03810	HAVCLUS:
+03820		RCL	BX
+03830		AND	DI,0FFFH
+03840		RET
+03850	HURTFAT:
+03860		MOV	SI,BADMES
+03870		CALL	OUTMES
+03880		JMP	ERROR
+03890	
+03900	
+03910	PACK:
+03920	
+03930	; Inputs:
+03940	;	DS = CS
+03950	;	BX = Cluster number
+03960	;	DX = Data
+03970	;	SI = Pointer to drive FAT
+03980	; Outputs:
+03990	;	The data is stored in the FAT at the given cluster.
+04000	;	BX,DX,DI all destroyed
+04010	;	No other registers affected
+04020	
+04030		MOV	DI,BX
+04040		SHR	BX
+04050		ADD	BX,SI
+04060		ADD	BX,DI
+04070		SHR	DI
+04080		MOV	DI,[BX]
+04090		JNC	ALIGNED
+04100		SHL	DX
+04110		SHL	DX
+04120		SHL	DX
+04130		SHL	DX
+04140		AND	DI,0FH
+04150		JP	PACKIN
+04160	ALIGNED:
+04170		AND	DI,0F000H
+04180	PACKIN:
+04190		OR	DI,DX
+04200		MOV	[BX],DI
+04210		RET
+04220	
+04230	IOCHK:
+04240		MOV	CX,5		;Check rest of name but not extension
+04250		CMP	B,[DI],":"
+04260		JNZ	NOCOL
+04270		INC	DI		;Skip over colon
+04280		DEC	CX
+04290	NOCOL:
+04300		MOV	AL," "
+04310		REPE
+04320		SCAB			;Make sure rest of name is blanks
+04330		JNZ	FILSRCH
+04340		DEC	BL
+04350		RET
+04360	
+04370	GETFILE:
+04380	
+04390	; Inputs:
+04400	;	DS,DX point to FCB
+04410	; Function:
+04420	;	Find file name in disk directory. First byte is
+04430	;	drive number (0=current disk). "?" matches any
+04440	;	character.
+04450	; Outputs:
+04460	;	Carry set if file not found
+04470	;	ELSE
+04480	;	BP = Base of drive parameters
+04490	;	DS = CS
+04500	;	ES = CS
+04510	;	BX = Pointer into directory buffer
+04520	;	SI = Pointer to First Cluster field in directory entry
+04530	;	[DIRBUF] has directory record with match
+04540	;	[NAME1] has file name
+04550	; All other registers destroyed.
+04560	
+04570		CALL	MOVNAME
+04580		JC	RET		;Bad file name?
+04590	FINDNAME:
+04600		MOV	AX,CS
+04610		MOV	DS,AX
+04620		MOV	SI,IONAME	;List of I/O devices with file names
+04630		MOV	BX,0FF04H	;BL = number of devices
+04640	LOOKIO:
+04650		MOV	DI,NAME1
+04660		MOV	CX,3		;All device names are 3 letters
+04670		REPE
+04680		CMPB			;Check for name in list
+04690		JZ	IOCHK		;If first 3 letters OK, check the rest
+04700		ADD	SI,CX		;Point to next device name
+04710		DEC	BL
+04720		JNZ	LOOKIO
+04730	FILSRCH:			;Not a device name
+04740		CALL	STARTSRCH
+04750	CONTSRCH:
+04760		CALL	GETENTRY
+04770		JC	RET
+04780	SRCH:
+04790		CMP	B,[BX],0E5H
+04800		JZ	NEXTENT
+04810		MOV	SI,BX
+04820		MOV	DI,NAME1
+04830		MOV	CX,11
+04840	WILDCRD:
+04850		REPE
+04860		CMPB
+04870		JZ	FOUND
+04880		CMP	B,[DI-1],"?"
+04890		JZ	WILDCRD
+04900	NEXTENT:
+04910		CALL	NEXTENTRY
+04920		JNC	SRCH
+04930		RET
+04940	
+04950	FOUND:
+04960		IF	SMALLDIR
+04970		CMP	B,[BP+DIRSIZ],-1
+04980		JZ	RET
+04990		ENDIF
+05000	
+05010		ADD	SI,15	
+05020		RET
+05030	
+05040	
+05050	GETENTRY:
+05060	
+05070	; Inputs:
+05080	;	[LASTENT] has previously searched directory entry
+05090	; Function:
+05100	;	Locates next sequential directory entry in preparation for search
+05110	; Outputs:
+05120	;	Carry set if none
+05130	;	ELSE
+05140	;	AL = Current directory block
+05150	;	BX = Pointer to next directory entry in [DIRBUF]
+05160	;	DX = Pointer to first byte after end of DIRBUF
+05170	;	[LASTENT] = New directory entry number
+05180	
+05190		MOV	AX,[LASTENT]
+05200		INC	AX			;Start with next entry
+05210		CMP	AX,[BP+MAXENT]
+05220		JAE	NONE
+05230		MOV	[LASTENT],AX
+05240		MOV	CL,4
+05250		SHL	AX,CL
+05260		XOR	DX,DX
+05270	
+05280		IF	SMALLDIR
+05290		CMP	B,[BP+DIRSIZ],-1
+05300		JZ	SMALENT1
+05310		ENDIF
+05320	
+05330		SHL	AX
+05340		RCL	DX			;Account for overflow in last shift
+05350	SMALENT1:
+05360		MOV	BX,[BP+SECSIZ]
+05370		AND	BL,255-31		;Must be multiple of 32
+05380		DIV	AX,BX
+05390		MOV	BX,DX			;Position within sector
+05400		MOV	AH,[BP+DRVNUM]		;AL=Directory sector no.
+05410		CMP	AX,[DIRBUFID]
+05420		JZ	HAVDIRBUF
+05430		PUSH	BX
+05440		CALL	DIRREAD
+05450		POP	BX
+05460	HAVDIRBUF:
+05470		MOV	DX,DIRBUF
+05480		ADD	BX,DX
+05490		ADD	DX,[BP+SECSIZ]
+05500		RET
+05510	
+05520	NEXTENTRY:
+05530	
+05540	; Inputs:
+05550	;	Same as outputs of GETENTRY, above
+05560	; Function:
+05570	;	Update AL, BX, and [LASTENT] for next directory entry.
+05580	;	Carry set if no more.
+05590	
+05600		MOV	DI,[LASTENT]
+05610		INC	DI
+05620		CMP	DI,[BP+MAXENT]
+05630		JAE	NONE
+05640		MOV	[LASTENT],DI
+05650		ADD	BX,32
+05660	
+05670		IF	SMALLDIR
+05680		CMP	B,[BP+DIRSIZ],-1
+05690		JNZ	BIGENT3
+05700		SUB	BX,16
+05710	BIGENT3:
+05720		ENDIF
+05730	
+05740		CMP	BX,DX
+05750		JB	HAVIT
+05760		INC	AL			;Next directory sector
+05770		PUSH	DX			;Save limit
+05780		CALL	DIRREAD
+05790		POP	DX
+05800		MOV	BX,DIRBUF
+05810	HAVIT:
+05820		CLC
+05830		RET
+05840	
+05850	NONE:
+05860		CALL	CHKDIRWRITE
+05870		STC
+05880		RET
+05890	
+05900	
+05910	DELETE:	; System call 19
+05920		CALL	GETFILE
+05930		JC	ERRET
+05940		CMP	BH,-1		;Check if device name
+05950		JZ	ERRET		;Can't delete I/O devices
+05960	DELFILE:
+05970		MOV	B,[DIRTYDIR],-1
+05980		MOV	B,[BX],0E5H
+05990		MOV	BX,[SI]
+06000		LEA	SI,[BP+FAT]
+06010		OR	BX,BX
+06020		JZ	DELNXT
+06030		CMP	BX,[BP+MAXCLUS]
+06040		JA	DELNXT
+06050		CALL	RELEASE
+06060	DELNXT:
+06070		CALL	CONTSRCH
+06080		JNC	DELFILE
+06090		CALL	FATWRT
+06100		CALL	CHKDIRWRITE
+06110		XOR	AL,AL
+06120		RET
+06130	
+06140	
+06150	RENAME:	;System call 23
+06160		CALL	MOVNAME
+06170		JC	ERRET
+06180		CMP	BH,-1		;Check if I/O device name
+06190		JZ	ERRET		;If so, can't rename it
+06200		ADD	SI,5
+06210		MOV	DI,NAME2
+06220		CALL	LODNAME
+06230		CALL	FINDNAME
+06240		JC	ERRET
+06250	RENFIL:
+06260		MOV	B,[DIRTYDIR],-1
+06270		MOV	DI,BX
+06280		MOV	SI,NAME2
+06290		MOV	CX,11
+06300	NEWNAM:
+06310		LODB
+06320		CMP	AL,"?"
+06330		JZ	NOCHG
+06340		MOV	[DI],AL
+06350	NOCHG:
+06360		INC	DI
+06370		LOOP	NEWNAM
+06380		CALL	CONTSRCH
+06390		JNC	RENFIL
+06400		CALL	CHKDIRWRITE
+06410		XOR	AL,AL
+06420		RET
+06430	
+06440	ERRET:
+06450		MOV	AL,-1
+06460		RET
+06470	
+06480	
+06490	MOVNAME:
+06500	
+06510	; Inputs:
+06520	;	DS, DX point to FCB
+06530	; Outputs:
+06540	;	ES = CS
+06550	;	If file name OK:
+06560	;	BP has base of driver parameters
+06570	;	[NAME1] has name in upper case
+06580	; All registers except DX destroyed
+06590	; Carry set if bad file name or drive
+06600	
+06610		MOV	AX,CS
+06620		MOV	ES,AX
+06630		MOV	DI,NAME1
+06640		MOV	SI,DX
+06650		LODB
+06660		CALL	GETBP
+06670		JB	RET
+06680	LODNAME:
+06690	; This entry point copies a file name from DS,SI
+06700	; to ES,DI converting to upper case.
+06710		MOV	CX,11
+06720	MOVCHK:
+06730		LODB
+06740		AND	AL,7FH
+06750		CMP	AL,60H
+06760		JLE	CASEOK
+06770		AND	AL,5FH
+06780	CASEOK:
+06790		CMP	AL,20H
+06800		JC	RET
+06810		STOB
+06820		LOOP	MOVCHK
+06830		RET
+06840	
+06850	GETBP:
+06860		SEG	CS
+06870		CMP	[NUMDRV],AL
+06880		JC	RET
+06890		CBW
+06900		XCHG	BP,AX
+06910		SHL	BP
+06920		MOV	BP,[BP+CURDRVPT]
+06930		RET
+06940	
+06950	
+06960	OPEN:	;System call 15
+06970		PUSH	DX
+06980		PUSH	DS
+06990		CALL	GETFILE
+07000	DOOPEN:
+07010	; Enter here to perform OPEN on file already found
+07020	; in directory. DS=ES=CS, BX points to directory
+07030	; entry in DIRBUF, SI points to First Cluster field, and
+07040	; the top of the stack has the address and segment
+07050	; of the FCB to be opened. This entry point is used
+07060	; by CREATE.
+07070		POP	ES
+07080		POP	DI
+07090		JC	ERRET
+07100		CMP	BH,-1		;Check if file is I/O device
+07110		JZ	OPENDEV		;Special handler if so
+07120		MOV	AL,[BP+DRVNUM]
+07130		INC	AL
+07140		STOB
+07150		ADD	DI,11		;Point to extent field
+07160		XOR	AX,AX
+07170		STOW			;Set extent field to 0
+07180		MOV	AX,128		;Default record size
+07190		STOW			;Set record size
+07200		LODW			;Get starting cluster
+07210		MOV	DX,AX		;Save it for the moment
+07220		MOVW			;Transfer size to FCB
+07230		MOVW
+07240		MOV	AX,[SI-8]	;Get date
+07250	
+07260		IF	SMALLDIR
+07270		CMP	B,[BP+DIRSIZ],-1
+07280		JNZ	BIGENT10
+07290		SEG	ES
+07300		MOV	[DI-1],0
+07310		XOR	AX,AX		;Date not available in small entry
+07320	BIGENT10:
+07330		ENDIF
+07340	
+07350		STOW			;Save date in FCB
+07360		MOV	AX,[LASTENT]
+07370		STOW			;directory location
+07380		MOV	AX,DX		;Restore starting cluster
+07390		STOW			; first cluster
+07400		STOW			; last cluster accessed
+07410		XOR	AX,AX
+07420		STOW			; position of last cluster
+07430		STOB			; dirty flag
+07440		RET
+07450	
+07460	OPENDEV:
+07470		SEG	ES
+07480		MOV	[DI+FILDIRBLK],BX ;Use dir. entry number as flag
+07490		XOR	AL,AL
+07500		RET
+07510	
+07520	
+07530	STARTSRCH:
+07540		MOV	[LASTENT],-1
+07550	FATREAD:
+07560	
+07570	; Inputs:
+07580	;	DS = CS
+07590	;	BP = Base of drive parameters
+07600	; Function:
+07610	;	If disk may have been changed, FAT is read in and buffers are
+07620	;	flagged invalid. If not, no action is taken.
+07630	; Outputs:
+07640	;	AL = 0
+07650	;	BP unchanged
+07660	; All other registers destroyed
+07670	
+07680		MOV	AL,[BP+DRVNUM]
+07690		CALL	BIOSDSKCHG,BIOSSEG	;See what BIOS has to say
+07700		MOV	AL,[BP+DRVNUM]
+07710		OR	AH,[BP+DIRTYFAT]
+07720		JS	NEWDSK		;If either say new disk, then it's so
+07730		DEC	AH		;Check for AH=1 (disk not changed)
+07740		JZ	RET
+07750		MOV	AH,1
+07760		CMP	AX,[BUFDRVNO]	;Does buffer have dirty sector of this drive?
+07770		JZ	RET		;If so, disk has not been changed
+07780	NEWDSK:
+07790		CMP	AL,[BUFDRVNO]	;See if buffer is for this drive
+07800		JNZ	BUFOK		;If not, don't touch it
+07810		MOV	[BUFSECNO],0	;Flag buffers invalid
+07820		MOV	[BUFDRVNO],00FFH
+07830	BUFOK:
+07840		MOV	[DIRBUFID],-1
+07850		CALL	FIGFAT
+07860	NEXTFAT:
+07870		PUSH	DX
+07880		PUSH	CX
+07890		PUSH	BX
+07900		PUSH	AX
+07910		CALL	DREAD
+07920		OR	AL,AL
+07930		POP	AX
+07940		POP	BX
+07950		POP	CX
+07960		POP	DX
+07970		JNZ	BADFAT
+07980	
+07990		IF	SMALLDIR
+08000		MOV	DL,AL
+08010		LEA	SI,[BP+FIRREC1]	;FIRREC and MAXCLUS for 16-byte dir entries
+08020		CMP	B,[BP+DIRSIZ],-1
+08030		JZ	SETSIZ
+08040		ADD	SI,4		;FIRREC and MAXCLUS for 32-byte entries
+08050	SETSIZ:
+08060		LODW
+08070		MOV	[BP+FIRREC],AX
+08080		LODW
+08090		MOV	[BP+MAXCLUS],AX
+08100		MOV	AL,DL
+08110		ENDIF
+08120	
+08130		SUB	AL,[BP+FATCNT]
+08140		JZ	RET
+08150		NEG	AL
+08160	;{Insert error code here. AL=number of bad fats.
+08170	;Since one good FAT was read, should include option
+08180	;to rewrite all FATs.}
+08190		JMP	FATWRT
+08200	
+08210	BADFAT:
+08220		ADD	DX,CX
+08230		DEC	AL
+08240		JNZ	NEXTFAT
+08250		POP	BP
+08260	;{Insert error code here. All FATs on drive are bad.}
+08270		MOV	SI,BADFATMES
+08280		CALL	HARDERR
+08290		JP	FATREAD
+08300	
+08310	OKRET1:
+08320		MOV	AL,0
+08330		RET
+08340	
+08350	CLOSE:	;System call 16
+08360		MOV	DI,DX
+08370		CMP	B,[DI+FILDIRBLK],-1  ;Check for I/O device
+08380		JZ	OKRET1		;Can't close I/O device
+08390		TEST	B,[DI+DIRTYFIL],-1
+08400		JZ	OKRET1		;If not written to, do nothing
+08410		MOV	AL,[DI]		;Get drive number
+08420		CALL	GETBP		;Get base of drive parameters
+08430		JC	BADCLOSEJ
+08440		MOV	AL,[BP+DRVNUM]
+08450		MOV	AH,1		;Look for dirty buffer
+08460		SEG	CS
+08470		CMP	AX,[BUFDRVNO]
+08480		JNZ	FNDDIR
+08490	;Write back dirty buffer if on same drive
+08500		PUSH	DX
+08510		PUSH	DS
+08520		PUSH	CS
+08530		POP	DS
+08540		MOV	B,[DIRTYBUF],0
+08550		MOV	BX,[BUFFER]
+08560		MOV	CX,1
+08570		MOV	DX,[BUFSECNO]
+08580		CALL	DWRITE
+08590		POP	DS
+08600		POP	DX
+08610	FNDDIR:
+08620		PUSH	DX
+08630		PUSH	DS
+08640		CALL	GETFILE
+08650		POP	ES
+08660		POP	DI
+08670	BADCLOSEJ:
+08680		JC	BADCLOSE
+08690		MOV	AX,[LASTENT]
+08700		SEG	ES
+08710		CMP	AX,[DI+FILDIRBLK]
+08720		JNZ	BADCLOSE
+08730		SEG	ES
+08740		MOV	CX,[DI+FIRCLUS]
+08750		MOV	[SI],CX
+08760		SEG	ES
+08770		MOV	DX,[DI+FILSIZ]
+08780		MOV	[SI+2],DX
+08790		SEG	ES
+08800		MOV	DX,[DI+FILSIZ+2]
+08810	
+08820		IF	SMALLDIR
+08830		CMP	B,[BP+DIRSIZ],-1
+08840		JNZ	BIGENT11
+08850		MOV	[SI+4],DL
+08860		JP	SMALLENT2
+08870	BIGENT11:
+08880		ENDIF
+08890	
+08900		MOV	[SI+4],DX
+08910		SEG	ES
+08920		MOV	DX,[DI+FDATE]
+08930		MOV	[SI-2],DX
+08940	SMALLENT2:
+08950		CALL	DIRWRITE
+08960	
+08970	CHKFATWRT:
+08980	; Do FATWRT only if FAT is dirty
+08990	
+09000		CMP	B,[BP+DIRTYFAT],1
+09010		JNZ	OKRET
+09020	
+09030	FATWRT:
+09040	
+09050	; Inputs:
+09060	;	DS = CS
+09070	;	BP = Base of drive parameter table
+09080	; Function:
+09090	;	Write the FAT back to disk and reset FAT
+09100	;	dirty bit.
+09110	; Outputs:
+09120	;	AL = 0
+09130	;	BP unchanged
+09140	; All other registers destroyed
+09150	
+09160		MOV	B,[BP+DIRTYFAT],0
+09170		CALL	FIGFAT
+09180	EACHFAT:
+09190		PUSH	DX
+09200		PUSH	CX
+09210		PUSH	BX
+09220		PUSH	AX
+09230		CALL	DWRITE
+09240		POP	AX
+09250		POP	BX
+09260		POP	CX
+09270		POP	DX
+09280		ADD	DX,CX
+09290		DEC	AL
+09300		JNZ	EACHFAT
+09310	OKRET:
+09320		MOV	AL,0
+09330		RET
+09340	
+09350	BADCLOSE:
+09360		MOV	B,[BP+DIRTYFAT],0
+09370		MOV	AL,-1
+09380		RET
+09390	
+09400	
+09410	FIGFAT:
+09420	; Loads registers with values needed to read or
+09430	; write a FAT.
+09440		MOV	AL,[BP+FATCNT]
+09450		LEA	BX,[BP+FAT]
+09460		MOV	CL,[BP+FATSIZ]	;No. of records occupied by FAT
+09470		MOV	CH,0
+09480		MOV	DX,[BP+FIRFAT]	;Record number of start of FATs
+09490		RET
+09500	
+09510	
+09520	DIRCOMP:
+09530	; Prepare registers for directory read or write
+09540		CBW
+09550		ADD	AX,[BP+FIRDIR]
+09560		MOV	DX,AX
+09570		MOV	BX,DIRBUF
+09580		MOV	CX,1
+09590		RET
+09600	
+09610	
+09620	CREATE:	;System call 22
+09630		CALL	MOVNAME
+09640		JC	ERRET3
+09650		MOV	DI,NAME1
+09660		MOV	CX,11
+09670		MOV	AL,"?"
+09680		REPNE
+09690		SCAB
+09700		JZ	ERRET3
+09710		PUSH	DX
+09720		PUSH	DS
+09730		CALL	FINDNAME
+09740		JNC	EXISTENT
+09750		CALL	STARTSRCH
+09760		CALL	GETENTRY
+09770	LOOKFRE:
+09780		CMP	B,[BX],0E5H
+09790		JZ	FREESPOT
+09800		CALL	NEXTENTRY
+09810		JNC	LOOKFRE
+09820		POP	DS
+09830		POP	DX
+09840	ERRET3:
+09850		MOV	AL,-1
+09860		RET
+09870	
+09880	EXISTENT:
+09890		CMP	BH,-1		;Check if file is I/O device
+09900		JZ	OPENJMP		;If so, no action
+09910		XOR	CX,CX
+09920		MOV	[SI+2],CX
+09930		MOV	AX,[DATE]
+09940	
+09950		IF	SMALLDIR
+09960		MOV	[SI+4],CL
+09970		CMP	B,[BP+DIRSIZ],-1
+09980		JZ	SMLENT
+09990		MOV	[SI+5],CL
+10000		MOV	[SI-2],AX
+10010	SMLENT:
+10020		ENDIF
+10030	
+10040		IF	1-SMALLDIR
+10050		MOV	[SI+4],CX
+10060		MOV	[SI-2],AX
+10070		ENDIF
+10080	
+10090		XCHG	CX,[SI]
+10100		PUSH	SI
+10110		PUSH	BX
+10120		JCXZ	WRTBACK
+10130		CMP	CX,[BP+MAXCLUS]
+10140		JA	WRTBACK
+10150		MOV	BX,CX
+10160		LEA	SI,[BP+FAT]
+10170		CALL	RELEASE
+10180		CALL	FATWRT
+10190		JP	WRTBACK
+10200	
+10210	FREESPOT:
+10220		MOV	DI,BX
+10230		MOV	SI,NAME1
+10240		MOV	CX,5
+10250		MOVB
+10260		REP
+10270		MOVW
+10280		XOR	AX,AX
+10290	
+10300		IF	SMALLDIR
+10310		CMP	B,[BP+DIRSIZ],-1
+10320		JNZ	BIGENT4
+10330		PUSH	DI
+10340		MOV	CL,5
+10350		JP	SMALLENT
+10360	BIGENT4:
+10370		ENDIF
+10380	
+10390		MOV	CL,13
+10400		REP
+10410		STOB
+10420		MOV	AX,[DATE]
+10430		STOW
+10440		XOR	AX,AX
+10450		PUSH	DI
+10460		MOV	CL,6
+10470	SMALLENT:
+10480		REP
+10490		STOB
+10500		PUSH	BX
+10510	WRTBACK:
+10520		CALL	DIRWRITE
+10530		POP	BX
+10540		POP	SI
+10550	OPENJMP:
+10560		CLC			;Clear carry so OPEN won't fail
+10570		JMP	DOOPEN
+10580	
+10590	
+10600	DIRREAD:
+10610	
+10620	; Inputs:
+10630	;	DS = CS
+10640	;	AL = Directory block number
+10650	;	BP = Base of drive parameters
+10660	; Function:
+10670	;	Read the directory block into DIRBUF.
+10680	; Outputs:
+10690	;	AX,BP unchanged
+10700	; All other registers destroyed.
+10710	
+10720		PUSH	AX
+10730		CALL	CHKDIRWRITE
+10740		POP	AX
+10750		PUSH	AX
+10760		MOV	AH,[BP+DRVNUM]
+10770		MOV	[DIRBUFID],AX
+10780		CALL	DIRCOMP
+10790		CALL	DREAD
+10800		POP	AX
+10810		RET
+10820	
+10830	
+10840	DREAD:
+10850	
+10860	; Inputs:
+10870	;	BX,DS = Transfer address
+10880	;	CX = Number of sectors
+10890	;	DX = Absolute record number
+10900	;	BP = Base of drive parameters
+10910	; Function:
+10920	;	Calls BIOS to perform disk read. If BIOS reports
+10930	;	errors, will call HARDERR for further action.
+10940	; Outputs:
+10950	;	AL = 0 if no error, otherwise non-zero
+10960	; BP preserved. All other registers destroyed.
+10970	
+10980		MOV	AL,[BP+DRVNUM]
+10990		PUSH	BP
+11000		PUSH	BX
+11010		PUSH	CX
+11020		PUSH	DX
+11030		CALL	BIOSREAD,BIOSSEG
+11040		POP	DX
+11050		POP	DI
+11060		POP	BX
+11070		POP	BP
+11080		JC	HARDREAD
+11090		XOR	AL,AL
+11100		RET
+11110	
+11120	HARDREAD:
+11130		MOV	SI,RDERRMES
+11140		CALL	HARDERR
+11150		JP	DREAD
+11160	
+11170	
+11180	CHKDIRWRITE:
+11190		TEST	B,[DIRTYDIR],-1
+11200		JZ	RET
+11210	
+11220	DIRWRITE:
+11230	
+11240	; Inputs:
+11250	;	DS = CS
+11260	;	AL = Directory block number
+11270	;	BP = Base of drive parameters
+11280	; Function:
+11290	;	Write the directory block into DIRBUF.
+11300	; Outputs:
+11310	;	BP unchanged
+11320	; All other registers destroyed.
+11330	
+11340		MOV	B,[DIRTYDIR],0
+11350		MOV	AL,[DIRBUFID]
+11360		CALL	DIRCOMP
+11370	
+11380	
+11390	DWRITE:
+11400	
+11410	; Inputs:
+11420	;	BX,DS = Transfer address
+11430	;	CX = Number of sectors
+11440	;	DX = Absolute record number
+11450	;	BP = Base of drive parameters
+11460	; Function:
+11470	;	Calls BIOS to perform disk write. If BIOS reports
+11480	;	errors, will call HARDERR for further action.
+11490	; Outputs:
+11500	;	AL = 0 if no error, otherwise non-zero
+11510	; BP preserved. All other registers destroyed.
+11520	
+11530		MOV	AL,[BP+DRVNUM]
+11540	WRTDRV:
+11550		PUSH	AX
+11560		PUSH	BP
+11570		PUSH	BX
+11580		PUSH	CX
+11590		PUSH	DX
+11600		CALL	BIOSWRITE,BIOSSEG
+11610		POP	DX
+11620		POP	DI
+11630		POP	BX
+11640		POP	BP
+11650		POP	AX
+11660		JC	HARDWRITE
+11670		XOR	AL,AL
+11680		RET
+11690	HARDWRITE:
+11700		MOV	SI,WRTERRMES
+11710		CALL	HARDERR
+11720		JP	WRTDRV
+11730	
+11740	
+11750	HARDERR:
+11760		SUB	DI,CX
+11770		ADD	DX,DI
+11780		CALL	SHFTDI7
+11790		ADD	BX,DI
+11800		MOV	AH,AL		;Save drive number
+11810		CALL	OUTMES
+11820	GETINSTR:
+11830		CALL	IN
+11840		OR	AL,20H
+11850		CMP	AL,"a"
+11860		JZ	ERROR
+11870		CMP	AL,"r"
+11880		JZ	RETRY
+11890		CMP	AL,"i"
+11900		JZ	IGNORE
+11910		CMP	AL,"c"
+11920		JNZ	GETINSTR
+11930	CONTINUE:
+11940		POP	AX
+11950		MOV	AL,1
+11960		RET
+11970	IGNORE:
+11980		POP	AX
+11990		MOV	AL,0
+12000		RET
+12010	RETRY:
+12020		MOV	AL,AH		;Restore drive number
+12030		RET
+12040	
+12050	
+12060	ABORT:
+12070		SEG	CS
+12080		MOV	DS,[CSLOC]
+12090		XOR	AX,AX
+12100		MOV	ES,AX
+12110		MOV	SI,SAVEXIT
+12120		MOV	DI,EXIT
+12130		MOVW
+12140		MOVW
+12150		MOVW
+12160		MOVW
+12170	ERROR:
+12180		MOV	AX,CS
+12190		MOV	DS,AX
+12200		MOV	ES,AX
+12210		CALL	WRTFATS
+12220		XOR	AX,AX
+12230		DI
+12240		MOV	SS,[SSSAVE]
+12250		MOV	SP,[SPSAVE]
+12260		MOV	DS,AX
+12270		MOV	SI,EXIT
+12280		MOV	DI,EXITHOLD
+12290		MOVW
+12300		MOVW
+12310		POP	AX
+12320		POP	BX
+12330		POP	CX
+12340		POP	DX
+12350		POP	SI
+12360		POP	DI
+12370		POP	BP
+12380		POP	DS
+12390		POP	ES
+12400		EI			;Stack OK now
+12410		SEG	CS
+12420		JMP	L,[EXITHOLD]
+12430	
+12440	
+12450	SEQRD:	;System call 20
+12460		CALL	GETREC
+12470		CALL	LOAD
+12480		JP	FINSEQ
+12490	
+12500	SEQWRT:	;System call 21
+12510		CALL	GETREC
+12520		CALL	STORE
+12530	FINSEQ:
+12540		JCXZ	SETNREX
+12550		ADD	AX,1
+12560		ADC	DX,0
+12570		JP	SETNREX
+12580	
+12590	RNDRD:	;System call 33
+12600		CALL	GETRRPOS1
+12610		CALL	LOAD
+12620		JP	FINRND
+12630	
+12640	RNDWRT:	;System call 34
+12650		CALL	GETRRPOS1
+12660		CALL	STORE
+12670		JP	FINRND
+12680	
+12690	BLKRD:	;System call 39
+12700		CALL	GETRRPOS
+12710		CALL	LOAD
+12720		JP	FINBLK
+12730	
+12740	BLKWRT:	;System call 40
+12750		CALL	GETRRPOS
+12760		CALL	STORE
+12770	FINBLK:
+12780		LDS	SI,[SPSAVE]
+12790		MOV	[SI+CXSAVE],CX
+12800		JCXZ	FINRND
+12810		ADD	AX,1
+12820		ADC	DX,0
+12830	FINRND:
+12840		SEG	ES
+12850		MOV	[DI+RR],AX
+12860		SEG	ES
+12870		MOV	[DI+RR+2],DL
+12880		OR	DH,DH
+12890		JZ	SETNREX
+12900		SEG	ES
+12910		MOV	[DI+RR+3],DH	;Save 4 byte of RECPOS only if significant
+12920	SETNREX:
+12930		MOV	CX,AX
+12940		AND	AL,7FH
+12950		SEG	ES
+12960		MOV	[DI+NR],AL
+12970		AND	CL,80H
+12980		SHL	CX
+12990		RCL	DX
+13000		MOV	AL,CH
+13010		MOV	AH,DL
+13020		SEG	ES
+13030		MOV	[DI+EXTENT],AX
+13040		SEG	CS
+13050		MOV	AL,[DSKERR]
+13060		RET
+13070	
+13080	GETRRPOS1:
+13090		MOV	CX,1
+13100	GETRRPOS:
+13110		MOV	DI,DX
+13120		MOV	AX,[DI+RR]
+13130		MOV	DX,[DI+RR+2]
+13140		RET
+13150	
+13160	NOFILERR:
+13170		XOR	CX,CX
+13180		MOV	B,[DSKERR],-2
+13190		POP	BX
+13200		RET
+13210	
+13220	SETUP:
+13230	
+13240	; Inputs:
+13250	;	DS:DI point to FCB
+13260	;	DX:AX = Record position in file of disk transfer
+13270	;	CX = Record count
+13280	; Outputs:
+13290	;	DS = CS
+13300	;	ES:DI point to FCB
+13310	;	CX = No. of bytes to transfer
+13320	;	BP = Base of drive parameters
+13330	;	SI = FAT pointer
+13340	;	[RECCNT] = Record count
+13350	;	[RECPOS] = Record position in file
+13360	;	[FCB] = DI
+13370	;	[NEXTADD] = Displacement of disk transfer within segment
+13380	;	[SECPOS] = Position of first sector
+13390	;	[BYTPOS] = Byte position in file
+13400	;	[BYTSECPOS] = Byte position in first sector
+13410	;	[CLUSNUM] = First cluster
+13420	;	[SECCLUSPOS] = Sector within first cluster
+13430	;	[DSKERR] = 0 (no errors yet)
+13440	;	[TRANS] = 0 (No transfers yet)
+13450	; If SETUP detects no records will be transfered, it returns 1 level up 
+13460	; with CX = 0.
+13470	
+13480		PUSH	AX
+13490		MOV	AL,[DI]
+13500		MOV	SI,[DI+RECSIZ]
+13510		OR	SI,SI
+13520		JNZ	HAVRECSIZ
+13530		MOV	SI,128
+13540		MOV	[DI+RECSIZ],SI
+13550	HAVRECSIZ:
+13560		MOV	BX,DS
+13570		MOV	ES,BX
+13580		MOV	BX,CS
+13590		MOV	DS,BX
+13600		CALL	GETBP
+13610		POP	AX
+13620		JC	NOFILERR
+13630		CMP	SI,64		;Check if highest byte of RECPOS is significant
+13640		JB	SMALREC
+13650		MOV	DH,0		;Ignore MSB if record >= 64 bytes
+13660	SMALREC:
+13670		MOV	[RECCNT],CX
+13680		MOV	[RECPOS],AX
+13690		MOV	[RECPOS+2],DX
+13700		MOV	[FCB],DI
+13710		MOV	BX,[DMAADD]
+13720		MOV	[NEXTADD],BX
+13730		MOV	B,[DSKERR],0
+13740		MOV	B,[TRANS],0
+13750		MOV	BX,DX
+13760		MUL	AX,SI
+13770		MOV	[BYTPOS],AX
+13780		PUSH	DX
+13790		MOV	AX,BX
+13800		MUL	AX,SI
+13810		POP	BX
+13820		ADD	AX,BX
+13830		ADC	DX,0		;Ripple carry
+13840		JNZ	EOFERR
+13850		MOV	[BYTPOS+2],AX
+13860		MOV	DX,AX
+13870		MOV	AX,[BYTPOS]
+13880		DIV	AX,[BP+SECSIZ]
+13890		MOV	[SECPOS],AX
+13900		MOV	[BYTSECPOS],DX
+13910		MOV	DX,AX
+13920		AND	AL,[BP+CLUSMSK]
+13930		MOV	[SECCLUSPOS],AL
+13940		MOV	AX,CX		;Record count
+13950		MOV	CL,[BP+CLUSSHFT]
+13960		SHR	DX,CL
+13970		MOV	[CLUSNUM],DX
+13980		MUL	AX,SI		;Multiply by bytes per record
+13990		MOV	CX,AX
+14000		ADD	AX,[DMAADD]	;See if it will fit in one segment
+14010		ADC	DX,0
+14020		JZ	OK		;Must stay within 64K
+14030		MOV	AX,[DMAADD]
+14040		NEG	AX		;Amount of room left in segment
+14050		XOR	DX,DX
+14060		DIV	AX,SI		;How many records will fit?
+14070		MUL	AX,SI		;Translate that back into bytes
+14080		MOV	B,[DSKERR],2	;Flag that trimming took place
+14090		MOV	CX,AX
+14100		JCXZ	NOROOM
+14110	OK:
+14120		LEA	SI,[BP+FAT]
+14130		RET
+14140	
+14150	EOFERR:
+14160		MOV	B,[DSKERR],1
+14170		XOR	CX,CX
+14180	NOROOM:
+14190		POP	BX		;Kill return address
+14200		RET
+14210	
+14220	BREAKDOWN:
+14230	
+14240	;Inputs:
+14250	;	DS = CS
+14260	;	CX = Length of disk transfer in bytes
+14270	;	BP = Base of drive parameters
+14280	;	[BYTSECPOS] = Byte position witin first sector
+14290	;Outputs:
+14300	;	[BYTCNT1] = Bytes to transfer in first sector
+14310	;	[SECCNT] = No. of whole sectors to transfer
+14320	;	[BYTCNT2] = Bytes to transfer in last sector
+14330	;AX, BX, DX destroyed. No other registers affected.
+14340	
+14350		MOV	AX,[BYTSECPOS]
+14360		MOV	BX,CX
+14370		OR	AX,AX
+14380		JZ	SAVFIR		;Partial first sector?
+14390		SUB	AX,[BP+SECSIZ]
+14400		NEG	AX		;Max number of bytes left in first sector
+14410		SUB	BX,AX		;Subtract from total length
+14420		JAE	SAVFIR
+14430		ADD	AX,BX		;Don't use all of the rest of the sector
+14440		XOR	BX,BX		;And no bytes are left
+14450	SAVFIR:
+14460		MOV	[BYTCNT1],AX
+14470		MOV	AX,BX
+14480		XOR	DX,DX
+14490		DIV	AX,[BP+SECSIZ]	;How many whole sectors?
+14500		MOV	[SECCNT],AX
+14510		MOV	[BYTCNT2],DX	;Bytes remaining for last sector
+14520		RET
+14530	
+14540	
+14550	FNDCLUS:
+14560	
+14570	; Inputs:
+14580	;	DS = CS
+14590	;	CX = No. of clusters to skip
+14600	;	BP = Base of drive parameters
+14610	;	SI = FAT pointer
+14620	;	ES:DI point to FCB
+14630	; Outputs:
+14640	;	BX = Last cluster skipped to
+14650	;	CX = No. of clusters remaining (0 unless EOF)
+14660	;	DX = Position of last cluster
+14670	; DI destroyed. No other registers affected.
+14680	
+14690		SEG	ES
+14700		MOV	BX,[DI+LSTCLUS]
+14710		SEG	ES
+14720		MOV	DX,[DI+CLUSPOS]
+14730		OR	BX,BX
+14740		JZ	NOCLUS
+14750		SUB	CX,DX
+14760		JNB	FINDIT
+14770		ADD	CX,DX
+14780		XOR	DX,DX
+14790		SEG	ES
+14800		MOV	BX,[DI+FIRCLUS]
+14810	FINDIT:
+14820		JCXZ	RET
+14830	SKPCLP:
+14840		CALL	UNPACK
+14850		CMP	DI,0FF8H
+14860		JAE	RET
+14870		XCHG	BX,DI
+14880		INC	DX
+14890		LOOP	SKPCLP
+14900		RET
+14910	NOCLUS:
+14920		INC	CX
+14930		DEC	DX
+14940		RET
+14950	
+14960	
+14970	BUFSEC:
+14980	; Inputs:
+14990	;	AL = 0 if buffer must be read, 1 if no pre-read needed
+15000	;	BP = Base of drive parameters
+15010	;	[CLUSNUM] = Physical cluster number
+15020	;	[SECCLUSPOS] = Sector position of transfer within cluster
+15030	;	[BYTCNT1] = Size of transfer
+15040	; Function:
+15050	;	Insure specified sector is in buffer, flushing buffer before
+15060	;	read if necessary.
+15070	; Outputs:
+15080	;	SI = Pointer to buffer
+15090	;	DI = Pointer to transfer address
+15100	;	CX = Number of bytes
+15110	;	[NEXTADD] updated
+15120	;	[TRANS] set to indicate a transfer will occur
+15130	
+15140		MOV	DX,[CLUSNUM]
+15150		MOV	BL,[SECCLUSPOS]
+15160		CALL	FIGREC
+15170		OR	AL,AL
+15180		JNZ	SETBUF
+15190		CMP	DX,[BUFSECNO]
+15200		JNZ	GETSEC
+15210		MOV	AL,[BUFDRVNO]
+15220		CMP	AL,[BP+DRVNUM]
+15230		JZ	FINBUF		;Already have it?
+15240	GETSEC:
+15250		TEST	B,[DIRTYBUF],-1
+15260		JZ	RDSEC
+15270		PUSH	DX
+15280		MOV	AL,[BUFDRVNO]
+15290		MOV	BX,[BUFFER]
+15300		MOV	CX,1
+15310		MOV	DX,[BUFSECNO]
+15320		CALL	WRTDRV
+15330		POP	DX
+15340	RDSEC:
+15350		MOV	BX,[BUFFER]
+15360		MOV	CX,1
+15370		PUSH	DX
+15380		CALL	DREAD
+15390		POP	DX
+15400	SETBUF:
+15410		MOV	[BUFSECNO],DX
+15420		MOV	AL,[BP+DRVNUM]
+15430		MOV	AH,0
+15440		MOV	[BUFDRVNO],AX
+15450	FINBUF:
+15460		MOV	B,[TRANS],1	;A transfer is taking place
+15470		MOV	DI,[NEXTADD]
+15480		MOV	SI,DI
+15490		MOV	CX,[BYTCNT1]
+15500		ADD	SI,CX
+15510		MOV	[NEXTADD],SI
+15520		MOV	SI,[BUFFER]
+15530		ADD	SI,[BYTSECPOS]
+15540		RET
+15550	
+15560	BUFRD:
+15570		XOR	AL,AL		;Pre-read necessary
+15580		CALL	BUFSEC
+15590		PUSH	ES
+15600		MOV	ES,[DMAADD+2]
+15610		SHR	CX
+15620		JNC	EVENRD
+15630		MOVB
+15640	EVENRD:
+15650		REP
+15660		MOVW
+15670		POP	ES
+15680		RET
+15690	
+15700	BUFWRT:
+15710		MOV	AX,[SECPOS]
+15720		INC	AX		;Set for next sector
+15730		MOV	[SECPOS],AX
+15740		CMP	AX,[VALSEC]	;Has sector been written before?
+15750		MOV	AL,1
+15760		JA	NOREAD		;Skip preread if SECPOS>VALSEC
+15770		MOV	AL,0
+15780	NOREAD:
+15790		CALL	BUFSEC
+15800		XCHG	DI,SI
+15810		PUSH	DS
+15820		PUSH	ES
+15830		PUSH	CS
+15840		POP	ES
+15850		MOV	DS,[DMAADD+2]
+15860		SHR	CX
+15870		JNC	EVENWRT
+15880		MOVB
+15890	EVENWRT:
+15900		REP
+15910		MOVW
+15920		POP	ES
+15930		POP	DS
+15940		MOV	B,[DIRTYBUF],1
+15950		RET
+15960	
+15970	NEXTSEC:
+15980		TEST	B,[TRANS],-1
+15990		JZ	CLRET
+16000		MOV	AL,[SECCLUSPOS]
+16010		INC	AL
+16020		CMP	AL,[BP+CLUSMSK]
+16030		JBE	SAVPOS
+16040		MOV	BX,[CLUSNUM]
+16050		CMP	BX,0FF8H
+16060		JAE	NONEXT
+16070		LEA	SI,[BP+FAT]
+16080		CALL	UNPACK
+16090		MOV	[CLUSNUM],DI
+16100		INC	[LASTPOS]
+16110		MOV	AL,0
+16120	SAVPOS:
+16130		MOV	[SECCLUSPOS],AL
+16140	CLRET:
+16150		CLC
+16160		RET
+16170	NONEXT:
+16180		STC
+16190		RET
+16200	
+16210	TRANBUF:
+16220		LODB
+16230		STOB
+16240		CMP	AL,13		;Check for carriage return
+16250		JNZ	NORMCH
+16260		MOV	[SI],10
+16270	NORMCH:
+16280		CMP	AL,10
+16290		LOOPNZ	TRANBUF
+16300		JNZ	ENDRDCON
+16310		CALL	OUT		;Transmit linefeed
+16320		XOR	SI,SI
+16330		OR	CX,CX
+16340		JNZ	GETBUF
+16350		OR	AL,1		;Clear zero flag--not end of file
+16360	ENDRDCON:
+16370		MOV	[CONTPOS],SI
+16380	ENDRDDEV:
+16390		MOV	[NEXTADD],DI
+16400		POP	ES
+16410		JNZ	SETFCBJ		;Zero set if Ctrl-Z found in input
+16420		MOV	DI,[FCB]
+16430		SEG	ES
+16440		OR	B,[DI+FILDIRBLK],80H	;Mark as no more data available
+16450	SETFCBJ:
+16460		JMP	SETFCB
+16470	
+16480	READDEV:
+16490		PUSH	ES
+16500		LES	DI,[DMAADD]
+16510		OR	BL,BL
+16520		JZ	READCON
+16530		DEC	BL
+16540		JNZ	ENDRDDEV
+16550	READAUX:
+16560		CALL	BIOSAUXIN,BIOSSEG
+16570		STOB
+16580		CMP	AL,1AH
+16590		LOOPNZ	READAUX
+16600		JP	ENDRDDEV
+16610	
+16620	READCON:
+16630		PUSH	CS
+16640		POP	DS
+16650		MOV	SI,[CONTPOS]
+16660		OR	SI,SI
+16670		JNZ	TRANBUF
+16680		CMP	B,[CONBUF],128
+16690		JZ	GETBUF
+16700		MOV	[CONBUF],0FF80H	;Set up 128-byte buffer with no template
+16710	GETBUF:
+16720		PUSH	CX
+16730		PUSH	ES
+16740		PUSH	DI
+16750		MOV	DX,CONBUF
+16760		CALL	BUFIN		;Get input buffer
+16770		POP	DI
+16780		POP	ES
+16790		POP	CX
+16800		MOV	SI,CONBUF+2
+16810		CMP	B,[SI],1AH	;Check for Ctrl-Z in first character
+16820		JNZ	TRANBUF
+16830		MOV	AL,1AH
+16840		STOB
+16850		MOV	AL,10
+16860		CALL	OUT		;Send linefeed
+16870		XOR	SI,SI
+16880		JP	ENDRDCON
+16890	
+16900	RDERR:
+16910		XOR	CX,CX
+16920		JMP	WRTERR
+16930	
+16940	RDLASTJ:JMP	RDLAST
+16950	
+16960	LOAD:
+16970	
+16980	; Inputs:
+16990	;	DS:DI point to FCB
+17000	;	DX:AX = Position in file to read
+17010	;	CX = No. of records to read
+17020	; Outputs:
+17030	;	DX:AX = Position of last record read
+17040	;	CX = No. of bytes read
+17050	;	ES:DI point to FCB
+17060	;	LSTCLUS, CLUSPOS fields in FCB set
+17070	
+17080		CALL	SETUP
+17090		SEG	ES
+17100		MOV	BX,[DI+FILDIRBLK]
+17110		CMP	BH,-1		;Check for named device I/O
+17120		JZ	READDEV
+17130		SEG	ES
+17140		MOV	AX,[DI+FILSIZ]
+17150		SEG	ES
+17160		MOV	BX,[DI+FILSIZ+2]
+17170		SUB	AX,[BYTPOS]
+17180		SBC	BX,[BYTPOS+2]
+17190		JB	RDERR
+17200		JNZ	ENUF
+17210		OR	AX,AX
+17220		JZ	RDERR
+17230		CMP	AX,CX
+17240		JAE	ENUF
+17250		MOV	CX,AX
+17260	ENUF:
+17270		CALL	BREAKDOWN
+17280		MOV	CX,[CLUSNUM]
+17290		CALL	FNDCLUS
+17300		OR	CX,CX
+17310		JNZ	RDERR
+17320		MOV	[LASTPOS],DX
+17330		MOV	[CLUSNUM],BX
+17340		CMP	[BYTCNT1],0
+17350		JZ	RDMID
+17360		CALL	BUFRD
+17370	RDMID:
+17380		CMP	[SECCNT],0
+17390		JZ	RDLASTJ
+17400		CALL	NEXTSEC
+17410		JC	SETFCB
+17420		MOV	B,[TRANS],1	;A transfer is taking place
+17430	ONSEC:
+17440		MOV	DL,[SECCLUSPOS]
+17450		MOV	CX,[SECCNT]
+17460		MOV	BX,[CLUSNUM]
+17470	RDLP:
+17480		CALL	OPTIMIZE
+17490		PUSH	DI
+17500		PUSH	AX
+17510		PUSH	DS
+17520		MOV	DS,[DMAADD+2]
+17530		CALL	DREAD
+17540		POP	DS
+17550		POP	CX
+17560		POP	BX
+17570		JCXZ	RDLAST
+17580		CMP	BX,0FF8H
+17590		JAE	SETFCB
+17600		MOV	DL,0
+17610		INC	[LASTPOS]	;We'll be using next cluster
+17620		JP	RDLP
+17630	
+17640	SETFCB:
+17650		MOV	SI,[FCB]
+17660		MOV	AX,[NEXTADD]
+17670		MOV	DI,AX
+17680		SUB	AX,[DMAADD]	;Number of bytes transfered
+17690		XOR	DX,DX
+17700		SEG	ES
+17710		MOV	CX,[SI+RECSIZ]
+17720		DIV	AX,CX		;Number of records
+17730		CMP	AX,[RECCNT]	;Check if all records transferred
+17740		JZ	FULLREC
+17750		MOV	B,[DSKERR],1
+17760		OR	DX,DX
+17770		JZ	FULLREC		;If remainder 0, then full record transfered
+17780		MOV	B,[DSKERR],3	;Flag partial last record
+17790		SUB	CX,DX		;Bytes left in last record
+17800		PUSH	ES
+17810		MOV	ES,[DMAADD+2]
+17820		XCHG	AX,BX		;Save the record count temporarily
+17830		XOR	AX,AX		;Fill with zeros
+17840		SHR	CX
+17850		JNC	EVENFIL
+17860		STOB
+17870	EVENFIL:
+17880		REP
+17890		STOW
+17900		XCHG	AX,BX		;Restore record count to AX
+17910		POP	ES
+17920		INC	AX		;Add last (partial) record to total
+17930	FULLREC:
+17940		MOV	CX,AX
+17950		MOV	DI,SI		;ES:DI point to FCB
+17960	SETCLUS:
+17970		MOV	AX,[CLUSNUM]
+17980		SEG	ES
+17990		MOV	[DI+LSTCLUS],AX
+18000		MOV	AX,[LASTPOS]
+18010		SEG	ES
+18020		MOV	[DI+CLUSPOS],AX
+18030	ADDREC:
+18040		MOV	AX,[RECPOS]
+18050		MOV	DX,[RECPOS+2]
+18060		DEC	CX
+18070		ADD	AX,CX		;Update current record position
+18080		ADC	DX,0
+18090		INC	CX	
+18100		RET
+18110	
+18120	RDLAST:
+18130		MOV	AX,[BYTCNT2]
+18140		OR	AX,AX
+18150		JZ	SETFCB
+18160		MOV	[BYTCNT1],AX
+18170		CALL	NEXTSEC
+18180		JC	SETFCB
+18190		MOV	[BYTSECPOS],0
+18200		CALL	BUFRD
+18210		JP	SETFCB
+18220	
+18230	WRTDEV:
+18240		PUSH	DS
+18250		LDS	SI,[DMAADD]
+18260		AND	BL,7FH
+18270		OR	BL,BL
+18280		JZ	WRTCON
+18290		DEC	BL
+18300		JZ	WRTAUX
+18310	WRTLST:
+18320		LODB
+18330		CMP	AL,1AH
+18340		JZ	ENDWRDEV
+18350		CALL	BIOSPRINT,BIOSSEG
+18360		LOOP	WRTLST
+18370		JP	ENDWRDEV
+18380	
+18390	WRTAUX:
+18400		LODB
+18410		CALL	BIOSAUXOUT,BIOSSEG
+18420		CMP	AL,1AH
+18430		LOOPNZ	WRTAUX
+18440		JP	ENDWRDEV
+18450	
+18460	WRTCON:
+18470		LODB
+18480		CMP	AL,1AH
+18490		JZ	ENDWRDEV
+18500		CALL	OUT
+18510		LOOP	WRTCON
+18520	ENDWRDEV:
+18530		POP	DS
+18540		MOV	CX,[RECCNT]
+18550		MOV	DI,[FCB]
+18560		JP	ADDREC
+18570	
+18580	HAVSTART:
+18590		MOV	CX,AX
+18600		CALL	SKPCLP
+18610		JCXZ	DOWRTJ
+18620		CALL	ALLOCATE
+18630		JNC	DOWRTJ
+18640	WRTERR:
+18650		MOV	B,[DSKERR],1
+18660	LVDSK:
+18670		MOV	AX,[RECPOS]
+18680		MOV	DX,[RECPOS+2]
+18690		MOV	DI,[FCB]
+18700		RET
+18710	
+18720	DOWRTJ:	JMP	DOWRT
+18730	
+18740	WRTEOFJ:
+18750		JMP	WRTEOF
+18760	
+18770	STORE:
+18780	
+18790	; Inputs:
+18800	;	DS:DI point to FCB
+18810	;	DX:AX = Position in file of disk transfer
+18820	;	CX = Record count
+18830	; Outputs:
+18840	;	DX:AX = Position of last record written
+18850	;	CX = No. of records written
+18860	;	ES:DI point to FCB
+18870	;	LSTCLUS, CLUSPOS fields in FCB set
+18880	
+18890		MOV	B,[DI+DIRTYFIL],1
+18900		SEG	CS
+18910		MOV	BX,[DATE]
+18920		MOV	[DI+FDATE],BX
+18930		CALL	SETUP
+18940		SEG	ES
+18950		MOV	BX,[DI+FILDIRBLK]
+18960		CMP	BH,-1
+18970		JZ	WRTDEV
+18980		CALL	BREAKDOWN
+18990		MOV	AX,[BYTPOS]
+19000		MOV	DX,[BYTPOS+2]
+19010		JCXZ	WRTEOFJ
+19020		DEC	CX
+19030		ADD	AX,CX
+19040		ADC	DX,0		;AX:DX=last byte accessed
+19050		DIV	AX,[BP+SECSIZ]	;AX=last sector accessed
+19060		MOV	CL,[BP+CLUSSHFT]
+19070		SHR	AX,CL		;Last cluster to be accessed
+19080		PUSH	AX
+19090		SEG	ES
+19100		MOV	AX,[DI+FILSIZ]
+19110		SEG	ES
+19120		MOV	DX,[DI+FILSIZ]
+19130		DIV	AX,[BP+SECSIZ]
+19140		OR	DX,DX
+19150		JZ	NORNDUP
+19160		INC	AX		;Round up if any remainder
+19170	NORNDUP:
+19180		MOV	[VALSEC],AX	;Number of sectors that have been written
+19190		POP	AX
+19200		MOV	CX,[CLUSNUM]	;First cluster accessed
+19210		CALL	FNDCLUS
+19220		MOV	[CLUSNUM],BX
+19230		MOV	[LASTPOS],DX
+19240		SUB	AX,DX		;Last cluster minus current cluster
+19250		JZ	DOWRT		;If we have last clus, we must have first
+19260		JCXZ	HAVSTART
+19270		PUSH	CX		;No. of clusters short of first
+19280		MOV	CX,AX
+19290		CALL	ALLOCATE
+19300		POP	AX
+19310		JC	WRTERR
+19320		MOV	CX,AX
+19330		MOV	DX,[LASTPOS]
+19340		INC	DX
+19350		DEC	CX
+19360		JZ	NOSKIP
+19370		CALL	SKPCLP
+19380	NOSKIP:
+19390		MOV	[CLUSNUM],BX
+19400		MOV	[LASTPOS],DX
+19410	DOWRT:
+19420		CMP	[BYTCNT1],0
+19430		JZ	WRTMID
+19440		MOV	BX,[CLUSNUM]
+19450		CALL	BUFWRT	
+19460	WRTMID:
+19470		MOV	AX,[SECCNT]
+19480		OR	AX,AX
+19490		JZ	WRTLAST
+19500		ADD	[SECPOS],AX
+19510		CALL	NEXTSEC
+19520		MOV	B,[TRANS],1	;A transfer is taking place
+19530		MOV	DL,[SECCLUSPOS]
+19540		MOV	BX,[CLUSNUM]
+19550		MOV	CX,[SECCNT]
+19560	WRTLP:
+19570		CALL	OPTIMIZE
+19580		PUSH	DI
+19590		PUSH	AX
+19600		PUSH	DS
+19610		MOV	DS,[DMAADD+2]
+19620		CALL	DWRITE
+19630		POP	DS
+19640		POP	CX
+19650		POP	BX
+19660		JCXZ	WRTLAST
+19670		MOV	DL,0
+19680		INC	[LASTPOS]	;We'll be using next cluster
+19690		JP	WRTLP
+19700	WRTLAST:
+19710		MOV	AX,[BYTCNT2]
+19720		OR	AX,AX
+19730		JZ	FINWRT
+19740		MOV	[BYTCNT1],AX
+19750		CALL	NEXTSEC
+19760		MOV	[BYTSECPOS],0
+19770		CALL	BUFWRT
+19780	FINWRT:
+19790		MOV	AX,[NEXTADD]
+19800		SUB	AX,[DMAADD]
+19810		ADD	AX,[BYTPOS]
+19820		MOV	DX,[BYTPOS+2]
+19830		ADC	DX,0
+19840		MOV	CX,DX
+19850		MOV	DI,[FCB]
+19860		SEG	ES
+19870		CMP	AX,[DI+FILSIZ]
+19880		SEG	ES
+19890		SBB	CX,[DI+FILSIZ+2]
+19900		JB	SAMSIZ
+19910		SEG	ES
+19920		MOV	[DI+FILSIZ],AX
+19930		SEG	ES
+19940		MOV	[DI+FILSIZ+2],DX
+19950	SAMSIZ:
+19960		MOV	CX,[RECCNT]
+19970		JMP	SETCLUS
+19980	
+19990	
+20000	WRTERRJ:JMP	WRTERR
+20010	
+20020	WRTEOF:
+20030		MOV	CX,AX
+20040		OR	CX,DX
+20050		JZ	KILLFIL
+20060		SUB	AX,1
+20070		SBC	DX,0
+20080		DIV	AX,[BP+SECSIZ]
+20090		MOV	CL,[BP+CLUSSHFT]
+20100		SHR	AX,CL
+20110		MOV	CX,AX
+20120		CALL	FNDCLUS
+20130		JCXZ	RELFILE
+20140		CALL	ALLOCATE
+20150		JC	WRTERRJ
+20160	UPDATE:
+20170		MOV	DI,[FCB]
+20180		MOV	AX,[BYTPOS]
+20190		SEG	ES
+20200		MOV	[DI+FILSIZ],AX
+20210		MOV	AX,[BYTPOS+2]
+20220		SEG	ES
+20230		MOV	[DI+FILSIZ+2],AX
+20240		XOR	CX,CX
+20250		RET
+20260	
+20270	RELFILE:
+20280		MOV	DX,0FFFH
+20290		CALL	RELBLKS
+20300	SETDIRT:
+20310		MOV	B,[BP+DIRTYFAT],1
+20320		JP	UPDATE
+20330	
+20340	KILLFIL:
+20350		XOR	BX,BX
+20360		SEG	ES
+20370		XCHG	BX,[DI+FIRCLUS]
+20380		OR	BX,BX
+20390		JZ	UPDATE
+20400		CALL	RELEASE
+20410		JP	SETDIRT
+20420	
+20430	
+20440	OPTIMIZE:
+20450	
+20460	; Inputs:
+20470	;	DS = CS
+20480	;	BX = Physical cluster
+20490	;	CX = No. of records
+20500	;	DL = sector within cluster
+20510	;	BP = Base of drives parameters
+20520	;	[NEXTADD] = transfer address
+20530	; Outputs:
+20540	;	AX = No. of records remaining
+20550	;	BX = Transfer address
+20560	;	CX = No. or records to be transferred
+20570	;	DX = Physical sector address
+20580	;	DI = Next cluster
+20590	;	[CLUSNUM] = Last cluster accessed
+20600	;	[NEXTADD] updated
+20610	; BP unchanged. Note that segment of transfer not set.
+20620	
+20630		PUSH	DX
+20640		PUSH	BX
+20650		MOV	AL,[BP+CLUSMSK]
+20660		INC	AL		;Number of sectors per cluster
+20670		MOV	AH,AL
+20680		SUB	AL,DL		;AL = Number of sectors left in first cluster
+20690		MOV	DX,CX
+20700		LEA	SI,[BP+FAT]
+20710		MOV	CX,0
+20720	OPTCLUS:
+20730	;AL has number of sectors available in current cluster
+20740	;AH has number of sectors available in next cluster
+20750	;BX has current physical cluster
+20760	;CX has number of sequential sectors found so far
+20770	;DX has number of sectors left to transfer
+20780	;SI has FAT pointer
+20790		CALL	UNPACK
+20800		ADD	CL,AL
+20810		ADC	CH,0
+20820		CMP	CX,DX
+20830		JAE	BLKDON
+20840		MOV	AL,AH
+20850		INC	BX
+20860		CMP	DI,BX
+20870		JZ	OPTCLUS
+20880		DEC	BX
+20890	FINCLUS:
+20900		MOV	[CLUSNUM],BX	;Last cluster accessed
+20910		SUB	DX,CX		;Number of sectors still needed
+20920		PUSH	DX
+20930		MOV	AX,CX
+20940		MUL	AX,[BP+SECSIZ]	;Number of sectors times sector size
+20950		MOV	SI,[NEXTADD]
+20960		ADD	AX,SI		;Adjust by size of transfer
+20970		MOV	[NEXTADD],AX
+20980		POP	AX		;Number of sectors still needed
+20990		POP	DX		;Starting cluster
+21000		SUB	BX,DX		;Number of new clusters accessed
+21010		ADD	[LASTPOS],BX
+21020		POP	BX		;BL = sector postion within cluster
+21030		CALL	FIGREC
+21040		MOV	BX,SI
+21050		RET
+21060	BLKDON:
+21070		SUB	CX,DX		;Number of sectors in cluster we don't want
+21080		SUB	AH,CL		;Number of sectors in cluster we accepted
+21090		DEC	AH		;Adjust to mean position within cluster
+21100		MOV	[SECCLUSPOS],AH
+21110		MOV	CX,DX		;Anyway, make the total equal to the request
+21120		JP	FINCLUS
+21130	
+21140	
+21150	FIGREC:
+21160	
+21170	;Inputs:
+21180	;	DX = Physical cluster number
+21190	;	BL = Sector postion within cluster
+21200	;	BP = Base of drive parameters
+21210	;Outputs:
+21220	;	DX = physical sector number
+21230	;No other registers affected.
+21240	
+21250		PUSH	CX
+21260		MOV	CL,[BP+CLUSSHFT]
+21270		DEC	DX
+21280		DEC	DX
+21290		SHL	DX,CL
+21300		OR	DL,BL
+21310		ADD	DX,[BP+FIRREC]
+21320		POP	CX
+21330		RET
+21340	
+21350	GETREC:
+21360	
+21370	; Inputs:
+21380	;	DS:DX point to FCB
+21390	; Outputs:
+21400	;	CX = 1
+21410	;	DX:AX = Record number determined by EXTENT and NR fields
+21420	;	DS:DI point to FCB
+21430	; No other registers affected.
+21440	
+21450		MOV	DI,DX
+21460		MOV	CX,1
+21470		MOV	AL,[DI+NR]
+21480		MOV	DX,[DI+EXTENT]
+21490		SHL	AL
+21500		SHR	DX
+21510		RCR	AL
+21520		MOV	AH,DL
+21530		MOV	DL,DH
+21540		MOV	DH,0
+21550		RET
+21560	
+21570	
+21580	ALLOCATE:
+21590	
+21600	; Inputs:
+21610	;	DS = CS
+21620	;	ES = Segment of FCB
+21630	;	BX = Last cluster of file (0 if null file)
+21640	;	CX = No. of clusters to allocate
+21650	;	DX = Position of cluster BX
+21660	;	BP = Base of drive parameters
+21670	;	SI = FAT pointer
+21680	;	[FCB] = Displacement of FCB within segment
+21690	; Outputs:
+21700	;	IF insufficient space
+21710	;	  THEN
+21720	;	Carry set
+21730	;	CX = max. no. of records that could be added to file
+21740	;	  ELSE
+21750	;	Carry clear
+21760	;	BX = First cluster allocated
+21770	;	FAT is fully updated including dirty bit
+21780	;	FIRCLUS field of FCB set if file was null
+21790	; SI,BP unchanged. All other registers destroyed.
+21800	
+21810		PUSH	[SI]
+21820		PUSH	DX
+21830		PUSH	CX
+21840		PUSH	BX
+21850		MOV	AX,BX
+21860	ALLOC:
+21870		MOV	DX,BX
+21880	FINDFRE:
+21890		INC	BX
+21900		CMP	BX,[BP+MAXCLUS]
+21910		JLE	TRYOUT
+21920		CMP	AX,1
+21930		JG	TRYIN
+21940		POP	BX
+21950		MOV	DX,0FFFH
+21960		CALL	RELBLKS
+21970		POP	AX		;No. of clusters requested
+21980		SUB	AX,CX		;AX=No. of clusters allocated
+21990		POP	DX
+22000		POP	[SI]
+22010		INC	DX		;Position of first cluster allocated
+22020		ADD	AX,DX		;AX=max no. of cluster in file
+22030		MOV	DL,[BP+CLUSMSK]
+22040		MOV	DH,0
+22050		INC	DX		;DX=records/cluster
+22060		MUL	AX,DX		;AX=max no. of records in file
+22070		MOV	CX,AX
+22080		SUB	CX,[RECPOS]	;CX=max no. of records that could be written
+22090		JA	MAXREC
+22100		XOR	CX,CX		;If CX was negative, zero it
+22110	MAXREC:
+22120		STC
+22130		RET
+22140	
+22150	TRYOUT:
+22160		CALL	UNPACK
+22170		JZ	HAVFRE
+22180	TRYIN:
+22190		DEC	AX
+22200		JLE	FINDFRE
+22210		XCHG	AX,BX
+22220		CALL	UNPACK
+22230		JZ	HAVFRE
+22240		XCHG	AX,BX
+22250		JP	FINDFRE
+22260	HAVFRE:
+22270		XCHG	BX,DX
+22280		MOV	AX,DX
+22290		CALL	PACK
+22300		MOV	BX,AX
+22310		LOOP	ALLOC
+22320		MOV	DX,0FFFH
+22330		CALL	PACK
+22340		MOV	B,[BP+DIRTYFAT],1
+22350		POP	BX
+22360		POP	CX		;Don't need this stuff since we're successful
+22370		POP	DX
+22380		CALL	UNPACK
+22390		POP	[SI]
+22400		XCHG	BX,DI
+22410		OR	DI,DI
+22420		JNZ	RET
+22430		MOV	DI,[FCB]
+22440		SEG	ES
+22450		MOV	[DI+FIRCLUS],BX
+22460		RET
+22470	
+22480	
+22490	RELEASE:
+22500	
+22510	; Inputs:
+22520	;	DS = CS
+22530	;	BX = Cluster in file
+22540	;	SI = FAT pointer
+22550	;	BP = Base of drive parameters
+22560	; Function:
+22570	;	Frees cluster chain starting with [BX]
+22580	; AX,BX,DX,DI all destroyed. Other registers unchanged.
+22590	
+22600		XOR	DX,DX
+22610	RELBLKS:
+22620	; Enter here with DX=0FFFH to put an end-of-file mark
+22630	; in the first cluster and free the rest in the chain.
+22640		CALL	UNPACK
+22650		JZ	RET
+22660		MOV	AX,DI
+22670		CALL	PACK
+22680		CMP	AX,0FF8H
+22690		MOV	BX,AX
+22700		JB	RELEASE
+22710		RET
+22720	
+22730	
+22740	GETEOF:
+22750	
+22760	; Inputs:
+22770	;	BX = Cluster in a file
+22780	;	SI = Base of drive FAT
+22790	;	DS = CS
+22800	; Outputs:
+22810	;	BX = Last cluster in the file
+22820	; DI destroyed. No other registers affected.
+22830	
+22840		CALL	UNPACK
+22850		CMP	DI,0FF8H
+22860		JAE	RET
+22870		MOV	BX,DI
+22880		JP	GETEOF
+22890	
+22900	
+22910	SRCHFRST: ;System call 17
+22920		PUSH	DX
+22930		PUSH	DS
+22940		CALL	GETFILE
+22950	SAVPLCE:
+22960	; Search-for-next enters here to save place and report
+22970	; findings.
+22980		POP	ES
+22990		POP	DI
+23000		JC	KILLSRCH
+23010		CMP	BH,-1
+23020		JZ	SRCHDEV
+23030		MOV	AX,[LASTENT]
+23040		SEG	ES
+23050		MOV	[DI+FILDIRBLK],AX
+23060	;Information in directory entry must be copied into the first
+23070	; 33 bytes starting at the disk transfer address.
+23080		MOV	SI,BX
+23090		LES	DI,[DMAADD]
+23100		MOV	AL,[BP+DRVNUM]
+23110		INC	AL
+23120		STOB		;Set drive number
+23130		MOVB		;Copy first character of name
+23140		MOV	CX,5
+23150		REP
+23160		MOVW		;Copy remaining 10 characters of name
+23170		XOR	AX,AX
+23180	
+23190		IF	SMALLDIR
+23200		CMP	B,[BP+DIRSIZ],-1
+23210		JNZ	BIGENT5
+23220		STOB		;Zero out unused portion
+23230		MOV	CX,7
+23240		REP
+23250		STOW		;Zero a total of 15 bytes
+23260		MOVW		;Copy first cluster pointer
+23270		MOVW		;Copy low word of length
+23280		MOVB		;Copy 3rd byte of length
+23290		STOB		;4th byte of length must be zero
+23300		RET
+23310	BIGENT5:
+23320		ENDIF
+23330	
+23340		MOV	CX,10
+23350		REP
+23360		MOVW
+23370		MOVB
+23380		RET
+23390	
+23400	KILLSRCH:
+23410		SEG	ES
+23420	KILLSRCH1:
+23430		MOV	[DI+FILDIRBLK],-2
+23440		MOV	AL,-1
+23450		RET
+23460	
+23470	SRCHDEV:
+23480		SEG	ES
+23490		MOV	[DI+FILDIRBLK],BX
+23500		LES	DI,[DMAADD]
+23510		XOR	AX,AX
+23520		STOB			;Zero drive byte
+23530		SUB	SI,3		;Point to device name
+23540		MOVW
+23550		MOVB
+23560		MOV	AX,2020H
+23570		MOV	CX,4
+23580		REP
+23590		STOW			;Fill with 8 blanks
+23600		XOR	AX,AX
+23610		MOV	CX,10
+23620		REP
+23630		STOW
+23640		STOB
+23650		RET
+23660	
+23670	SRCHNXT: ;System call 18
+23680		CALL	MOVNAME
+23690		MOV	DI,DX
+23700		JC	KILLSRCH1
+23710		PUSH	DX
+23720		PUSH	DS
+23730		MOV	AX,[DI+FILDIRBLK]
+23740		PUSH	CS
+23750		POP	DS
+23760		MOV	[LASTENT],AX
+23770		CALL	CONTSRCH
+23780		JMP	SAVPLCE
+23790	
+23800	
+23810	FILESIZE: ;System call 35
+23820		PUSH	DS
+23830		PUSH	DX
+23840		CALL	GETFILE
+23850		POP	DI
+23860		POP	ES
+23870		MOV	AL,-1
+23880		JC	RET
+23890		ADD	DI,33		;Write size in RR field
+23900		SEG	ES
+23910		MOV	CX,[DI-33+RECSIZ]
+23920		OR	CX,CX
+23930		JNZ	RECOK
+23940		MOV	CX,128
+23950	RECOK:
+23960		XOR	AX,AX
+23970		XOR	DX,DX		;Intialize size to zero
+23980		CMP	BH,-1		;Check for named I/O device
+23990		JZ	DEVSIZ
+24000		INC	SI
+24010		INC	SI		;Point to length field
+24020		MOV	AX,[SI+2]	;Get high word of size
+24030	
+24040		IF	SMALLDIR
+24050		CMP	B,[BP+DIRSIZ],-1
+24060		JNZ	BIGSIZ
+24070		MOV	AH,0
+24080	BIGSIZ:
+24090		ENDIF
+24100	
+24110		DIV	AX,CX
+24120		PUSH	AX		;Save high part of result
+24130		LODW			;Get low word of size
+24140		DIV	AX,CX
+24150		OR	DX,DX		;Check for zero remainder
+24160		POP	DX
+24170		JZ	DEVSIZ
+24180		INC	AX		;Round up for partial record
+24190		JNZ	DEVSIZ		;Propagate carry?
+24200		INC	DX
+24210	DEVSIZ:
+24220		STOW
+24230		MOV	AX,DX
+24240		STOB
+24250		MOV	AL,0
+24260		CMP	CX,64
+24270		JAE	RET		;Only 3-byte field if RECSIZ >= 64
+24280		SEG	ES
+24290		MOV	[DI],AH
+24300		RET
+24310	
+24320	
+24330	SETDMA:	;System call 26
+24340		SEG	CS
+24350		MOV	[DMAADD],DX
+24360		SEG	CS
+24370		MOV	[DMAADD+2],DS
+24380		RET
+24390	
+24400	
+24410	GETFATPT: ;System call 27
+24420		MOV	AX,CS
+24430		MOV	DS,AX
+24440		MOV	BP,[CURDRVPT]
+24450		CALL	FATREAD
+24460		LEA	BX,[BP+FAT]
+24470		MOV	AL,[BP+CLUSMSK]
+24480		INC	AL
+24490		MOV	DX,[BP+MAXCLUS]
+24500		DEC	DX
+24510		MOV	B,[BP+DIRTYFAT],1
+24520		MOV	CX,[BP+SECSIZ]
+24530		LDS	SI,[SPSAVE]
+24540		MOV	[SI+BXSAVE],BX
+24550		MOV	[SI+DXSAVE],DX
+24560		MOV	[SI+CXSAVE],CX
+24570		MOV	[SI+DSSAVE],CS
+24580		RET
+24590	
+24600	
+24610	GETDSKPT: ;System call 31
+24620		SEG	CS
+24630		MOV	BX,[CURDRVPT]
+24640		SEG	CS
+24650		LDS	SI,[SPSAVE]
+24660		MOV	[SI+BXSAVE],BX
+24670		MOV	[SI+DSSAVE],CS
+24680		RET
+24690	
+24700	
+24710	DSKRESET: ;System call 13
+24720		SEG	CS
+24730		MOV	[DMAADD+2],DS
+24740		MOV	AX,CS
+24750		MOV	DS,AX
+24760		MOV	[DMAADD],80H
+24770		MOV	AX,[CURDRVPT+2]
+24780		MOV	[CURDRVPT],AX
+24790	WRTFATS:
+24800	; DS=CS. Writes back all dirty FATs. All registers destroyed.
+24810		MOV	CL,[NUMDRV]
+24820		MOV	CH,0
+24830		MOV	SI,CURDRVPT+2
+24840	WRTFAT:
+24850		LODW
+24860		PUSH	CX
+24870		PUSH	SI
+24880		MOV	BP,AX
+24890		CALL	CHKFATWRT
+24900		POP	SI
+24910		POP	CX
+24920		LOOP	WRTFAT
+24930		MOV	AX,[BUFDRVNO]
+24940		OR	AH,AH
+24950		JZ	RET
+24960		CBW
+24970		MOV	BX,AX
+24980		SHL	BX
+24990		MOV	BP,[BX+DRVTAB]
+25000		MOV	B,[DIRTYBUF],0
+25010		MOV	DX,[BUFSECNO]
+25020		MOV	BX,BUFFER
+25030		MOV	CX,1
+25040		JMP	DWRITE
+25050	
+25060	
+25070	CURDRV:	;System call 25
+25080		SEG	CS
+25090		MOV	BP,[CURDRVPT]
+25100		MOV	AL,[BP+DRVNUM]
+25110		RET
+25120	
+25130	
+25140	INUSE:	;System call 24
+25150		MOV	AX,CS
+25160		MOV	DS,AX
+25170		MOV	CL,[NUMDRV]
+25180		MOV	CH,0
+25190		MOV	SI,CX
+25200		SHL	SI
+25210		ADD	SI,CURDRVPT
+25220		MOV	BX,0
+25230		DOWN
+25240	CHKUSE:
+25250		LODW
+25260		MOV	BP,AX
+25270		CMP	B,[BP+DIRTYFAT],-1	;Carry set if not equal
+25280		RCL	BX
+25290		LOOP	CHKUSE
+25300		MOV	AL,BL
+25310		RET
+25320	
+25330	
+25340	SETRNDREC: ;System call 36
+25350		CALL	GETREC
+25360		MOV	[DI+33],AX
+25370		MOV	[DI+35],DL
+25380		RET
+25390	
+25400	
+25410	SELDSK:	;System call 14
+25420		MOV	DH,0
+25430		MOV	BX,DX
+25440		PUSH	CS
+25450		POP	DS
+25460		MOV	AL,[NUMDRV]
+25470		CMP	BL,AL
+25480		JNB	RET
+25490		SHL	BX
+25500		MOV	DX,[BX+CURDRVPT+2]
+25510		MOV	[CURDRVPT],DX
+25520		RET
+25530	
+25540	
+25550	BUFIN:	;System call 10
+25560		MOV	AX,CS
+25570		MOV	ES,AX
+25580		MOV	SI,DX
+25590		MOV	CH,0
+25600		LODW
+25610		OR	AL,AL
+25620		JZ	RET
+25630		MOV	BL,AH
+25640		MOV	BH,CH
+25650		CMP	AL,BL
+25660		JBE	NOEDIT
+25670		CMP	B,[BX+SI],0DH
+25680		JZ	EDITON
+25690	NOEDIT:
+25700		MOV	BL,CH
+25710	EDITON:
+25720		MOV	DL,AL
+25730		DEC	DX
+25740	NEWLIN:
+25750		SEG	CS
+25760		MOV	AL,[CARPOS]
+25770		SEG	CS
+25780		MOV	[STARTPOS],AL
+25790		PUSH	SI
+25800		MOV	DI,INBUF
+25810		MOV	AH,CH
+25820		MOV	BH,CH
+25830		MOV	DH,CH
+25840	GETCH:
+25850		CALL	IN
+25860		CMP	AL,7FH
+25870		JZ	BACKSP
+25880		CMP	AL,8
+25890		JZ	BACKSP
+25900		CMP	AL,13
+25910		JZ	ENDLIN
+25920		CMP	AL,10
+25930		JZ	PHYCRLF
+25940		CMP	AL,"X"-"@"
+25950		JZ	KILNEW
+25960		CMP	AL,ESCCH
+25970		JZ	ESC
+25980	SAVCH:
+25990		CMP	DH,DL
+26000		JAE	GETCH
+26010		STOB
+26020		INC	DH
+26030		CALL	BUFOUT
+26040		OR	AH,AH
+26050		JNZ	GETCH
+26060		CMP	BH,BL
+26070		JAE	GETCH
+26080		INC	SI
+26090		INC	BH
+26100		JP	GETCH
+26110	
+26120	ESC:
+26130		CALL	IN
+26140		MOV	CL,ESCTABLEN
+26150		PUSH	DI
+26160		MOV	DI,ESCTAB
+26170		REPNE
+26180		SCAB
+26190		POP	DI
+26200		AND	CL,0FEH
+26210		MOV	BP,CX
+26220		SEG	CS		;To work in init
+26230		JMP	[BP+ESCFUNC]
+26240	
+26250	ENDLIN:
+26260		STOB
+26270		CALL	OUT
+26280		POP	DI
+26290		MOV	[DI-1],DH
+26300		INC	DH
+26310	COPYNEW:
+26320		MOV	BP,ES
+26330		MOV	BX,DS
+26340		MOV	ES,BX
+26350		MOV	DS,BP
+26360		MOV	SI,INBUF
+26370		MOV	CL,DH
+26380		REP
+26390		MOVB
+26400		RET
+26410	CRLF:
+26420		MOV	AL,13
+26430		CALL	OUT
+26440		MOV	AL,10
+26450		JMP	OUT
+26460	
+26470	PHYCRLF:
+26480		CALL	CRLF
+26490		JP	GETCH
+26500	
+26510	KILNEW:
+26520		MOV	AL,"\"
+26530		CALL	OUT
+26540		POP	SI
+26550	PUTNEW:
+26560		CALL	CRLF
+26570		SEG	CS
+26580		MOV	AL,[STARTPOS]
+26590		CALL	TAB
+26600		JMP	NEWLIN
+26610	
+26620	BACKSP:
+26630		OR	DH,DH
+26640		JZ	OLDBAK
+26650		CALL	BACKUP
+26660		SEG	ES
+26670		MOV	AL,[DI]
+26680		CMP	AL," "
+26690		JAE	OLDBAK
+26700		CMP	AL,9
+26710		JZ	BAKTAB
+26720		CALL	BACKMES
+26730	OLDBAK:
+26740		OR	AH,AH
+26750		JNZ	GETCH1
+26760		OR	BH,BH
+26770		JZ	GETCH1
+26780		DEC	BH
+26790		DEC	SI
+26800	GETCH1:
+26810		JMP	GETCH
+26820	BAKTAB:
+26830		PUSH	DI
+26840		DEC	DI
+26850		DOWN
+26860		MOV	CL,DH
+26870		MOV	AL," "
+26880		PUSH	BX
+26890		MOV	BL,7
+26900		JCXZ	FIGTAB
+26910	FNDPOS:
+26920		SCAB
+26930		JNA	CHKCNT
+26940		SEG	ES
+26950		CMP	B,[DI+1],9
+26960		JZ	HAVTAB
+26970		DEC	BL
+26980	CHKCNT:
+26990		LOOP	FNDPOS
+27000	FIGTAB:
+27010		SEG	CS
+27020		SUB	BL,[STARTPOS]
+27030	HAVTAB:
+27040		SUB	BL,DH
+27050		ADD	CL,BL
+27060		AND	CL,7
+27070		UP
+27080		POP	BX
+27090		POP	DI
+27100		JZ	OLDBAK
+27110	TABBAK:
+27120		CALL	BACKMES
+27130		LOOP	TABBAK
+27140		JP	OLDBAK
+27150	BACKUP:
+27160		DEC	DH
+27170		DEC	DI
+27180	BACKMES:
+27190		MOV	AL,8
+27200		CALL	OUT
+27210		MOV	AL," "
+27220		CALL	OUT
+27230		MOV	AL,8
+27240		JMP	OUT
+27250	
+27260	TWOESC:
+27270		MOV	AL,ESCCH
+27280		JMP	SAVCH
+27290	
+27300	COPYLIN:
+27310		MOV	CL,BL
+27320		SUB	CL,BH
+27330		JP	COPYEACH
+27340	
+27350	COPYSTR:
+27360		CALL	FINDOLD
+27370		JP	COPYEACH
+27380	
+27390	COPYONE:
+27400		MOV	CL,1
+27410	COPYEACH:
+27420		CMP	DH,DL
+27430		JZ	GETCH2
+27440		CMP	BH,BL
+27450		JZ	GETCH2
+27460		LODB
+27470		STOB
+27480		CALL	BUFOUT
+27490		INC	BH
+27500		INC	DH
+27510		LOOP	COPYEACH
+27520	GETCH2:
+27530		JMP	GETCH
+27540	
+27550	SKIPONE:
+27560		CMP	BH,BL
+27570		JZ	GETCH2
+27580		INC	BH
+27590		INC	SI
+27600		JMP	GETCH
+27610	
+27620	SKIPSTR:
+27630		CALL	FINDOLD
+27640		ADD	SI,CX
+27650		ADD	BH,CL
+27660		JMP	GETCH
+27670	
+27680	FINDOLD:
+27690		CALL	IN
+27700		MOV	CL,BL
+27710		SUB	CL,BH
+27720		JZ	NOTFND
+27730		DEC	CX
+27740		JZ	NOTFND
+27750		PUSH	ES
+27760		PUSH	DS
+27770		POP	ES
+27780		PUSH	DI
+27790		MOV	DI,SI
+27800		INC	DI
+27810		REPNE
+27820		SCAB
+27830		POP	DI
+27840		POP	ES
+27850		JNZ	NOTFND
+27860		NOT	CL
+27870		ADD	CL,BL
+27880		SUB	CL,BH
+27890		RET
+27900	NOTFND:
+27910		POP	BP
+27920		JMP	GETCH
+27930	
+27940	REEDIT:
+27950		MOV	AL,"@"
+27960		CALL	OUT
+27970		POP	DI
+27980		PUSH	DI
+27990		PUSH	ES
+28000		PUSH	DS
+28010		CALL	COPYNEW
+28020		POP	DS
+28030		POP	ES
+28040		POP	SI
+28050		MOV	BL,DH
+28060		JMP	PUTNEW
+28070	
+28080	ENTERINS:
+28090		MOV	AH,-1
+28100		JMP	GETCH
+28110	
+28120	EXITINS:
+28130		MOV	AH,0
+28140		JMP	GETCH
+28150	
+28160	ESCFUNC:
+28170		DW	GETCH
+28180		DW	TWOESC
+28190		DW	EXITINS
+28200		DW	ENTERINS
+28210		DW	BACKSP
+28220		DW	REEDIT
+28230		DW	KILNEW
+28240		DW	COPYLIN
+28250		DW	SKIPSTR
+28260		DW	COPYSTR
+28270		DW	SKIPONE
+28280		DW	COPYONE
+28290	
+28300	BUFOUT:
+28310		CMP	AL," "
+28320		JAE	OUT
+28330		CMP	AL,9
+28340		JZ	OUT
+28350		PUSH	AX
+28360		MOV	AL,"^"
+28370		CALL	OUT
+28380		POP	AX
+28390		OR	AL,40H
+28400		JP	OUT
+28410	
+28420	CONOUT:	;System call 2
+28430		MOV	AL,DL
+28440	OUT:
+28450		CMP	AL,20H
+28460		JB	CTRLOUT
+28470		CMP	AL,7FH
+28480		JZ	OUTCH
+28490		SEG	CS
+28500		INC	B,[CARPOS]
+28510	OUTCH:
+28520		CALL	BIOSOUT,BIOSSEG
+28530		SEG	CS
+28540		TEST	B,[PFLAG],-1
+28550		JZ	STATCHK
+28560		CALL	BIOSPRINT,BIOSSEG
+28570	STATCHK:
+28580		CALL	BIOSSTAT,BIOSSEG
+28590		JZ	RET
+28600	INCHK:
+28610		CALL	BIOSIN,BIOSSEG
+28620		CMP	AL,'S'-'@'
+28630		JNZ	NOSTOP
+28640		CALL	BIOSIN,BIOSSEG
+28650	NOSTOP:
+28660		CMP	AL,'P'-'@'
+28670		JZ	PRINTON
+28680		CMP	AL,'N'-'@'
+28690		JZ	PRINTOFF
+28700		CMP	AL,'C'-'@'
+28710		JNZ	RET
+28720	; Ctrl-C handler.
+28730	; If function 9 or 10 was in progress, a backslash, CR, and LF are printed
+28740	; to show line is canceled. Then the user registers are restored and the
+28750	; user CTRL-C handler is executed. At this point the top of the stack has
+28760	; 1) the interrupt return address should the user CTRL-C handler wish to
+28770	; allow processing to continue; 2) the original interrupt return address
+28780	; to the code that performed the function call in the first place. If the
+28790	; user CTRL-C handler wishes to continue, it must leave all registers
+28800	; unchanged and IRET. The function that was interrupted will simply be
+28810	; repeated, except for console output (function 2), which has already output
+28820	; its character before the interrupt.
+28830		SEG	CS
+28840		MOV	AL,[FUNC]	;Get currently executing function
+28850		CMP	AL,10		;Check if buffered line input
+28860		JZ	CANLIN
+28870		CMP	AL,9		;Check if buffered line output
+28880		JNZ	RESTREG
+28890	CANLIN:
+28900		MOV	AL,"\"		;Display cancel line symbol
+28910		CALL	OUT
+28920		CALL	CRLF
+28930	RESTREG:
+28940		DI			;Prepare to play with stack
+28950		SEG	CS
+28960		MOV	SS,[SSSAVE]
+28970		SEG	CS
+28980		MOV	SP,[SPSAVE]	;User stack now restored
+28990		POP	AX
+29000		POP	BX
+29010		POP	CX
+29020		POP	DX
+29030		POP	SI
+29040		POP	DI
+29050		POP	BP
+29060		POP	DS
+29070		POP	ES		;User registers now restored
+29080		INT	CONTC		;Execute user Ctrl-C handler
+29090		CMP	AH,2		;Check if function was console output
+29100		JZ	SETAL
+29110		JMP	COMMAND		;Repeat command otherwise
+29120	SETAL:
+29130		MOV	AL,DL
+29140		IRET			;Return to user program
+29150	
+29160	PRINTON:
+29170		SEG	CS
+29180		MOV	B,[PFLAG],1
+29190		RET
+29200	PRINTOFF:
+29210		SEG	CS
+29220		MOV	B,[PFLAG],0
+29230		RET
+29240	CTRLOUT:
+29250		CMP	AL,13
+29260		JZ	ZERPOS
+29270		CMP	AL,8
+29280		JZ	BACKPOS
+29290		CMP	AL,9
+29300		JNZ	OUTCHJ
+29310		SEG	CS
+29320		MOV	AL,[CARPOS]
+29330		OR	AL,0F8H
+29340		NEG	AL
+29350	TAB:
+29360		PUSH	CX
+29370		MOV	CL,AL
+29380		MOV	CH,0
+29390	TABLP:
+29400		MOV	AL," "
+29410		CALL	OUT
+29420		LOOP	TABLP
+29430		POP	CX
+29440		RET
+29450	
+29460	ZERPOS:
+29470		SEG	CS
+29480		MOV	B,[CARPOS],0
+29490	OUTCHJ:	JMP	OUTCH
+29500	
+29510	BACKPOS:
+29520		SEG	CS
+29530		DEC	B,[CARPOS]
+29540		JMP	OUTCH
+29550	
+29560	
+29570	CONSTAT: ;System call 11
+29580		CALL	BIOSSTAT,BIOSSEG
+29590		JZ	RET
+29600		OR	AL,-1
+29610		RET
+29620	
+29630	
+29640	CONIN:	;System call 1
+29650		CALL	IN
+29660		PUSH	AX
+29670		CALL	OUT
+29680		POP	AX
+29690		RET
+29700	
+29710	
+29720	IN:	;Internal input routine
+29730		CALL	INCHK
+29740		JZ	IN
+29750		RET
+29760	
+29770	RAWIO:	;System call 6
+29780		MOV	AL,DL
+29790		CMP	AL,-1
+29800		JNZ	RAWOUT
+29810		CALL	BIOSSTAT,BIOSSEG
+29820		JZ	RET
+29830	RAWINP:	;System call 7
+29840		CALL	BIOSIN,BIOSSEG
+29850		RET
+29860	RAWOUT:
+29870		CALL	BIOSOUT,BIOSSEG
+29880		RET
+29890	
+29900	LIST:	;System call 5
+29910		MOV	AL,DL
+29920		CALL	BIOSPRINT,BIOSSEG
+29930		RET
+29940	
+29950	PRTBUF:	;System call 9
+29960		MOV	SI,DX
+29970	OUTSTR:
+29980		LODB
+29990		CMP	AL,"$"
+30000		JZ	RET
+30010		CALL	OUT
+30020		JP	OUTSTR
+30030	
+30040	OUTMES:	;String output for internal messages
+30050		SEG	CS
+30060		LODB
+30070		CMP	AL,"$"
+30080		JZ	RET
+30090		CALL	OUT
+30100		JP	OUTMES
+30110	
+30120	
+30130	MAKEFCB: ;Interrupt call 41
+30140		MOV	DL,0		;Flag--not ambiguous file name
+30150		OR	AL,AL		;Scan off separators if not zero
+30160		JZ	NOSCAN
+30170	SCAN:
+30180		CALL	GETLET
+30190		JZ	SCAN		;Get rid of leading separators (e.g., blanks)
+30200		DEC	SI		;Point back to first non-separator
+30210	NOSCAN:
+30220		CMP	B,[SI+1],":"	;Check for potential drive specifier
+30230		JNZ	DEFAULT
+30240		CALL	GETLET
+30250		SUB	AL,"@"		;Convert drive letter to binary drive number
+30260		JZ	NODRV		;Valid drive numbers are 1-15
+30270		INCcifier--back up pointer
+30280	DEFAULT:
+30290		XOR	AL,AL
+30300	HAVDRV:
+30310		STOB			;Put drive specifier in first byte
+30320		MOV	CX,8
+30330		CALL	GETWORD		;Get 8-letter file name
+30340		CMP	B,[SI],"."
+30350		JNZ	NODOT
+30360		INC	SI		;Skip over dot if present
+30370	NODOT:
+30380		MOV	CX,3		;Get 3-letter extension
+30390		CALL	GETWORD
+30400		SEG	CS
+30410		LDS	BX,[SPSAVE]
+30420		MOV	[BX+SISAVE],SI
+30430		XOR	AX,AX
+30440		STOW
+30450		STOW
+30460		MOV	AL,DL
+30470		RET
+30480	
+30490	GETWORD:
+30500		CALL	GETLET
+30510		JZ	FILLNAM		;Exit if invalid character
+30520		CMP	AL," "
+30530		JBE	FILLNAM
+30540		CMP	AL,"*"		;Check for ambiguous file specifier
+30550		JNZ	NOSTAR
+30560		MOV	AL,"?"
+30570		DEC	CX
+30580		REP
+30590		STOB			;Fill rest of word with "?"
+30600		INC	CX
+30610	NOSTAR:
+30620		STOB
+30630		CMP	AL,"?"
+30640		JNZ	NOTQ
+30650		MOV	DL,1		;Flag ambiguous file name
+30660	NOTQ:
+30670		LOOP	GETWORD
+30680		INC	SI		;Point to "termination" character
+30690	FILLNAM:
+30700		MOV	AL," "
+30710		REP
+30720		STOB
+30730		DEC	SI
+30740		RET
+30750	
+30760	GETLET:
+30770		LODB
+30780		CMP	AL,"a"
+30790		JB	CHK
+30800		CMP	AL,"z"
+30810		JA	CHK
+30820		SUB	AL,20H		;Convert to upper case
+30830	CHK:
+30840		CMP	AL," "
+30850		JZ	RET
+30860		CMP	AL,"="
+30870		JZ	RET
+30880		CMP	AL,","
+30890		JZ	RET
+30900		CMP	AL,";"
+30910		JZ	RET
+30920		CMP	AL,"."
+30930		JZ	RET
+30940		CMP	AL,":"
+30950		JZ	RET
+30960		CMP	AL,9		;Filter out TABs too
+30970		RET
+30980	
+30990	
+31000	SETVECT: ; Interrupt call 37
+31010		XOR	BX,BX
+31020		MOV	ES,BX
+31030		MOV	BL,AL
+31040		SHL	BX
+31050		SHL	BX
+31060		SEG	ES
+31070		MOV	[BX],DX
+31080		SEG	ES
+31090		MOV	[BX+2],DS
+31100		RET
+31110	
+31120	
+31130	NEWBASE: ; Interrupt call 38
+31140		MOV	ES,DX
+31150		SEG	CS
+31160		MOV	DS,[CSLOC]
+31170		XOR	SI,SI
+31180		MOV	DI,SI
+31190		MOV	CX,80H
+31200		REP
+31210		MOVW
+31220	
+31230	SETMEM:
+31240	
+31250	; Inputs:
+31260	;	DX = Segment
+31270	; Function:
+31280	;	Completely prepares a program base at the 
+31290	;	specified segment.
+31300	; Outputs:
+31310	;	DS = DX
+31320	;	ES = DX
+31330	;	[0] has INT 20H
+31340	;	[2] = First unavailable segment ([ENDMEM])
+31350	;	[5] to [9] form a long call to the entry point
+31360	;	[10] to [13] have exit address (from INT 22H)
+31370	;	[14] to [17] have ctrl-C exit address (from INT 23H)
+31380	; AX,DX,BP unchanged. All other registers destroyed.
+31390	
+31400		XOR	CX,CX
+31410		MOV	DS,CX
+31420		MOV	ES,DX
+31430		MOV	SI,EXIT
+31440		MOV	DI,SAVEXIT
+31450		MOVW
+31460		MOVW
+31470		MOVW
+31480		MOVW
+31490		SEG	CS
+31500		MOV	CX,[ENDMEM]
+31510		SEG	ES
+31520		MOV	[2],CX
+31530		SUB	CX,DX
+31540		CMP	CX,MAXDIF
+31550		JBE	HAVDIF
+31560		MOV	CX,MAXDIF
+31570	HAVDIF:
+31580		MOV	BX,ENTRYPOINTSEG
+31590		SUB	BX,CX
+31600		SHL	CX
+31610		SHL	CX
+31620		SHL	CX
+31630		SHL	CX
+31640		MOV	DS,DX
+31650		MOV	[6],CX
+31660		MOV	[8],BX
+31670		MOV	[0],20CDH	;"INT INTTAB"
+31680		MOV	B,[5],LONGCALL
+31690		RET
+31700	
+31710	
+31720	SHFTDI7:
+31730		SHL	DI
+31740		SHL	DI
+31750		SHL	DI
+31760		SHL	DI
+31770		SHL	DI
+31780		SHL	DI
+31790		SHL	DI
+31800		RET
+31810	
+31820	
+31830	; Default handler for division overflow trap
+31840	DIVOV:
+31850		XOR	DX,DX		;Say no remainder
+31860		MOV	AX,-1		;But large quotient
+31870		IRET
+31880	
+31890	
+31900	;***** DATA AREA *****
+31910	
+31920	BADMES:	DB	13,10,"Bad FAT",13,10,"$"
+31930	BADFATMES:DB	13,10,"All FATs on disk are bad",13,10,"$"
+31940	RDERRMES:DB	13,10,"Disk read error",13,10,"$"
+31950	WRTERRMES:DB	13,10,"Disk write error",13,10,"$"
+31960	IONAME:	DB	"PRN","LST","AUX","CON"
+31970	
+31980	CARPOS:	DB	0
+31990	STARTPOS:DB	0
+32000	PFLAG:	DB	0
+32010	DIRTYDIR:DB	0	;Dirty buffer flag
+32020	NUMDRV:	DS	1	;Number of drives
+32030	CONTPOS:DW	0
+32040	DMAADD:	DW	80H	;User's disk transfer address (disp/seg)
+32050		DS	2
+32060	ENDMEM:	DS	2
+32070	MAXSEC:	DW	0
+32080	BUFFER:	DS	2
+32090	BUFSECNO:DW	0
+32100	BUFDRVNO:DB	-1
+32110	DIRTYBUF:DB	0
+32120	DIRBUFID:DW	-1
+32130	DATE:	DS	2
+32140	CURDRVPT:DS	2
+32150	DRVTAB:	DS	30	;Enough for 15 drives
+32160	INBUF:	DS	15	;Only the first part
+32170	
+32180	; Init code overlaps with data area below
+32190	
+32200	INITCODE:
+32210	
+32220		DS	128-15	;More of INBUF
+32230	CONBUF:	DS	130	;The rest of INBUF and console buffer
+32240	FUNC:	DS	1	;Currently executing function code
+32250	LASTENT:DS	2
+32260	EXITHOLD:DS	4
+32270	FATBASE:DS	2
+32280	NAME1:	DS	11	;File name buffer
+32290	NAME2:	DS	11
+32300	TEMP:
+32310	CSLOC:	DS	2
+32320	SPSAVE:	DS	2
+32330	SSSAVE:	DS	2
+32340	SECCLUSPOS:DS	1	;Position of first sector within cluster
+32350	DSKERR:	DS	1
+32360	TRANS:	DS	1
+32370	
+32380		ALIGN
+32390	FCB:	DS	2	;Address of user FCB
+32400	NEXTADD:DS	2
+32410	RECPOS:	DS	4
+32420	RECCNT:	DS	2
+32430	LASTPOS:DS	2
+32440	CLUSNUM:DS	2
+32450	SECPOS:	DS	2		;Position of first sector accessed
+32460	VALSEC:	DS	2		;Number of valid (previously written) sectors
+32470	BYTSECPOS:DS	2	;Position of first byte within sector
+32480	BYTPOS:	DS	4		;Byte position in file of access
+32490	BYTCNT1:DS	2		;No. of bytes in first sector
+32500	BYTCNT2:DS	2		;No. of bytes in last sector
+32510	SECCNT:	DS	2		;No. of whole sectors
+32520	
+32530		DS	60	;Stack space
+32540	STACK:
+32550	
+32560		IF	DSKTEST
+32570	NSS:	DS	2
+32580	NSP:	DS	2
+32590		DS	60
+32600	TESTSTK:
+32610		ENDIF
+32620	
+32630	DIRBUF:
+32640	
+32650	;Init code below overlaps with data area above
+32660	
+32670		ORG	INITCODE
+32680		PUT	$+100H
+32690	
+32700	MOVFAT:
+32710	;This section of code is safe from being overwritten by block move
+32720		SEG	ES
+32730		REP
+32740		MOVB
+32750		UP
+32760	FININIT:
+32770		CALL	SETMEM		;Set up segment
+32780		RET	L
+32790	
+32800	DOSINIT:
+32810		DI
+32820		UP
+32830		PUSH	CS
+32840		POP	ES
+32850		LODB
+32860		SEG	ES
+32870		MOV	[NUMDRV],AL
+32880		MOV	BX,DRVTAB
+32890		MOV	DI,MEMSTRT
+32900	PERDRV:
+32910		SEG	ES
+32920		MOV	[BX],DI
+32930		MOV	BP,DI
+32940		INC	BX
+32950		INC	BX
+32960		SEG	ES
+32970		MOV	AL,[DRVCNT]
+32980		STOB			;DRVNUM
+32990		LODW			;Pointer to DPT
+33000		PUSH	SI
+33010		MOV	SI,AX
+33020		LODW
+33030		STOW			;SECSIZ
+33040		MOV	DX,AX
+33050		SEG	ES
+33060		CMP	AX,[MAXSEC]
+33070		JBE	NOTMAX
+33080		SEG	ES
+33090		MOV	[MAXSEC],AX
+33100	NOTMAX:
+33110		LODB
+33120		DEC	AL
+33130		STOB			;CLUSMSK
+33140		JZ	HAVSHFT
+33150		CBW
+33160	FIGSHFT:
+33170		INC	AH
+33180		SAR	AL
+33190		JNZ	FIGSHFT
+33200		MOV	AL,AH
+33210	HAVSHFT:
+33220		STOB			;CLUSSHFT
+33230		MOVW			;FIRFAT (= number of reserved sectors)
+33240		MOVB			;FATCNT
+33250		MOVW			;MAXENT
+33260		MOV	AX,DX		;SECSIZ again
+33270		MOV	CL,5
+33280		SHR	AX,CL
+33290		MOV	CX,AX		;Directory entries per sector
+33300		DEC	AX
+33310		SEG	ES
+33320		ADD	AX,[BP+MAXENT]
+33330		XOR	DX,DX
+33340		DIV	AX,CX
+33350		STOW			;DIRSEC (temporarily)
+33360		SHR	AX		;Divide by two
+33370		ADC	AX,0		;Round up
+33380		SEG	ES
+33390		MOV	[SDIRSEC],AX	;Number of directory records for small entries
+33400		MOVW			;DSKSIZ (temporarily)
+33410	FNDFATSIZ:
+33420		MOV	AL,1
+33430		MOV	DX,1
+33440	GETFATSIZ:
+33450		PUSH	DX
+33460		CALL	FIGFATSIZ
+33470		POP	DX
+33480		CMP	AL,DL		;Compare newly computed FAT size with trial
+33490		JZ	HAVFATSIZ	;Has sequence converged?
+33500		CMP	AL,DH		;Compare with previous trial
+33510		MOV	DH,DL
+33520		MOV	DL,AL		;Shuffle trials
+33530		JNZ	GETFATSIZ	;Continue iterations if not oscillating
+33540		SEG	ES
+33550		DEC	[BP+DSKSIZ]	;Damp those oscillations
+33560		JP	FNDFATSIZ	;Try again
+33570	HAVFATSIZ:
+33580		STOB			;FATSIZ
+33590		SEG	ES
+33600		MUL	AL,[BP+FATCNT]	;Space occupied by all FATs
+33610		SEG	ES
+33620		ADD	AX,[BP+FIRFAT]
+33630		STOW			;FIRDIR
+33640	
+33650		IF	SMALLDIR-1
+33660		SEG	ES
+33670		ADD	AX,[BP+DIRSEC]
+33680		SEG	ES
+33690		MOV	[BP+FIRREC],AX	;Destroys DIRSEC
+33700		CALL	FIGMAX
+33710		SEG	ES
+33720		MOV	[BP+MAXCLUS],CX
+33730		ENDIF
+33740	
+33750		IF	SMALLDIR
+33760		MOV	DX,AX		;Save FIRDIR momentarily
+33770		SEG	ES
+33780		ADD	AX,[SDIRSEC]	;Add number of dir. sectors for 16-byte entry
+33790		STOW			;FIRREC1
+33800		XCHG	AX,CX		;Previously computed MAXCLUS
+33810		STOW			;MAXCLUS1
+33820		XCHG	DX,AX
+33830		SEG	ES
+33840		ADD	AX,[BP+DIRSEC]	;Add number of dir. sectores for 32-byte entry
+33850		STOW			;FIRREC2
+33860		CALL	FIGMAX
+33870		XCHG	AX,CX
+33880		STOW			;MAXCLUS2
+33890		ENDIF
+33900	
+33910		MOV	AX,0FFH
+33920		STOB			;DIRTYFAT
+33930		SEG	ES
+33940		MOV	AL,[BP+FATSIZ]
+33950		SEG	ES
+33960		MUL	AX,[BP+SECSIZ]
+33970		ADD	DI,AX		;Allocate FAT
+33980		POP	SI		;Restore pointer to init. table
+33990		SEG	ES
+34000		MOV	AL,[DRVCNT]
+34010		INC	AL
+34020		SEG	ES
+34030		MOV	[DRVCNT],AL
+34040		SEG	ES
+34050		CMP	AL,[NUMDRV]
+34060		JAE	CONTINIT
+34070		JMP	PERDRV	
+34080	CONTINIT:
+34090		LODW			;Max. buffer size
+34100		SEG	ES
+34110		MOV	BX,[MAXSEC]
+34120		MOV	AX,DIRBUF
+34130		ADD	AX,BX
+34140		SEG	ES
+34150		MOV	[BUFFER],AX	;Start of buffer
+34160		PUSH	DI		;Save ending location
+34170		ADD	DI,BX		;Allocate directory buffer
+34180		ADD	DI,BX		;Allocate buffer space
+34190		ADD	DI,ADJFAC+15	;True start of free space
+34200		MOV	CL,4
+34210		SHR	DI,CL		;First free segment
+34220		MOV	BP,DI
+34230		XOR	AX,AX
+34240		MOV	DS,AX
+34250		MOV	ES,AX
+34260		MOV	DI,INTBASE
+34270		MOV	AX,QUIT
+34280		STOW			;Set abort address--displacement
+34290		MOV	AX,CS
+34300		MOV	B,[ENTRYPOINT],LONGJUMP
+34310		MOV	[ENTRYPOINT+1],ENTRY
+34320		MOV	[ENTRYPOINT+3],AX
+34330		MOV	[0],DIVOV	;Set default divide trap address
+34340		MOV	[2],AX
+34350		MOV	CX,9
+34360		REP
+34370		STOW				;Set 5 segments (skip 2 between each)
+34380		MOV	[INTBASE+4],COMMAND
+34390		MOV	[INTBASE+12],IRET	;CTRL-C exit
+34400		MOV	[INTBASE+16],IRET	;Fatal error exit
+34410		MOV	AX,BIOSREAD
+34420		STOW
+34430		MOV	AX,BIOSSEG
+34440		STOW
+34450		STOW	;Add 2 to DI
+34460		STOW
+34470		MOV	[INTBASE+18H],BIOSWRITE
+34480		MOV	DX,CS
+34490		MOV	DS,DX
+34500		ADD	DX,BP
+34510		MOV	[DMAADD],80H
+34520		MOV	[DMAADD+2],DX
+34530		MOV	AX,[DRVTAB]
+34540		MOV	[CURDRVPT],AX
+34550		MOV	CX,DX
+34560		MOV	BX,0FH
+34570	MEMSCAN:
+34580		INC	CX
+34590		JZ	HAVMEM
+34600		MOV	DS,CX
+34610		MOV	AL,[BX]
+34620		NOT	AL
+34630		MOV	[BX],AL
+34640		CMP	AL,[BX]
+34650		NOT	AL
+34660		MOV	[BX],AL
+34670		JZ	MEMSCAN
+34680	HAVMEM:
+34690		SEG	CS
+34700		MOV	[ENDMEM],CX
+34710		XOR	CX,CX
+34720		MOV	DS,CX
+34730		MOV	[EXIT],100H
+34740		MOV	[EXIT+2],DX
+34750		MOV	SI,HEADER
+34760		CALL	OUTMES
+34770		PUSH	CS
+34780		POP	DS
+34790		PUSH	CS
+34800		POP	ES
+34810		PUSH	DX
+34820	GETDAT:
+34830		MOV	SI,DATMES
+34840		CALL	OUTMES
+34850		MOV	DX,DATBUF
+34860		CALL	BUFIN
+34870		CALL	CRLF
+34880		MOV	SI,DATBUF+2
+34890		MOV	DX,12
+34900		CALL	MYD
+34910		JC	GETDAT
+34920		MOV	CL,5
+34930		SHL	AX,CL
+34940		MOV	[DATE],AX
+34950		MOV	DX,31
+34960		CALL	MYD
+34970		JC	GETDAT
+34980		OR	[DATE],AL
+34990		MOV	DX,2100
+35000		CALL	MYD
+35010		JC	GETDAT
+35020		SUB	AX,80
+35030		JC	GETDAT
+35040		CMP	AX,19
+35050		JBE	SAVYR
+35060		SUB	AX,1900
+35070		JC	GETDAT
+35080	SAVYR:
+35090		SHL	AL
+35100		OR	[DATE+1],AL
+35110	;Move the FATs into position and adjust the drive pointer table
+35120		POP	DX
+35130		POP	SI
+35140		MOV	AX,[MAXSEC]
+35150		SHL	AX		;Allocate two buffers
+35160		ADD	AX,ADJFAC
+35170		JZ	FINJMP
+35180		MOV	DI,DRVTAB
+35190		MOV	CX,15
+35200	ADJLP:
+35210		ADD	[DI],AX
+35220		INC	DI
+35230		INC	DI
+35240		LOOP	ADJLP
+35250		MOV	CX,SI
+35260		MOV	SI,MEMSTRT	;Place to move FATs from
+35270		SUB	CX,SI		;Total length of FATs
+35280		MOV	DI,AX
+35290		ADD	DI,SI		;Place to move FATs to
+35300		OR	AX,AX
+35310		JS	MOVJMP
+35320		DEC	CX
+35330		ADD	DI,CX
+35340		ADD	SI,CX
+35350		INC	CX
+35360		DOWN
+35370	MOVJMP:
+35380		JMP	MOVFAT
+35390	FINJMP:	JMP	FININIT
+35400	
+35410	FIGFATSIZ:
+35420		SEG	ES
+35430		MUL	AL,[BP+FATCNT]
+35440		SEG	ES
+35450		ADD	AX,[BP+FIRFAT]
+35460		SEG	ES
+35470		ADD	AX,[SDIRSEC]	;Use small dir. entry to figure FAT size
+35480	FIGMAX:
+35490	;AX has equivalent of FIRREC
+35500		SEG	ES
+35510		SUB	AX,[BP+DSKSIZ]
+35520		NEG	AX
+35530		SEG	ES
+35540		MOV	CL,[BP+CLUSSHFT]
+35550		SHR	AX,CL
+35560		INC	AX
+35570		MOV	CX,AX		;MAXCLUS
+35580		INC	AX
+35590		MOV	DX,AX
+35600		SHR	DX
+35610		ADC	AX,DX		;Size of FAT in bytes
+35620		SEG	ES
+35630		MOV	SI,[BP+SECSIZ]
+35640		ADD	AX,SI
+35650		DEC	AX
+35660		XOR	DX,DX
+35670		DIV	AX,SI
+35680		RET
+35690	
+35700	MYD:
+35710	;SI points to input buffer. Get decimal number < DX and return it
+35720	;in AX. Carry set on error.
+35730		XOR	BX,BX
+35740		MOV	AH,0
+35750	GETDIG:
+35760		LODB
+35770		SUB	AL,"0"
+35780		JC	CHKRET
+35790		CMP	AL,10
+35800		JNC	CHKRET
+35810		SHL	BX
+35820		MOV	CX,BX
+35830		SHL	BX
+35840		SHL	BX
+35850		ADD	BX,CX
+35860		ADD	BX,AX
+35870		JP	GETDIG
+35880	CHKRET:
+35890		MOV	AX,BX
+35900		OR	AX,AX
+35910		STC
+35920		JZ	RET
+35930		CMP	DX,AX
+35940		RET
+35950	
+35960	DRVCNT:	DB	0
+35970	
+35980	DATMES:	DB	"Enter today's date (m-d-y): $"
+35990	DATBUF:	DB	12,8,"04-28-81",13
+36000		DS	5
+36010	
+36020	SDIRSEC:DS	2
+36030	
+36040	MEMSTRT:
+36050	ADJFAC:	EQU	DIRBUF-MEMSTRT
+   CCCCCCCCCCCC         OOOOOOOOO         MMM         MMM         AAAAAAAAA         NNN	        NNN      DDDDDDDDDDDD   
+   СССССССССССС         OOOOOOOOO         MMM         MMM         AAAAAAAAA         NNN         NNN      DDDDDDDDDDDD   
+   СССССССССССС         OOOOOOOOO         MMM         MMM         AAAAAAAAA         NNN         NNN      DDDDDDDDDDDD   
+CCC                  OOO         OOO      MMMMMM   MMMMMM      AAA         AAA      NNN         NNN      DDD         DDD
+CCC                  OOO         OOO      MMMMMM   MMMMMM      AAA         AAA      NNN         NNN      DDD         DDD
+CCC                  OOO         OOO      MMMMMM   MMMMMM      AAA         AAA      NNN         NNN      DDD         DDD
+CCC                  OOO         OOO      MMM   MMM   MMM      AAA         AAA      NNNNNN      NNN      DDD         DDD
+CCC                  OOO         OOO      MMM   MMM   MMM      AAA         AAA      NNNNNN      NNN      DDD         DDD
+CCC                  OOO         OOO      MMM   MMM   MMM      AAA         AAA      NNNNNN      NNN      DDD         DDD
+CCC                  OOO         OOO      MMM         MMM      AAA         AAA      NNN   NNN   NNN      DDD         DDD
+CCC                  OOO         OOO      MMM         MMM      AAA         AAA      NNN   NNN   NNN      DDD         DDD
+CCC                  OOO         OOO      MMM         MMM      AAA         AAA      NNN   NNN   NNN      DDD         DDD
+CCC                  OOO         OOO      MMM         MMM      AAAAAAAAAAAAAAA      NNN      NNNNNN      DDD         DDD
+CCC                  OOO         OOO      MMM         MMM      AAAAAAAAAAAAAAA      NNN      NNNNNN      DDD         DDD
+CCC                  OOO         OOO      MMM         MMM      AAAAAAAAAAAAAAA      NNN      NNNNNN      DDD         DDD
+CCC                  OOO         OOO      MMM         MMM      AAA         AAA      NNN         NNN      DDD         DDD
+CCC                  OOO         OOO      MMM         MMM      AAA         AAA      NNN         NNN      DDD         DDD
+CCC                  OOO         OOO      MMM         MMM      AAA         AAA      NNN         NNN      DDD         DDD
+   CCCCCCCCCCCC         OOOOOOOOO         MMM         MMM      AAA         AAA      NNN         NNN      DDDDDDDDDDDD   
+   СССССССССССС         OOOOOOOOO         MMM         MMM      AAA         AAA      NNN         NNN      DDDDDDDDDDDD   
+   СССССССССССС         OOOOOOOOO         MMM         MMM      AAA         AAA      NNN         NNN      DDDDDDDDDDDD   
+
+
+
+
+DDDDDDDDDDDD            IIIIIIIII         FFFFFFFFFFFFFFF
+DDDDDDDDDDDD            IIIIIIIII         FFFFFFFFFFFFFFF
+DDDDDDDDDDDD            IIIIIIIII         FFFFFFFFFFFFFFF
+DDD         DDD            III            FFF
+DDD         DDD            III            FFF
+DDD         DDD            III            FFF
+DDD         DDD            III            FFF
+DDD         DDD            III            FFF
+DDD         DDD            III            FFF
+DDD         DDD            III            FFFFFFFFFFFF
+DDD         DDD            III            FFFFFFFFFFFF
+DDD         DDD            III            FFFFFFFFFFFF
+DDD         DDD            III            FFF
+DDD         DDD            III            FFF
+DDD         DDD            III            FFF
+DDD         DDD            III            FFF
+DDD         DDD            III            FFF
+DDD         DDD            III            FFF
+DDDDDDDDDDDD            IIIIIIIII         FFF
+DDDDDDDDDDDD            IIIIIIIII         FFF
+DDDDDDDDDDDD            IIIIIIIII         FFF
+
+
+
+
+ *START* User ROS BASIC [500,500]  Job  86DOS Seq. 7115 Date 16-Jun-81 15:13:30 Monitor Microsoft 1091 603a4d80j *START*
+File: DSKC:COMAND.DIF<055>[500,500] Created: 16-Jun-81 13:15:48 Printed: 16-Jun-81 15:23:55
+QUEUE Switches:  /FILE:ASCII /COPIES:1 /SPACING:1 /LIMIT:565 /FORMS:NORMAL

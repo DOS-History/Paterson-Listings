@@ -1,0 +1,242 @@
+File 1)	DSKC:EDLIN.ASM[500,500]	created: 1231 06-MAY-1981
+File 2)	DSKC:EDLIN.A86[500,500]	created: 1007 01-JULY-1981
+
+1)1	;EDLIN - Simple line-oriented editor for 86-DOS  version 1.00  04/24/81
+1	FCB:	EQU	5CH
+****
+2)	00040	;EDLIN - Simple line-oriented editor for 86-DOS  version 0.32  04/15/81
+2)	00080	FCB:	EQU	5CH
+**************
+1)1	HEADER:	DB	13,10,"EDLIN  version 1.00",13,10,"$"
+1)	NONAME:
+1)		MOV	DX,NDNAME
+1)		JMP	ERROR
+1)	SIMPED:
+****
+2)1	00460	HEADER:	DB	13,10,"The IBM Personal Computer EDITOR",13,10
+2)	00480		DB	"Version 1.00 (C)Copyright IBM Corp 1981",13,10,"$"
+2)	00500		DB	"Licensed Material - Program Property of IBM"
+2)	00540	NONAME:
+2)	00560		MOV	DX,NDNAME
+2)	00580	ERRJ:	JMP	ERROR
+2)	00620	SIMPED:
+**************
+1)1		MOV	DX,HEADER
+1)		MOV	AH,PRINT
+1)		INT	33
+1)		CMP	B,[FCB+1]," "
+1)		JZ	NONAME
+1)		MOV	SI,BAK
+****
+2)1	00680	;	MOV	DX,HEADER
+2)	00700	;	MOV	AH,PRINT
+2)	00720	;	INT	33
+2)	00740		CMP	B,[FCB+1]," "
+2)	00760		JZ	NONAME
+2)	00780		OR	AL,AL
+2)	00800		MOV	DX,BADDRV
+2)	00820		JNZ	ERRJ
+2)	00840		MOV	SI,BAK
+**************
+1)1		ADD	CX,AX		;3/4 of available memory
+1)	;Read in input file
+****
+2)1	02200		MOV	[ONE4TH],CX	;Save amount of 1/4 full
+2)	02220		ADD	CX,AX		;3/4 of available memory
+2)	02240		MOV	DX,CX
+2)	02260		ADD	DX,START
+2)	02280		MOV	[THREE4TH],DX	;Save pointer to 3/4 full
+2)	02300	;Read in input file
+**************
+1)1		DEC SI
+1)		CALL	GETNUM
+****
+2)1	03140		DEC	SI
+2)	03160		CALL	GETNUM
+**************
+1)1		AND	AL,5FH
+1)		MOV	DI,COMTAB
+****
+File 1)	DSKC:EDLIN.ASM[500,500]	created: 1231 06-MAY-1981
+File 2)	DSKC:EDLIN.A86[500,500]	created: 1007 01-JULY-1981
+
+2)1	03305		CMP	AL,5FH
+2)	03310		JBE	UPCASE
+2)	03320		AND	AL,5FH
+2)	03325	UPCASE:
+2)	03340		MOV	DI,COMTAB
+**************
+1)1		SHL	BX
+****
+2)1	03460		MOV	AX,[PARAM2]
+2)	03480		OR	AX,AX
+2)	03500		JZ	PARMOK
+2)	03520		CMP	AX,[PARAM1]
+2)	03540		JB	COMERR		;Param. 2 must be >= param 1
+2)	03560	PARMOK:
+2)	03580		SHL	BX
+**************
+1)1		JP	COMMAND
+1)	GETNUM:
+****
+2)1	03880		JMP	COMMAND
+2)	03940	GETNUM:
+**************
+1)1	NUMLP:
+1)		CMP	AL,"0"
+1)		JB	RET
+1)		CMP	AL,"9"
+1)		JA	RET
+1)		SUB	AL,"0"
+****
+2)1	04080		MOV	CL,0		;Flag no parameter seen yet
+2)	04100	NUMLP:
+2)	04120		CMP	AL," "
+2)	04140		JB	NUMCHK
+2)	04160		CMP	AL,"9"
+2)	04180		JA	NUMCHK
+2)	04200		CMP	DX,6553		;Max line/10
+2)	04220		JAE	COMERR		;Ten times this is too big
+2)	04240		MOV	CL,1		;Parameter digit has been found
+2)	04260		SUB	AL,"0"
+**************
+1)1	CURLIN:
+****
+2)1	04460	NUMCHK:
+2)	04480		CMP	CL,0
+2)	04500		JZ	RET
+2)	04520		OR	DX,DX
+2)	04540		JZ	COMERR		;Don't allow zero as a parameter
+2)	04560		RET
+2)	04600	CURLIN:
+**************
+1)1	APPEND:
+1)		TEST	B,[HAVEOF],-1
+1)		JNZ	NOMORE
+1)		MOV	DX,[ENDTXT]
+1)		MOV	DI,DX
+****
+File 1)	DSKC:EDLIN.ASM[500,500]	created: 1231 06-MAY-1981
+File 2)	DSKC:EDLIN.A86[500,500]	created: 1007 01-JULY-1981
+
+2)1	05380	NOMOREJ:JMP	NOMORE
+2)	05420	APPEND:
+2)	05440		TEST	B,[HAVEOF],-1
+2)	05460		JNZ	NOMOREJ
+2)	05480		MOV	DX,[ENDTXT]
+2)	05500		CMP	[PARAM1],0	;See if parameter is missing
+2)	05520		JNZ	PARMAPP
+2)	05540		CMP	DX,[THREE4TH]	;See if already 3/4ths full
+2)	05560		JAE	RET		;If so, then done already
+2)	05580	PARMAPP:
+2)	05600		MOV	DI,DX
+**************
+1)1		MOV	BX,[PARAM1]
+1)		CMP	BX,1
+1)		SBC	BX,0		;Make a zero a -1
+1)		XOR	DX,DX
+1)		CALL	SCANLN		;Look for BX lines
+****
+2)1	05900		XOR	DX,DX
+2)	05920		MOV	BX,[PARAM1]
+2)	05940		OR	BX,BX
+2)	05960		JNZ	COUNTLN
+2)	05980		MOV	AX,DI
+2)	06000		ADD	AX,CX		;First byte after loaded text
+2)	06020		CMP	AX,[THREE4TH]	;See if we made 3/4 full
+2)	06040		JBE	COUNTLN
+2)	06060		MOV	DI,[THREE4TH]
+2)	06080		MOV	CX,AX
+2)	06100		SUB	CX,DI		;Length remaining over 3/4
+2)	06120		MOV	BX,1		;Look for one more line
+2)	06140	COUNTLN:
+2)	06160		CALL	SCANLN		;Look for BX lines
+**************
+1)1	EOFCHK:
+****
+2)1	06640	NOMORE:
+2)	06660		MOV	DX,EOF
+2)	06680		MOV	AH,PRINT
+2)	06700		INT	33
+2)	06720		RET
+2)	06740	EOFCHK:
+**************
+1)1	NOMORE:
+1)		MOV	DX,EOF
+1)		MOV	AH,PRINT
+1)		INT	33
+1)		RET
+1)	WRITE:
+****
+2)1	06880	WRITE:
+**************
+1)1		MOV	BX,[CURRENT]
+1)		DEC	BX
+1)	WRT:
+****
+2)1	06960		MOV	CX,[ONE4TH]
+File 1)	DSKC:EDLIN.ASM[500,500]	created: 1231 06-MAY-1981
+File 2)	DSKC:EDLIN.A86[500,500]	created: 1007 01-JULY-1981
+
+2)	06980		MOV	DI,[ENDTXT]
+2)	07000		SUB	DI,CX		;Write everything in front of here
+2)	07010		JBE	RET
+2)	07020		CMP	DI,START	;See if there's anything to write
+2)	07040		JBE	RET
+2)	07060		XOR	DX,DX
+2)	07080		MOV	BX,1		;Look for one more line
+2)	07100		CALL	SCANLN
+2)	07120		JP	WRTADD
+2)	07140	WRT:
+**************
+1)1		MOV	CX,DI
+****
+2)1	07180	WRTADD:
+2)	07200		MOV	CX,DI
+**************
+1)1		INC	DX
+****
+2)1	12680		JAE	SOMELEFT
+2)	12700		MOV	[SRCHCNT],0
+2)	12720	SOMELEFT:
+2)	12740		INC	DX
+**************
+1)1		MOV	[CURRENT],BX
+1)		MOV	[POINTER],DI
+1)		PUSH	DI
+****
+2)1	16620		PUSH	BX
+2)	16660		PUSH	DI
+**************
+1)1		XOR	CX,CX
+1)		JP	REPLACE
+1)	NOCOM:
+****
+2)1	16862		JBE	COMERRJ
+2)	16864		POP	[CURRENT]
+2)	16866		MOV	[POINTER],DI
+2)	16880		XOR	CX,CX
+2)	16900		JP	REPLACE
+2)	16910	COMERRJ:JMP	COMERR
+2)	16960	NOCOM:
+**************
+1)1		MOV	BX,-2		;Write max. no of lines
+1)		CALL	WRT
+****
+2)1	20480		MOV	BX,-1		;Write max. no of lines
+2)	20500		CALL	WRT
+**************
+1)1	NDNAME:	DB	"File name must be specified$"
+****
+2)1	21760	BADDRV:	DB	"Invalid drive or file name$"
+2)	21780	NDNAME:	DB	"File name must be specified$"
+**************
+1)1	END:	DS	2
+****
+2)1	22340	ONE4TH:	DS	2
+File 1)	DSKC:EDLIN.ASM[500,500]	created: 1231 06-MAY-1981
+File 2)	DSKC:EDLIN.A86[500,500]	created: 1007 01-JULY-1981
+
+2)	22360	THREE4TH:DS	2
+2)	22380	END:	DS	2
+**************

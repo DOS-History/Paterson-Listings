@@ -1,0 +1,94 @@
+From: Yufeng Gao
+To: Tim Paterson
+Date: Thu, 24 Apr 2025 11:17:51 +0000
+Subject: 86-DOS Printouts
+
+
+Dear Mr. Paterson,
+
+I hope you've had a wonderful Easter. I'm reaching out to you regarding 86-DOS
+source code printouts. I'm a huge fan of 86-DOS, and just over a year ago, I
+completed a full source code reconstruction of 86-DOS 0.11 - the earliest
+surviving version of DOS.
+
+Recently, Bill Gates released a scanned listing of Altair BASIC 1.3, which
+brought to mind the "6-inch stack of printouts" you mentioned in your email to
+Len Shustek. A friend of mine, Rich Cini, suggested that your printouts might
+include the original source code for 86-DOS 1.00. I wanted to ask whether you
+still have those printouts, and if so, whether you'd be open to having them
+scanned and digitised.
+
+As 86-DOS approaches its 45th anniversary, I believe this would be a timely
+opportunity to preserve and revive the original source code. To make this
+happen, I'm more than happy to assist in any way I can. I have the equipment
+and time to produce high-DPI scans and to transcribe the listings manually.
+
+Thank you for considering this request, and I hope to hear from you soon.
+
+Best regards,
+Yufeng Gao
+
+-------------------------------------------------------------------------------
+
+From: Tim Paterson
+To: Yufeng Gao
+Cc: Richard Cini
+Date: Thu, 24 Apr 2025 17:30:43 +0000
+Subject: RE: 86-DOS Printouts
+
+
+The listing stack is actually only 3.5" (I found a bunch of blank paper at the
+bottom).  Here is the inventory:
+  - DOS 1.25
+  - DOS snapshot 7/8/81
+  - DOS snapshot 6/16/81
+  - DOS diff: 5/5/81 vs. 6/16/81
+  - EDLIN diff: 5/5/81 vs. 7/1/81
+  - CHKDSK snapshot 7/28/81
+  - CHKDSK snapshot 6/16/81
+  - SCP Assembler 2.40
+  - SCP Assembler 2.43
+  - MS BASIC compiler runtime library 11/13/81
+
+The last item was my area of responsibility at MS at the time, and takes up
+half the stack.  Most of the listings are from an MS line printer, and print
+quality is not great.
+
+Getting around to packing and shipping is the hard part.
+
+Tim Paterson
+
+-------------------------------------------------------------------------------
+
+From: Richard Cini
+To: Tim Paterson
+Cc: Yufeng Gao
+Date: Thu, 24 Apr 2025 18:26:22 +0000
+Subject: RE: 86-DOS Printouts
+
+
+That's wonderful, Tim, thanks for taking a look at that stack. That's some
+great stuff to archive. The various DOS snapshot dates seem unfamiliar to me.
+Do you remember the significance of 5/5/81 versus the other two dates? I do
+remember reading in a book that there was some last minute bug squashing so
+maybe that's it. 
+
+Rich
+
+-------------------------------------------------------------------------------
+
+From: Tim Paterson
+To: Richard Cini
+Cc: Yufeng Gao
+Date: Thu, 24 Apr 2025 18:32:58 +0000
+Subject: RE: 86-DOS Printouts
+
+
+There was ongoing work on DOS so the date is the OS file time stamp of the last
+change. It does not correspond to any release or version.
+
+The 5/5/81 date should be very close if not identical to the v1.00 release
+dated 4/28/81. The difference could be the date it was uploaded to the MS
+server.
+
+Tim Paterson

@@ -1,0 +1,3758 @@
+
+
+Seattle Computer Products 8086 Assembler Version 2.30
+Copyright 1979,80,81 by Seattle Computer Products, Inc.
+
+0000                       0001 ; Seattle Computer Products 8086 Assembler  version 2.31
+0000                       0002 ;   by Tim Paterson
+0000                       0003 ; Runs on the 8086 under 86-DOS
+0000                       0004 
+0000                       0005 ;* * * * * * REVISION HISTORY * * * * * *
+0000                       0006 ;
+0000                       0007 ; 12/29/80  2.01  General release with 86-DOS version 0.34
+0000                       0008 ; 02/22/81  2.10  Increased buffer size from 128 bytes to 1024 bytes
+0000                       0009 ; 03/18/81  2.11  General cleanup and more documentation
+0000                       0010 ; 03/24/81  2.20  Modify ESC handling for full 8087 operation
+0000                       0011 ; 04/01/81  2.21  Fix date in HEX and PRN files; modify buffer handling
+0000                       0012 ; 04/03/81  2.22  Fix 2.21 buffer handling
+0000                       0013 ; 04/13/81  2.23  Re-open source file for listing to allow assembling CON:
+0000                       0014 ; 04/28/81  2.24  Allow nested IFs
+0000                       0015 ; 07/30/81  2.25  Add Intel string mnemonics; clean up a little
+0000                       0016 ; 08/02/81  2.30  Re-write pass 2:
+0000                       0017 ;			Always report errors to console
+0000                       0018 ;			Exact byte lengths for HEX and PRN files
+0000                       0019 ; 08/23/81  2.40  Add 8087 mnemonics
+0000                       0020 ;
+0000                       0021 ;* * * * * * * * * * * * * * * * * * * * *
+0000                       0022 
+0000                       0023 SYMWID:	EQU	10
+0000                       0024 FCB:	EQU	5CH
+0000                       0025 BUFSIZ:	EQU	1024	;Source code buffer
+0000                       0026 LSTBUFSIZ:EQU	BUFSIZ	;List file buffer
+0000                       0027 HEXBUFSIZ:EQU	70	;Hex file buffer (26*2 + 5*2 + 3 + EXTRA)
+0000                       0028 EOL:	EQU	13	;ASCII carriage return
+0000                       0029 OBJECT:	EQU	100H	;DEFAULT "PUT" ADDRESS
+0000                       0030 
+0000                       0031 ;System call function codes
+0000                       0032 PRINTMES: EQU	9
+0000                       0033 OPEN:	EQU	15
+0000                       0034 CLOSE:	EQU	16
+0000                       0035 READ:	EQU	20
+0000                       0036 SETDMA:	EQU	26
+0000                       0037 MAKE:	EQU	22
+0000                       0038 BLKWRT:	EQU	40
+0000                       0039 
+0000                       0040 ;The following equates define some token values returned by GETSYM
+0000                       0041 UNDEFID:EQU	0	;Undefined identifier (including no nearby RET)
+0000                       0042 CONST:	EQU	1	;Constant (including $)
+0000                       0043 REG:	EQU	2	;8-bit register
+0000                       0044 XREG:	EQU	3	;16-bit register (except segment registers)
+0000                       0045 SREG:	EQU	4	;Segment register
+0000                       0046 
+0000                       0047 ;Ouput file record definition
+0000                       0048 	ORG	0
+0000                       0049 WRTPT:	DS	2	;Pointer to next byte to be written
+0002                       0050 BUFEND:	DS	2	;Pointer to end of buffer plus one
+0004                       0051 BUFSTRT:DS	2	;Address of start of buffer
+0006                       0052 BUFFCB:	DS	37	;FCB for the file
+002B                       0053 
+002B                       0054 	ORG	100H
+0100                       0055 	PUT	100H
+0100                       0056 
+0100 EB 75                 0057 	JP	BEGIN
+0102                       0058 
+0102 0D 0A 53 65 61 74 74  0059 HEADER:	DB	13,10,'Seattle Computer Products 8086 Assembler Version 2.31'
+     6C 65 20 43 6F 6D 70 
+     75 74 65 72 20 50 72 
+     6F 64 75 63 74 73 20 
+     38 30 38 36 20 41 73 
+     73 65 6D 62 6C 65 72 
+     20 56 65 72 73 69 6F 
+     6E 20 32 2E 33 31    
+0139 0D 0A 43 6F 70 79 72  0060 	DB	13,10,'Copyright 1979,80,81 by Seattle Computer Products, Inc.'
+     69 67 68 74 20 31 39 
+     37 39 2C 38 30 2C 38 
+     31 20 62 79 20 53 65 
+     61 74 74 6C 65 20 43 
+     6F 6D 70 75 74 65 72 
+     20 50 72 6F 64 75 63 
+     74 73 2C 20 49 6E 63 
+     2E                   
+0172 0D 0A 0D 0A 24        0061 	DB	13,10,13,10,'$'
+0177                       0062 
+0177                       0063 BEGIN:
+0177 BC 90 24              0064 	MOV	SP,STACK
+017A BA 02 01              0065 	MOV	DX,HEADER
+017D B4 09                 0066 	MOV	AH,PRINTMES
+017F CD 21                 0067 	INT	33
+0181 A0 6D 00              0068 	MOV	AL,[FCB+17]
+0184 A2 D0 1B              0069 	MOV	[SYMFLG],AL	;Save symbol table request flag
+0187 BE 65 00              0070 	MOV	SI,FCB+9	;Point to file extension
+018A AC                    0071 	LODB			;Get source drive letter
+018B E8 10 01              0072 	CALL	CHKDSK		;Valid drive?
+018E 0A C0                 0073 	OR	AL,AL
+0190 74 03                 0074 	JZ	DEFAULT		;If no extension, use existing drive spec
+0192 A2 5C 00              0075 	MOV	[FCB],AL
+0195                       0076 DEFAULT:
+0195 AC                    0077 	LODB			;Get HEX file drive letter
+0196 3C 5A                 0078 	CMP	AL,'Z'		;Suppress HEX file?
+0198 74 03                 0079 	JZ	L0000
+019A E8 01 01              0080 	CALL	CHKDSK
+019D                       0081 L0000:	
+019D A2 1B 1B              0082 	MOV	[HEXFCB],AL
+01A0 AC                    0083 	LODB			;Get PRN file drive letter
+01A1 B4 00                 0084 	MOV	AH,0		;Signal no PRN file
+01A3 3C 5A                 0085 	CMP	AL,'Z'		;Suppress PRN file?
+01A5 74 15                 0086 	JZ	NOPRN
+01A7 3C 59                 0087 	CMP	AL,'Y'		;Print errors only on console?
+01A9 74 11                 0088 	JZ	NOPRN
+01AB B4 02                 0089 	MOV	AH,2
+01AD 3C 58                 0090 	CMP	AL,'X'		;PRN file to console?
+01AF 74 0B                 0091 	JZ	NOPRN
+01B1 B4 04                 0092 	MOV	AH,4
+01B3 3C 50                 0093 	CMP	AL,'P'		;PRN file to printer?
+01B5 74 05                 0094 	JZ	NOPRN
+01B7 E8 E4 00              0095 	CALL	CHKDSK
+01BA B4 80                 0096 	MOV	AH,80H
+01BC                       0097 NOPRN:
+01BC A2 40 1B              0098 	MOV	[LSTFCB],AL
+01BF 88 26 EC 1B           0099 	MOV	[LSTDEV],AH	;Flag device for list ouput
+01C3 BE 0A 1B              0100 	MOV	SI,EXTEND
+01C6 BF 65 00              0101 	MOV	DI,FCB+9
+01C9 A5                    0102 	MOVW
+01CA A4                    0103 	MOVB			;Set extension to ASM
+01CB A5                    0104 	MOVW			;Zero extent field
+01CC BA 5C 00              0105 	MOV	DX,FCB
+01CF B4 0F                 0106 	MOV	AH,OPEN
+01D1 CD 21                 0107 	INT	33
+01D3 BB AF 1A              0108 	MOV	BX,NOFILE
+01D6 0A C0                 0109 	OR	AL,AL
+01D8 74 03                 0110 	JZ	$+5
+01DA E9 97 00              0111 	JMP	PRERR
+01DD BA 1B 1B              0112 	MOV	DX,HEXFCB
+01E0 E8 99 00              0113 	CALL	MAKFIL
+01E3 BA 40 1B              0114 	MOV	DX,LSTFCB
+01E6 E8 93 00              0115 	CALL	MAKFIL
+01E9 C6 06 7C 00 00        0116 	MOV	B,[FCB+32],0	;Zero Next Record field
+01EE C7 06 6A 00 00 04     0117 	MOV	[FCB+14],BUFSIZ	;Set record size
+01F4 C7 06 3E 20 40 20     0118 	MOV	[BUFPT],SRCBUF	;Initialize buffer pointer
+01FA C7 06 D1 1B 91 24     0119 	MOV	[CODE],START+1	;POINTER TO NEXT BYTE OF INTERMEDIATE CODE
+0200 C7 06 F2 1B 90 24     0120 	MOV	[IY],START	;POINTER TO CURRENT RELOCATION BYTE
+0206 33 C0                 0121 	XOR	AX,AX
+0208 A3 65 1B              0122 	MOV	[PC],AX		;DEFAULT PROGRAM COUNTER
+020B A3 CC 1B              0123 	MOV	[BASE],AX	;POINTER TO ROOT OF ID TREE=NIL
+020E A3 EA 1B              0124 	MOV	[RETPT],AX	;Pointer to last RET record
+0211 A2 E4 1B              0125 	MOV	[IFFLG],AL	;NOT WITHIN IF/ENDIF
+0214 A2 E5 1B              0126 	MOV	[CHKLAB],AL	;LOOKUP ALL LABELS
+0217 48                    0127 	DEC	AX
+0218 A3 E8 1B              0128 	MOV	[LSTRET],AX	;Location of last RET
+021B A1 06 00              0129 	MOV	AX,[6]		;HL=END OF MEMORY
+021E A3 CE 1B              0130 	MOV	[HEAP],AX	;BACK END OF SYMBOL TABLE SPACE
+0221 C7 06 D5 1B 04 00     0131 	MOV	[BCOUNT],4	;CODE BYTES PER RELOCATION BYTE
+0227                       0132 
+0227                       0133 ;Assemble each line of code
+0227                       0134 
+0227                       0135 LOOP:
+0227 E8 8A 00              0136 	CALL	NEXTCHR		;Get first character on line
+022A 3C 1A                 0137 	CMP	AL,1AH
+022C 74 1E                 0138 	JZ	ENDJ
+022E B0 FF                 0139 	MOV	AL,-1		;Flag that no tokens have been read yet
+0230 A2 CB 1B              0140 	MOV	[SYM],AL
+0233 E8 89 06              0141 	CALL	ASMLIN		;Assemble the line
+0236 A0 CB 1B              0142 	MOV	AL,[SYM]
+0239 3C FF                 0143 	CMP	AL,-1		;Any tokens found on line?
+023B 75 03                 0144 	JNZ	L0002
+023D E8 67 03              0145 	CALL	GETSYM		;If no tokens read yet, read first one
+0240                       0146 L0002:	
+0240 3C 3B                 0147 	CMP	AL,';'
+0242 74 0B                 0148 	JZ	ENDLN
+0244 3C 0D                 0149 	CMP	AL,EOL
+0246 74 07                 0150 	JZ	ENDLN
+0248 B0 14                 0151 	MOV	AL,14H		;Garbage at end of line error
+024A EB 05                 0152 	JP	ENDLIN
+024C E9 B9 0D              0153 ENDJ:	JMP	END
+024F                       0154 
+024F                       0155 ENDLN:
+024F 32 C0                 0156 	XOR	AL,AL		;Flag no errors on line
+0251                       0157 ENDLIN:
+0251                       0158 ;AL = error code for line. Stack depth unknown
+0251 BC 90 24              0159 	MOV	SP,STACK
+0254 E8 02 00              0160 	CALL	NEXLIN
+0257 EB CE                 0161 	JP	LOOP
+0259                       0162 
+0259                       0163 NEXLIN:
+0259 B5 C0                 0164 	MOV	CH,0C0H		;Put end of line marker and error code (AL)
+025B E8 00 08              0165 	CALL	PUTCD
+025E E8 C7 07              0166 	CALL	GEN1
+0261 A0 CA 1B              0167 	MOV	AL,[CHR]
+0264                       0168 GETEOL:
+0264 3C 0A                 0169 	CMP	AL,10
+0266 74 35                 0170 	JZ	RET
+0268 3C 1A                 0171 	CMP	AL,1AH
+026A 74 E0                 0172 	JZ	ENDJ
+026C E8 45 00              0173 	CALL	NEXTCHR		;Scan over comments for linefeed
+026F EB F3                 0174 	JP	GETEOL
+0271                       0175 
+0271                       0176 ABORT:
+0271 BB 97 1A              0177 	MOV	BX,NOMEM
+0274                       0178 PRERR:
+0274 8B D3                 0179 	MOV	DX,BX
+0276 B4 09                 0180 	MOV	AH,PRINTMES
+0278 CD 21                 0181 	INT	33
+027A CD 20                 0182 	INT	32
+027C                       0183 
+027C                       0184 MAKFIL:
+027C 8B F2                 0185 	MOV	SI,DX
+027E AC                    0186 	LODB			;Get drive select byte
+027F 3C 20                 0187 	CMP	AL,20H		;If not valid, don't make file
+0281 73 1A                 0188 	JNC	RET
+0283 B9 04 00              0189 	MOV	CX,4
+0286 8B FE                 0190 	MOV	DI,SI
+0288 BE 5D 00              0191 	MOV	SI,FCB+1
+028B F3                    0192 	REP
+028C A5                    0193 	MOVW			;Copy source file name
+028D B4 16                 0194 	MOV	AH,MAKE
+028F CD 21                 0195 	INT	33
+0291 C7 45 05 01 00        0196 	MOV	[DI-9+14],1	;Set record length to 1 byte
+0296 BB 7D 1A              0197 	MOV	BX,NOSPAC
+0299 0A C0                 0198 	OR	AL,AL		;Success?
+029B 75 D7                 0199 	JNZ	PRERR
+029D C3                    0200 	RET
+029E                       0201 
+029E                       0202 CHKDSK:
+029E 2C 20                 0203 	SUB	AL,' '		;If not present, set zero flag
+02A0 74 FB                 0204 	JZ	RET
+02A2 2C 20                 0205 	SUB	AL,20H
+02A4 74 04                 0206 	JZ	DSKERR		;Must be in range A-O
+02A6 3C 10                 0207 	CMP	AL,'P'-'@'
+02A8 72 F3                 0208 	JC	RET
+02AA                       0209 DSKERR:
+02AA BB D0 1A              0210 	MOV	BX,BADDSK
+02AD EB C5                 0211 	JP	PRERR
+02AF                       0212 
+02AF                       0213 ERROR:
+02AF 8A C1                 0214 	MOV	AL,CL
+02B1 E9 9D FF              0215 	JMP	ENDLIN
+02B4                       0216 
+02B4                       0217 NEXTCHR:
+02B4 8B 36 3E 20           0218 	MOV	SI,[BUFPT]
+02B8 81 FE 40 20           0219 	CMP	SI,SRCBUF
+02BC 75 15                 0220 	JNZ	GETCH
+02BE                       0221 ;Buffer empty so refill it
+02BE 52                    0222 	PUSH	DX
+02BF 8B D6                 0223 	MOV	DX,SI
+02C1 B4 1A                 0224 	MOV	AH,SETDMA
+02C3 CD 21                 0225 	INT	33
+02C5 BA 5C 00              0226 	MOV	DX,FCB
+02C8 B4 14                 0227 	MOV	AH,READ
+02CA CD 21                 0228 	INT	33
+02CC 5A                    0229 	POP	DX
+02CD 3C 01                 0230 	CMP	AL,1
+02CF B0 1A                 0231 	MOV	AL,1AH		;Possibly signal End of File
+02D1 74 0A                 0232 	JZ	NOMOD		;If nothing read
+02D3                       0233 GETCH:
+02D3 AC                    0234 	LODB
+02D4 81 FE 40 24           0235 	CMP	SI,SRCBUF+BUFSIZ
+02D8 75 03                 0236 	JNZ	NOMOD
+02DA BE 40 20              0237 	MOV	SI,SRCBUF
+02DD                       0238 NOMOD:
+02DD 89 36 3E 20           0239 	MOV	[BUFPT],SI
+02E1 A2 CA 1B              0240 	MOV	[CHR],AL
+02E4 C3                    0241 	RET
+02E5                       0242 
+02E5                       0243 
+02E5                       0244 MROPS:
+02E5                       0245 
+02E5                       0246 ; Get two operands and check for certain types, according to flag byte
+02E5                       0247 ; in CL. OP code in CH. Returns only if immediate operation.
+02E5                       0248 
+02E5 51                    0249 	PUSH	CX		;Save type flags
+02E6 E8 D8 00              0250 	CALL	GETOP
+02E9 52                    0251 	PUSH	DX		;Save first operand
+02EA E8 CB 00              0252 	CALL	GETOP2
+02ED 5B                    0253 	POP	BX		;First op in BX, second op in DX
+02EE B0 04                 0254 	MOV	AL,SREG		;Check for a segment register
+02F0 3A C7                 0255 	CMP	AL,BH
+02F2 74 41                 0256 	JZ	SEGCHK
+02F4 3A C6                 0257 	CMP	AL,DH
+02F6 74 3D                 0258 	JZ	SEGCHK
+02F8 B0 01                 0259 	MOV	AL,CONST	;Check if the first operand is immediate
+02FA B1 1A                 0260 	MOV	CL,26
+02FC 3A C7                 0261 	CMP	AL,BH
+02FE 74 AF                 0262 	JZ	ERROR		;Error if so
+0300 59                    0263 	POP	CX		;Restore type flags
+0301 3A C6                 0264 	CMP	AL,DH		;If second operand is immediate, then done
+0303 74 DF                 0265 	JZ	RET
+0305 B0 00                 0266 	MOV	AL,UNDEFID	;Check for memory reference
+0307 3A C7                 0267 	CMP	AL,BH
+0309 74 4F                 0268 	JZ	STORE		;Is destination memory?
+030B 3A C6                 0269 	CMP	AL,DH
+030D 74 55                 0270 	JZ	LOAD		;Is source memory?
+030F F6 C1 01              0271 	TEST	CL,1		;Check if register-to-register operation OK
+0312 B1 1B                 0272 	MOV	CL,27
+0314 74 99                 0273 	JZ	ERROR
+0316 8A C6                 0274 	MOV	AL,DH
+0318 3A C7                 0275 	CMP	AL,BH		;Registers must be of same length
+031A                       0276 RR:
+031A B1 16                 0277 	MOV	CL,22
+031C 75 91                 0278 	JNZ	ERROR
+031E                       0279 RR1:
+031E 24 01                 0280 	AND	AL,1		;Get register length (1=16 bits)
+0320 0A C5                 0281 	OR	AL,CH		;Or in to OP code
+0322 E8 F6 06              0282 	CALL	PUT		;And write it
+0325 59                    0283 	POP	CX		;Dump return address
+0326 8A C3                 0284 	MOV	AL,BL
+0328 02 C0                 0285 	ADD	AL,AL		;Rotate register number into middle position
+032A 02 C0                 0286 	ADD	AL,AL
+032C 02 C0                 0287 	ADD	AL,AL
+032E 0C C0                 0288 	OR	AL,0C0H		;Set register-to-register mode
+0330 0A C2                 0289 	OR	AL,DL		;Combine with other register number
+0332 E9 E6 06              0290 	JMP	PUT
+0335                       0291 
+0335                       0292 SEGCHK:
+0335                       0293 ;Come here if at least one operand is a segment register
+0335 59                    0294 	POP	CX		;Restore flags
+0336 F6 C1 08              0295 	TEST	CL,8		;Check if segment register OK
+0339 B1 16                 0296 	MOV	CL,22
+033B 74 78                 0297 	JZ	ERR1
+033D B9 03 8E              0298 	MOV	CX,8E03H	;Segment register move OP code
+0340 B0 00                 0299 	MOV	AL,UNDEFID
+0342 3A C6                 0300 	CMP	AL,DH		;Check if source is memory
+0344 74 1E                 0301 	JZ	LOAD
+0346 3A C7                 0302 	CMP	AL,BH		;Check if destination is memory
+0348 74 10                 0303 	JZ	STORE
+034A B0 03                 0304 	MOV	AL,XREG
+034C 2A C6                 0305 	SUB	AL,DH		;Check if source is 16-bit register
+034E 74 CA                 0306 	JZ	RR		;If so, AL must be zero
+0350 B5 8C                 0307 	MOV	CH,8CH		;Change direction
+0352 87 DA                 0308 	XCHG	DX,BX		;Flip which operand is first and second
+0354 B0 03                 0309 	MOV	AL,XREG
+0356 2A C6                 0310 	SUB	AL,DH		;Let RR perform finish the test
+0358 EB C0                 0311 	JP	RR
+035A                       0312 
+035A                       0313 STORE:
+035A F6 C1 04              0314 	TEST	CL,004H		;Check if storing is OK
+035D 75 52                 0315 	JNZ	STERR
+035F 87 DA                 0316 	XCHG	DX,BX		;If so, flip operands
+0361 80 E5 FD              0317 	AND	CH,0FDH		;   and zero direction bit
+0364                       0318 LOAD:
+0364 B6 19                 0319 	MOV	DH,25
+0366 3A C7                 0320 	CMP	AL,BH		;Check if memory-to-memory
+0368 74 49                 0321 	JZ	MRERR
+036A 8A C7                 0322 	MOV	AL,BH
+036C 3C 02                 0323 	CMP	AL,REG		;Check if 8-bit operation
+036E 75 07                 0324 	JNZ	XRG
+0370 B6 16                 0325 	MOV	DH,22
+0372 F6 C1 01              0326 	TEST	CL,1		;See if 8-bit operation is OK
+0375 74 3C                 0327 	JZ	MRERR
+0377                       0328 XRG:
+0377 8A C2                 0329 	MOV	AL,DL
+0379 2C 06                 0330 	SUB	AL,6		;Check for R/M mode 6 and register 0
+037B 0A C3                 0331 	OR	AL,BL		;   meaning direct load/store of accumulator
+037D 75 19                 0332 	JNZ	NOTAC
+037F F6 C1 08              0333 	TEST	CL,8		;See if direct load/store of accumulator
+0382 74 14                 0334 	JZ	NOTAC		;   means anything in this case
+0384                       0335 ; Process direct load/store of accumulator
+0384 8A C5                 0336 	MOV	AL,CH
+0386 24 02                 0337 	AND	AL,2		;Preserve direction bit only
+0388 34 02                 0338 	XOR	AL,2		;   but flip it
+038A 0C A0                 0339 	OR	AL,0A0H		;Combine with OP code
+038C 8A E8                 0340 	MOV	CH,AL
+038E 8A C7                 0341 	MOV	AL,BH		;Check byte/word operation
+0390 24 01                 0342 	AND	AL,1
+0392 0A C5                 0343 	OR	AL,CH
+0394 59                    0344 	POP	CX		;Dump return address
+0395 E9 47 07              0345 	JMP	PUTADD		;Write the address
+0398                       0346 
+0398                       0347 NOTAC:
+0398 8A C7                 0348 	MOV	AL,BH
+039A 24 01                 0349 	AND	AL,1		;Get byte/word bit
+039C 22 C1                 0350 	AND	AL,CL		;But don't use it in word-only operations
+039E 0A C5                 0351 	OR	AL,CH		;Combine with OP code
+03A0 E8 78 06              0352 	CALL	PUT
+03A3 8A C3                 0353 	MOV	AL,BL
+03A5 02 C0                 0354 	ADD	AL,AL		;Rotate to middle position
+03A7 02 C0                 0355 	ADD	AL,AL
+03A9 02 C0                 0356 	ADD	AL,AL
+03AB 0A C2                 0357 	OR	AL,DL		;Combine register field
+03AD 59                    0358 	POP	CX		;Dump return address
+03AE E9 2E 07              0359 	JMP	PUTADD		;Write the address
+03B1                       0360 
+03B1                       0361 STERR:
+03B1 B6 1D                 0362 	MOV	DH,29
+03B3                       0363 MRERR:
+03B3 8A CE                 0364 	MOV	CL,DH
+03B5                       0365 
+03B5 E9 F7 FE              0366 ERR1:	JMP	ERROR
+03B8                       0367 
+03B8                       0368 GETOP2:
+03B8                       0369 ;Get the second operand: look for a comma and drop into GETOP
+03B8 A0 CB 1B              0370 	MOV	AL,[SYM]
+03BB 3C 2C                 0371 	CMP	AL,','
+03BD B1 15                 0372 	MOV	CL,21
+03BF 75 F4                 0373 	JNZ	ERR1
+03C1                       0374 
+03C1                       0375 
+03C1                       0376 GETOP:
+03C1                       0377 
+03C1                       0378 ; Get one operand. Operand may be a memory reference in brackets, a register,
+03C1                       0379 ; or a constant. If a flag (such as "B" for byte operation) is encountered,
+03C1                       0380 ; it is noted and processing continues to find the operand.
+03C1                       0381 ;
+03C1                       0382 ; On exit, AL (=DH) has the type of operand. Other information depends
+03C1                       0383 ; on the actual operand:
+03C1                       0384 ;
+03C1                       0385 ; AL=DH=0  Memory Reference.  DL has the address mode properly prepared in
+03C1                       0386 ; the 8086 R/M format (middle bits zero). The constant part of the address
+03C1                       0387 ; is in ADDR. If an undefined label needs to be added to this, a pointer to
+03C1                       0388 ; its information fields is in ALABEL, otherwise ALABEL is zero.
+03C1                       0389 ;
+03C1                       0390 ; AL=DH=1  Value. The constant part is in DATA. If an undefined label needs
+03C1                       0391 ; to be added to this, a pointer to its information fields is in DLABEL,
+03C1                       0392 ; otherwise DLABEL is zero. "$" and "RET" are in this class.
+03C1                       0393 ;
+03C1                       0394 ; AL=DH=2  8-bit Register. DL has the register number.
+03C1                       0395 ;
+03C1                       0396 ; AL=DH=3  16-bit Register. DL has the register number.
+03C1                       0397 ;
+03C1                       0398 ; AL=DH=4  Segment Register. DL has the register number.
+03C1                       0399 
+03C1 E8 E3 01              0400 	CALL	GETSYM
+03C4                       0401 GETOP1:
+03C4                       0402 ;Enter here if we don't need a GETSYM first
+03C4 3C 5B                 0403 	CMP	AL,'['		;Memory reference?
+03C6 74 30                 0404 	JZ	MEM
+03C8 3C 05                 0405 	CMP	AL,5		;Flag ("B", "W", etc.)?
+03CA 74 57                 0406 	JZ	FLG
+03CC 3C 02                 0407 	CMP	AL,REG		;8-Bit register?
+03CE 74 20                 0408 	JZ	NREG
+03D0 3C 03                 0409 	CMP	AL,XREG		;16-Bit register?
+03D2 74 1C                 0410 	JZ	NREG
+03D4 3C 04                 0411 	CMP	AL,SREG		;Segment register?
+03D6 74 18                 0412 	JZ	NREG
+03D8                       0413 VAL:				;Must be immediate
+03D8 32 C0                 0414 	XOR	AL,AL		;No addressing modes allowed
+03DA                       0415 VAL1:
+03DA E8 4F 00              0416 	CALL	GETVAL
+03DD A1 75 1B              0417 	MOV	AX,[CON]	;Defined part
+03E0 A3 71 1B              0418 	MOV	[DATA],AX
+03E3 A1 77 1B              0419 	MOV	AX,[UNDEF]	;Undefined part
+03E6 A3 73 1B              0420 	MOV	[DLABEL],AX
+03E9 8A D5                 0421 	MOV	DL,CH
+03EB B6 01                 0422 	MOV	DH,CONST
+03ED 8A C6                 0423 	MOV	AL,DH
+03EF C3                    0424 	RET
+03F0                       0425 NREG:
+03F0 52                    0426 	PUSH	DX
+03F1 E8 B3 01              0427 	CALL	GETSYM
+03F4 5A                    0428 	POP	DX
+03F5 8A C6                 0429 	MOV	AL,DH
+03F7 C3                    0430 	RET
+03F8                       0431 MEM:
+03F8 E8 AC 01              0432 	CALL	GETSYM
+03FB B0 01                 0433 	MOV	AL,1
+03FD E8 2C 00              0434 	CALL	GETVAL
+0400 A0 CB 1B              0435 	MOV	AL,[SYM]
+0403 3C 5D                 0436 	CMP	AL,']'
+0405 B1 18                 0437 	MOV	CL,24
+0407 75 AC                 0438 	JNZ	ERR1
+0409 E8 9B 01              0439 	CALL	GETSYM
+040C 8B 1E 75 1B           0440 	MOV	BX,[CON]
+0410 89 1E 6D 1B           0441 	MOV	[ADDR],BX
+0414 8B 1E 77 1B           0442 	MOV	BX,[UNDEF]
+0418 89 1E 6F 1B           0443 	MOV	[ALABEL],BX
+041C 8A D5                 0444 	MOV	DL,CH
+041E B6 00                 0445 	MOV	DH,UNDEFID
+0420 8A C6                 0446 	MOV	AL,DH
+0422 C3                    0447 	RET
+0423                       0448 FLG:
+0423 E8 81 01              0449 	CALL	GETSYM
+0426 3C 2C                 0450 	CMP	AL,','
+0428 74 97                 0451 	JZ	GETOP
+042A EB 98                 0452 	JP	GETOP1
+042C                       0453 
+042C                       0454 
+042C                       0455 GETVAL:
+042C                       0456 
+042C                       0457 ; Expression analyzer. On entry, if AL=0 then do not allow base or index
+042C                       0458 ; registers. If AL=1, we are analyzing a memory reference, so allow base
+042C                       0459 ; and index registers, and compute addressing mode when done. The constant
+042C                       0460 ; part of the expression will be found in CON. If an undefined label is to
+042C                       0461 ; be added to this, a pointer to its information fields will be found in
+042C                       0462 ; UNDEF.
+042C                       0463 
+042C 95                    0464 	XCHG	AX,BP		;Flag is kept in BP
+042D 53                    0465 	PUSH	BX
+042E BB 00 00              0466 	MOV	BX,0
+0431 89 1E 75 1B           0467 	MOV	[CON],BX
+0435 89 1E 77 1B           0468 	MOV	[UNDEF],BX
+0439 5B                    0469 	POP	BX
+043A A0 CB 1B              0470 	MOV	AL,[SYM]
+043D 3C 2B                 0471 	CMP	AL,'+'
+043F 74 09                 0472 	JZ	PLSMNS
+0441 3C 2D                 0473 	CMP	AL,'-'
+0443 74 05                 0474 	JZ	PLSMNS
+0445 B1 2B                 0475 	MOV	CL,'+'
+0447 51                    0476 	PUSH	CX
+0448 EB 08                 0477 	JP	OPERATE
+044A                       0478 PLSMNS:
+044A 50                    0479 	PUSH	AX
+044B 81 CD 04 00           0480 	OR	BP,4		;Flag that a sign was found
+044F E8 55 01              0481 	CALL	GETSYM
+0452                       0482 OPERATE:
+0452 3C 01                 0483 	CMP	AL,CONST
+0454 75 03                 0484 	JNZ	$+5
+0456 E9 C3 00              0485 	JMP	CVAL
+0459 3C 00                 0486 	CMP	AL,UNDEFID
+045B 75 03                 0487 	JNZ	$+5
+045D E9 CA 00              0488 	JMP	UVAL
+0460 3C 22                 0489 	CMP	AL,'"'
+0462 75 03                 0490 	JNZ	$+5
+0464 E9 DE 00              0491 STRINGJ:JMP	STRING
+0467 3C 27                 0492 	CMP	AL,"'"
+0469 74 F9                 0493 	JZ	STRINGJ
+046B 3C 03                 0494 	CMP	AL,XREG		;Only 16-bit register may index
+046D B1 14                 0495 	MOV	CL,20
+046F 75 20                 0496 	JNZ	ERR2
+0471 F7 C5 01 00           0497 	TEST	BP,1		;Check to see if indexing is OK
+0475 B1 01                 0498 	MOV	CL,1
+0477 74 18                 0499 	JZ	ERR2
+0479 8A C2                 0500 	MOV	AL,DL
+047B B1 03                 0501 	MOV	CL,3
+047D 3C 03                 0502 	CMP	AL,3		;Check for BX
+047F 74 25                 0503 	JZ	BXJ
+0481 2C 05                 0504 	SUB	AL,5		;Check for BP
+0483 74 2A                 0505 	JZ	BPJ
+0485 FE C8                 0506 	DEC	AL		;Check for SI
+0487 B1 04                 0507 	MOV	CL,4
+0489 74 12                 0508 	JZ	SIJ
+048B FE C8                 0509 	DEC	AL		;Check for DI
+048D 74 05                 0510 	JZ	DIJ
+048F B1 02                 0511 	MOV	CL,2		;Invalid base/index register
+0491 E9 1B FE              0512 ERR2:	JMP	ERROR
+0494                       0513 DIJ:
+0494 95                    0514 	XCHG	AX,BP
+0495 A8 10                 0515 	TEST	AL,10H		;Check if already seen index register
+0497 75 F8                 0516 	JNZ	ERR2
+0499 0C 30                 0517 	OR	AL,30H		;Flag seeing index register DI
+049B EB 19                 0518 	JP	LPCHK
+049D                       0519 SIJ:
+049D 95                    0520 	XCHG	AX,BP
+049E A8 10                 0521 	TEST	AL,010H		;Check if already seen index register
+04A0 75 EF                 0522 	JNZ	ERR2
+04A2 0C 10                 0523 	OR	AL,010H		;Flag seeing index register SI
+04A4 EB 10                 0524 	JP	LPCHK
+04A6                       0525 BXJ:
+04A6 95                    0526 	XCHG	AX,BP
+04A7 A8 80                 0527 	TEST	AL,080H		;Check if already seen base register
+04A9 75 E6                 0528 	JNZ	ERR2
+04AB 0C 80                 0529 	OR	AL,080H		;Flag seeing base register BX
+04AD EB 07                 0530 	JP	LPCHK
+04AF                       0531 BPJ:
+04AF 95                    0532 	XCHG	AX,BP
+04B0 A8 80                 0533 	TEST	AL,080H		;Check if already seen base register
+04B2 75 DD                 0534 	JNZ	ERR2
+04B4 0C C0                 0535 	OR	AL,0C0H		;Flag seeing base register BP
+04B6                       0536 LPCHK:
+04B6 95                    0537 	XCHG	AX,BP
+04B7 58                    0538 	POP	AX		;Get operator
+04B8 3C 2D                 0539 	CMP	AL,'-'		;Can't subtract a register
+04BA B1 05                 0540 	MOV	CL,5
+04BC 74 D3                 0541 	JZ	ERR2
+04BE                       0542 NEXTER:
+04BE E8 E6 00              0543 	CALL	GETSYM
+04C1 3C 2B                 0544 	CMP	AL,'+'
+04C3 75 03                 0545 	JNZ	$+5
+04C5 E9 82 FF              0546 PJ:	JMP	PLSMNS
+04C8 3C 2D                 0547 	CMP	AL,'-'
+04CA 74 F9                 0548 	JZ	PJ
+04CC 95                    0549 	XCHG	AX,BP
+04CD B5 00                 0550 	MOV	CH,0
+04CF A8 10                 0551 	TEST	AL,010H		;Test INDEX bit
+04D1 D0 D0                 0552 	RCL	AL		;BASE bit (zero flag not affected)
+04D3 74 3B                 0553 	JZ	NOIND		;Jump if not indexed, with BASE bit in carry
+04D5 F5                    0554 	CMC
+04D6 D0 D5                 0555 	RCL	CH
+04D8 D0 D0                 0556 	RCL	AL		;BP bit
+04DA D0 D5                 0557 	RCL	CH
+04DC D0 D0                 0558 	RCL	AL		;DI bit
+04DE D0 D5                 0559 	RCL	CH		;The low 3 bits now have indexing mode
+04E0                       0560 MODE:
+04E0 80 CD 80              0561 	OR	CH,080H		;If undefined label, force 16-bit displacement
+04E3 F7 06 77 1B FF FF     0562 	TEST	[UNDEF],-1
+04E9 75 1E                 0563 	JNZ	RET
+04EB 8B 1E 75 1B           0564 	MOV	BX,[CON]
+04EF E8 18 00              0565 	CALL	SIGNEXT		;Check if 8-bit with sign extended
+04F2 75 15                 0566 	JNZ	RET		;If not, use 16-bit displacement
+04F4 80 E5 7F              0567 	AND	CH,07FH		;Reset 16-bit displacement
+04F7 80 CD 40              0568 	OR	CH,040H		;Set 8-bit displacement
+04FA 0B DB                 0569 	OR	BX,BX
+04FC 75 0B                 0570 	JNZ	RET		;Use it if not zero displacement
+04FE 80 E5 07              0571 	AND	CH,7		;Specify no displacement
+0501 82 FD 06              0572 	CMP	CH,6		;Check for BP+0 addressing mode
+0504 75 03                 0573 	JNZ	RET
+0506 80 CD 40              0574 	OR	CH,040H		;If BP+0, use 8-bit displacement
+0509 C3                    0575 	RET
+050A                       0576 
+050A                       0577 SIGNEXT:
+050A                       0578 ; Return with zero flag set if value in BX is a valid sign-extended
+050A                       0579 ; 8-bit value. AX destroyed
+050A 8A C3                 0580 	MOV	AL,BL
+050C 98                    0581 	CBW
+050D 3B C3                 0582 	CMP	AX,BX
+050F C3                    0583 	RET
+0510                       0584 
+0510                       0585 NOIND:
+0510 B5 06                 0586 	MOV	CH,6		;Try direct address mode
+0512 73 FB                 0587 	JNC	RET		;If no base register, that's right
+0514 D0 D0                 0588 	RCL	AL		;Check BP bit
+0516 72 C8                 0589 	JC	MODE
+0518 FE C5                 0590 	INC	CH		;If not, must be BX
+051A EB C4                 0591 	JP	MODE
+051C                       0592 
+051C                       0593 CVAL:
+051C 58                    0594 	POP	AX
+051D 3C 2D                 0595 	CMP	AL,'-'
+051F 75 02                 0596 	JNZ	ADDCON
+0521 F7 DA                 0597 	NEG	DX
+0523                       0598 ADDCON:
+0523 01 16 75 1B           0599 	ADD	[CON],DX
+0527 E9 94 FF              0600 	JMP	NEXTER
+052A                       0601 
+052A                       0602 UVAL:
+052A 95                    0603 	XCHG	AX,BP
+052B B1 06                 0604 	MOV	CL,6
+052D A8 08                 0605 	TEST	AL,008H		;Check if undefined label has been seen
+052F 75 11                 0606 	JNZ	ERR30
+0531 0C 08                 0607 	OR	AL,008H		;Flag seeing undefined label
+0533 95                    0608 	XCHG	AX,BP
+0534 89 1E 77 1B           0609 	MOV	[UNDEF],BX
+0538 58                    0610 	POP	AX
+0539 3C 2B                 0611 	CMP	AL,'+'		;Undefined label may only be added
+053B B1 05                 0612 	MOV	CL,5
+053D 75 03                 0613 	JNZ	ERR30
+053F E9 7C FF              0614 	JMP	NEXTER
+0542                       0615 
+0542 E9 6A FD              0616 ERR30:	JMP	ERROR
+0545                       0617 
+0545                       0618 STRING:
+0545 8A E8                 0619 	MOV	CH,AL
+0547 A0 CA 1B              0620 	MOV	AL,[CHR]
+054A 3A C5                 0621 	CMP	AL,CH
+054C B1 23                 0622 	MOV	CL,35
+054E 8A D0                 0623 	MOV	DL,AL
+0550 B6 00                 0624 	MOV	DH,0
+0552 75 03                 0625 	JNZ	L0003
+0554 E8 36 00              0626 	CALL	ZERLEN
+0557                       0627 L0003:
+0557 E8 3B 00              0628 	CALL	GETCHR
+055A 9F                    0629 	LAHF
+055B 95                    0630 	XCHG	AX,BP
+055C 9E                    0631 	SAHF
+055D B1 25                 0632 	MOV	CL,37
+055F A8 02                 0633 	TEST	AL,002H
+0561 74 DF                 0634 	JZ	ERR30
+0563 A8 04                 0635 	TEST	AL,004H
+0565 B1 26                 0636 	MOV	CL,38
+0567 75 D9                 0637 	JNZ	ERR30
+0569 9F                    0638 	LAHF
+056A 95                    0639 	XCHG	AX,BP
+056B 9E                    0640 	SAHF
+056C                       0641 STRGDAT:
+056C 8A C2                 0642 	MOV	AL,DL
+056E 3C 0D                 0643 	CMP	AL,EOL
+0570 B1 27                 0644 	MOV	CL,39
+0572 74 CE                 0645 	JZ	ERR30
+0574 E8 A4 04              0646 	CALL	PUT
+0577 A0 D3 1B              0647 	MOV	AL,[DATSIZ]
+057A 0A C0                 0648 	OR	AL,AL
+057C 75 05                 0649 	JNZ	BYTSIZ
+057E 8A C6                 0650 	MOV	AL,DH
+0580 E8 98 04              0651 	CALL	PUT
+0583                       0652 BYTSIZ:
+0583 A0 CA 1B              0653 	MOV	AL,[CHR]
+0586 8A D0                 0654 	MOV	DL,AL
+0588 E8 0A 00              0655 	CALL	GETCHR
+058B EB DF                 0656 	JP	STRGDAT
+058D                       0657 ZERLEN:
+058D E8 24 FD              0658 	CALL	NEXTCHR
+0590 3A C5                 0659 	CMP	AL,CH
+0592 75 AE                 0660 	JNZ	ERR30
+0594 C3                    0661 	RET
+0595                       0662 GETCHR:
+0595 E8 1C FD              0663 	CALL	NEXTCHR
+0598 3A C5                 0664 	CMP	AL,CH
+059A 75 F8                 0665 	JNZ	RET
+059C E8 15 FD              0666 	CALL	NEXTCHR
+059F 3A C5                 0667 	CMP	AL,CH
+05A1 74 F1                 0668 	JZ	RET
+05A3 5B                    0669 	POP	BX
+05A4 E9 75 FF              0670 	JMP	CVAL
+05A7                       0671 
+05A7                       0672 
+05A7                       0673 GETSYM:
+05A7                       0674 
+05A7                       0675 ; The lexical scanner. Used only in the operand field. Returns with the token
+05A7                       0676 ; in SYM and AL, sometimes with additional info in BX or DX.
+05A7                       0677 ;
+05A7                       0678 ; AL=SYM=0  Undefined label. BX has pointer to information fields.
+05A7                       0679 ;
+05A7                       0680 ; AL=SYM=1  Constant (or defined label). DX has value.
+05A7                       0681 ;
+05A7                       0682 ; AL=SYM=2,3,4  8-bit register, 16-bit register, or segment register,
+05A7                       0683 ; respectively. DL has register number.
+05A7                       0684 ;
+05A7                       0685 ; AL=SYM=5  A mode flag (such as "B" for byte operation). Also stored in
+05A7                       0686 ; appropriate memory location--FLAG or LONG.
+05A7                       0687 ;
+05A7                       0688 ; All other values are the ASCII code of the character. Note that this may
+05A7                       0689 ; never be a letter or number.
+05A7                       0690 
+05A7 E8 20 00              0691 	CALL	GETSY
+05AA A0 CB 1B              0692 	MOV	AL,[SYM]
+05AD C3                    0693 	RET
+05AE                       0694 
+05AE                       0695 SCANB:
+05AE A0 CA 1B              0696 	MOV	AL,[CHR]
+05B1                       0697 SCANT:
+05B1 3C 20                 0698 	CMP	AL,' '
+05B3 74 04                 0699 	JZ	NEXB
+05B5 3C 09                 0700 	CMP	AL,9
+05B7 75 F4                 0701 	JNZ	RET
+05B9                       0702 NEXB:
+05B9 E8 F8 FC              0703 	CALL	NEXTCHR
+05BC EB F3                 0704 	JP	SCANT
+05BE                       0705 
+05BE                       0706 DOLLAR:
+05BE 8B 16 67 1B           0707 	MOV	DX,[OLDPC]
+05C2 B0 01                 0708 	MOV	AL,CONST
+05C4 A2 CB 1B              0709 	MOV	[SYM],AL
+05C7                       0710 NEXTCHJ:
+05C7 E9 EA FC              0711 	JMP	NEXTCHR
+05CA                       0712 
+05CA                       0713 GETSY:
+05CA E8 E1 FF              0714 	CALL	SCANB
+05CD 3C 24                 0715 	CMP	AL,'$'
+05CF 74 ED                 0716 	JZ	DOLLAR
+05D1 A2 CB 1B              0717 	MOV	[SYM],AL
+05D4 0C 20                 0718 	OR	AL,20H
+05D6 3C 7B                 0719 	CMP	AL,'z'+1
+05D8 73 ED                 0720 	JNC	NEXTCHJ
+05DA 3C 61                 0721 	CMP	AL,'a'
+05DC 72 03                 0722 	JC	$+5
+05DE E9 BF 00              0723 	JMP	LETTER
+05E1 3C 3A                 0724 	CMP	AL,'9'+1
+05E3 73 E2                 0725 	JNC	NEXTCHJ
+05E5 3C 30                 0726 	CMP	AL,'0'
+05E7 72 DE                 0727 	JC	NEXTCHJ
+05E9 BB CB 1B              0728 	MOV	BX,SYM
+05EC C6 07 01              0729 	MOV	B,[BX],CONST
+05EF E8 83 00              0730 	CALL	READID
+05F2 4B                    0731 	DEC	BX
+05F3 8A 07                 0732 	MOV	AL,[BX]
+05F5 B1 07                 0733 	MOV	CL,7
+05F7 BB 00 00              0734 	MOV	BX,0
+05FA 3C 68                 0735 	CMP	AL,'h'
+05FC 75 03                 0736 	JNZ	$+5
+05FE E9 32 00              0737 	JMP	HEX
+0601 FE C1                 0738 	INC	CL
+0603 C7 06 F0 1B 7A 1B     0739 	MOV	[IX],ID
+0609                       0740 DEC:
+0609 8B 36 F0 1B           0741 	MOV	SI,[IX]
+060D 8A 04                 0742 	MOV	AL,[SI]
+060F FF 06 F0 1B           0743 	INC	[IX]
+0613 3C 3A                 0744 	CMP	AL,'9'+1
+0615 72 03                 0745 	JC	$+5
+0617 E9 95 FC              0746 	JMP	ERROR
+061A 2C 30                 0747 	SUB	AL,'0'
+061C 8B D3                 0748 	MOV	DX,BX
+061E D1 E3                 0749 	SHL	BX
+0620 D1 E3                 0750 	SHL	BX
+0622 03 DA                 0751 	ADD	BX,DX
+0624 D1 E3                 0752 	SHL	BX
+0626 8A D0                 0753 	MOV	DL,AL
+0628 B6 00                 0754 	MOV	DH,0
+062A 03 DA                 0755 	ADD	BX,DX
+062C FE CD                 0756 	DEC	CH
+062E 75 D9                 0757 	JNZ	DEC
+0630 87 DA                 0758 	XCHG	DX,BX
+0632 C3                    0759 	RET
+0633                       0760 
+0633                       0761 HEX:
+0633 BA 7A 1B              0762 	MOV	DX,ID
+0636 FE CD                 0763 	DEC	CH
+0638                       0764 HEX1:
+0638 8B F2                 0765 	MOV	SI,DX
+063A AC                    0766 	LODB
+063B 42                    0767 	INC	DX
+063C 2C 30                 0768 	SUB	AL,'0'
+063E 3C 0A                 0769 	CMP	AL,10
+0640 72 06                 0770 	JC	GOTIT
+0642 3C 37                 0771 	CMP	AL,'g'-'0'
+0644 73 13                 0772 	JNC	ERR4
+0646 2C 27                 0773 	SUB	AL,'a'-10-'0'
+0648                       0774 GOTIT:
+0648 D1 E3                 0775 	SHL	BX
+064A D1 E3                 0776 	SHL	BX
+064C D1 E3                 0777 	SHL	BX
+064E D1 E3                 0778 	SHL	BX
+0650 02 D8                 0779 	ADD	BL,AL
+0652 FE CD                 0780 	DEC	CH
+0654 75 E2                 0781 	JNZ	HEX1
+0656 87 DA                 0782 	XCHG	DX,BX
+0658 C3                    0783 	RET
+0659                       0784 
+0659 E9 53 FC              0785 ERR4:	JMP	ERROR
+065C                       0786 
+065C                       0787 GETLET:
+065C E8 4F FF              0788 	CALL	SCANB
+065F 3C 0D                 0789 	CMP	AL,EOL
+0661 F9                    0790 	STC
+0662 74 F4                 0791 	JZ	RET
+0664 3C 3B                 0792 	CMP	AL,';'
+0666 F9                    0793 	STC
+0667 74 EF                 0794 	JZ	RET
+0669 B1 0A                 0795 	MOV	CL,10
+066B 0C 20                 0796 	OR	AL,20H
+066D 3C 61                 0797 	CMP	AL,'a'
+066F 72 E8                 0798 	JC	ERR4
+0671 3C 7B                 0799 	CMP	AL,'z'+1
+0673 73 E4                 0800 	JNC	ERR4
+0675                       0801 READID:
+0675 BB 7A 1B              0802 	MOV	BX,ID
+0678 B5 00                 0803 	MOV	CH,0
+067A                       0804 MOREID:
+067A 88 07                 0805 	MOV	[BX],AL
+067C FE C5                 0806 	INC	CH
+067E 43                    0807 	INC	BX
+067F E8 32 FC              0808 	CALL	NEXTCHR
+0682 3C 30                 0809 	CMP	AL,'0'
+0684 72 0E                 0810 	JC	NOMORE
+0686 0C 20                 0811 	OR	AL,20H
+0688 3C 7B                 0812 	CMP	AL,'z'+1
+068A 73 08                 0813 	JNC	NOMORE
+068C 3C 3A                 0814 	CMP	AL,'9'+1
+068E 72 EA                 0815 	JC	MOREID
+0690 3C 61                 0816 	CMP	AL,'a'
+0692 73 E6                 0817 	JNC	MOREID
+0694                       0818 NOMORE:
+0694 8A C8                 0819 	MOV	CL,AL
+0696 8A C5                 0820 	MOV	AL,CH
+0698 A2 79 1B              0821 	MOV	[LENID],AL
+069B 0A C0                 0822 	OR	AL,AL
+069D 8A C1                 0823 	MOV	AL,CL
+069F C3                    0824 	RET
+06A0                       0825 
+06A0                       0826 LETTER:
+06A0 E8 D2 FF              0827 	CALL	READID
+06A3 8A C5                 0828 	MOV	AL,CH
+06A5 FE C8                 0829 	DEC	AL
+06A7 75 1B                 0830 	JNZ	NOFLG
+06A9 A0 7A 1B              0831 	MOV	AL,[ID]
+06AC 3C 6C                 0832 	CMP	AL,'l'
+06AE B1 00                 0833 	MOV	CL,0
+06B0 BA 6C 1B              0834 	MOV	DX,LONG
+06B3 74 23                 0835 	JZ	BWFLAG
+06B5 3C 62                 0836 	CMP	AL,'b'
+06B7 BA 6B 1B              0837 	MOV	DX,FLAG
+06BA 74 1C                 0838 	JZ	BWFLAG
+06BC 3C 77                 0839 	CMP	AL,'w'
+06BE B1 01                 0840 	MOV	CL,1
+06C0 74 16                 0841 	JZ	BWFLAG
+06C2 32 C0                 0842 	XOR	AL,AL
+06C4                       0843 NOFLG:
+06C4 FE C8                 0844 	DEC	AL
+06C6 53                    0845 	PUSH	BX
+06C7 75 03                 0846 	JNZ	L0004
+06C9 E8 1F 00              0847 	CALL	REGCHK
+06CC                       0848 L0004:	
+06CC 5B                    0849 	POP	BX
+06CD 8A C6                 0850 	MOV	AL,DH
+06CF 74 03                 0851 	JZ	SYMSAV
+06D1 E8 B6 00              0852 	CALL	LOOKRET
+06D4                       0853 SYMSAV:
+06D4 A2 CB 1B              0854 	MOV	[SYM],AL
+06D7 C3                    0855 	RET
+06D8                       0856 
+06D8                       0857 BWFLAG:
+06D8 87 DA                 0858 	XCHG	DX,BX
+06DA 8A 07                 0859 	MOV	AL,[BX]
+06DC FE C0                 0860 	INC	AL
+06DE 88 0F                 0861 	MOV	[BX],CL
+06E0 B1 20                 0862 	MOV	CL,32
+06E2 74 03                 0863 	JZ	$+5
+06E4 E9 C8 FB              0864 	JMP	ERROR
+06E7 B0 05                 0865 	MOV	AL,5
+06E9 EB E9                 0866 	JP	SYMSAV
+06EB                       0867 
+06EB                       0868 REGCHK:
+06EB BB 7A 1B              0869 	MOV	BX,ID
+06EE 8A 0F                 0870 	MOV	CL,[BX]
+06F0 9F                    0871 	LAHF
+06F1 43                    0872 	INC	BX
+06F2 9E                    0873 	SAHF
+06F3 8A 07                 0874 	MOV	AL,[BX]
+06F5 BB 52 07              0875 	MOV	BX,REGTAB
+06F8 B6 03                 0876 	MOV	DH,XREG
+06FA B2 00                 0877 	MOV	DL,0
+06FC 3C 78                 0878 	CMP	AL,'x'
+06FE 74 3B                 0879 	JZ	SCANREG
+0700 B6 02                 0880 	MOV	DH,REG
+0702 3C 6C                 0881 	CMP	AL,'l'
+0704 74 35                 0882 	JZ	SCANREG
+0706 B2 04                 0883 	MOV	DL,4
+0708 3C 68                 0884 	CMP	AL,'h'
+070A 74 2F                 0885 	JZ	SCANREG
+070C B6 04                 0886 	MOV	DH,SREG
+070E B2 00                 0887 	MOV	DL,0
+0710 BB 56 07              0888 	MOV	BX,SEGTAB
+0713 3C 73                 0889 	CMP	AL,'s'
+0715 74 24                 0890 	JZ	SCANREG
+0717 B6 03                 0891 	MOV	DH,XREG
+0719 3C 70                 0892 	CMP	AL,'p'
+071B 74 11                 0893 	JZ	PREG
+071D 3C 69                 0894 	CMP	AL,'i'
+071F 75 B6                 0895 	JNZ	RET
+0721 B2 06                 0896 	MOV	DL,6
+0723 8A C1                 0897 	MOV	AL,CL
+0725 3C 73                 0898 	CMP	AL,'s'
+0727 74 AE                 0899 	JZ	RET
+0729 FE C2                 0900 	INC	DL
+072B 3C 64                 0901 	CMP	AL,'d'
+072D C3                    0902 	RET
+072E                       0903 PREG:
+072E B2 04                 0904 	MOV	DL,4
+0730 8A C1                 0905 	MOV	AL,CL
+0732 3C 73                 0906 	CMP	AL,'s'
+0734 74 F7                 0907 	JZ	RET
+0736 FE C2                 0908 	INC	DL
+0738 3C 62                 0909 	CMP	AL,'b'
+073A C3                    0910 	RET
+073B                       0911 SCANREG:
+073B 8A C1                 0912 	MOV	AL,CL
+073D B9 04 00              0913 	MOV	CX,4
+0740 FC                    0914 	UP
+0741 8B FB                 0915 	MOV	DI,BX
+0743 F2                    0916 	REPNZ
+0744 AE                    0917 	SCAB
+0745 8B DF                 0918 	MOV	BX,DI
+0747 75 F1                 0919 	JNZ	RET
+0749 8A C1                 0920 	MOV	AL,CL
+074B 02 C2                 0921 	ADD	AL,DL
+074D 8A D0                 0922 	MOV	DL,AL
+074F 32 C0                 0923 	XOR	AL,AL
+0751 C3                    0924 	RET
+0752                       0925 
+0752 62 64 63 61           0926 REGTAB:	DB	'bdca'
+0756                       0927 
+0756 64 73 63 65           0928 SEGTAB:	DB	'dsce'
+075A                       0929 
+075A                       0930 LOOK:
+075A 8A 2F                 0931 	MOV	CH,[BX]
+075C 43                    0932 	INC	BX
+075D BA 7A 1B              0933 	MOV	DX,ID
+0760 E8 F4 00              0934 	CALL	CPSLP
+0763 74 EC                 0935 	JZ	RET
+0765 34 80                 0936 	XOR	AL,80H
+0767 8A C8                 0937 	MOV	CL,AL
+0769 4B                    0938 	DEC	BX
+076A 8A 07                 0939 	MOV	AL,[BX]
+076C 34 80                 0940 	XOR	AL,80H
+076E 3A C1                 0941 	CMP	AL,CL
+0770 73 04                 0942 	JNC	SMALL
+0772 FE C5                 0943 	INC	CH
+0774 FE C5                 0944 	INC	CH
+0776                       0945 SMALL:
+0776 8A D5                 0946 	MOV	DL,CH
+0778 B6 00                 0947 	MOV	DH,0
+077A 03 DA                 0948 	ADD	BX,DX
+077C 8B 17                 0949 	MOV	DX,[BX]
+077E 43                    0950 	INC	BX
+077F 8A C2                 0951 	MOV	AL,DL
+0781 0A C6                 0952 	OR	AL,DH
+0783 F9                    0953 	STC
+0784 74 CB                 0954 	JZ	RET
+0786 87 DA                 0955 	XCHG	DX,BX
+0788 EB D0                 0956 	JP	LOOK
+078A                       0957 
+078A                       0958 LOOKRET:
+078A 8A C5                 0959 	MOV	AL,CH
+078C 3C 03                 0960 	CMP	AL,3	;RET has 3 letters
+078E 75 4D                 0961 	JNZ	LOOKUP
+0790 4B                    0962 	DEC	BX
+0791 80 0F 80              0963 	OR	B,[BX],080H
+0794 BA 1A 1B              0964 	MOV	DX,RETSTR+2
+0797                       0965 CHKRET:
+0797 8B F2                 0966 	MOV	SI,DX
+0799 AC                    0967 	LODB
+079A 3A 07                 0968 	CMP	AL,[BX]
+079C 75 43                 0969 	JNZ	LOOKIT
+079E 4B                    0970 	DEC	BX
+079F 4A                    0971 	DEC	DX
+07A0 FE CD                 0972 	DEC	CH
+07A2 75 F3                 0973 	JNZ	CHKRET
+07A4 8B 16 E8 1B           0974 	MOV	DX,[LSTRET]
+07A8 8A C2                 0975 	MOV	AL,DL
+07AA 22 C6                 0976 	AND	AL,DH
+07AC FE C0                 0977 	INC	AL
+07AE 74 0D                 0978 	JZ	ALLRET
+07B0 8B 1E 65 1B           0979 	MOV	BX,[PC]
+07B4 2B DA                 0980 	SUB	BX,DX
+07B6 E8 51 FD              0981 	CALL	SIGNEXT
+07B9 B0 01                 0982 	MOV	AL,1
+07BB 74 94                 0983 	JZ	RET
+07BD                       0984 ALLRET:
+07BD 8B 1E EA 1B           0985 	MOV	BX,[RETPT]
+07C1 8A C7                 0986 	MOV	AL,BH
+07C3 0A C3                 0987 	OR	AL,BL
+07C5 B0 00                 0988 	MOV	AL,0
+07C7 75 88                 0989 	JNZ	RET
+07C9 8B 1E CE 1B           0990 	MOV	BX,[HEAP]
+07CD 4B                    0991 	DEC	BX
+07CE 4B                    0992 	DEC	BX
+07CF 4B                    0993 	DEC	BX
+07D0 89 1E CE 1B           0994 	MOV	[HEAP],BX
+07D4 32 C0                 0995 	XOR	AL,AL
+07D6 88 07                 0996 	MOV	[BX],AL
+07D8 89 1E EA 1B           0997 	MOV	[RETPT],BX
+07DC C3                    0998 	RET
+07DD                       0999 
+07DD                       1000 LOOKUP:
+07DD 4B                    1001 	DEC	BX
+07DE 80 0F 80              1002 	OR	B,[BX],080H
+07E1                       1003 LOOKIT:
+07E1 8B 1E CC 1B           1004 	MOV	BX,[BASE]
+07E5 8A C7                 1005 	MOV	AL,BH
+07E7 0A C3                 1006 	OR	AL,BL
+07E9 74 1E                 1007 	JZ	EMPTY
+07EB E8 6C FF              1008 	CALL	LOOK
+07EE 72 10                 1009 	JC	ENTER
+07F0 BA 04 00              1010 	MOV	DX,4
+07F3 03 DA                 1011 	ADD	BX,DX
+07F5 8A 07                 1012 	MOV	AL,[BX]
+07F7 0A C0                 1013 	OR	AL,AL
+07F9 74 E1                 1014 	JZ	RET
+07FB 43                    1015 	INC	BX
+07FC 8B 17                 1016 	MOV	DX,[BX]
+07FE 43                    1017 	INC	BX
+07FF C3                    1018 	RET
+0800                       1019 
+0800                       1020 ENTER:
+0800 53                    1021 	PUSH	BX		;Save pointer to link field
+0801 E8 0D 00              1022 	CALL	CREATE		;Add the node
+0804 5E                    1023 	POP	SI
+0805 89 54 FF              1024 	MOV	[SI-1],DX	;Link new node
+0808 C3                    1025 	RET			;Zero was set by CREATE
+0809                       1026 
+0809                       1027 EMPTY:
+0809 E8 05 00              1028 	CALL	CREATE
+080C 89 16 CC 1B           1029 	MOV	[BASE],DX
+0810 C3                    1030 	RET
+0811                       1031 
+0811                       1032 
+0811                       1033 CREATE:
+0811                       1034 
+0811                       1035 ; Add a new node to the identifier tree. The identifier is at ID with
+0811                       1036 ; bit 7 of the last character set to one. The length of the identifier is
+0811                       1037 ; in LENID, which is ID-1.
+0811                       1038 ;
+0811                       1039 ; Node format:
+0811                       1040 ;	1. Length of identifier (1 byte)
+0811                       1041 ;	2. Identifier (1-80 bytes)
+0811                       1042 ;	3. Left link (2-byte pointer to alphabetically smaller identifiers)
+0811                       1043 ;	4. Right link (0 if none larger)
+0811                       1044 ;	5. Data field:
+0811                       1045 ;	   a. Defined flag (0=undefined, 1=defined)
+0811                       1046 ;	   b. Value (2 bytes)
+0811                       1047 ;
+0811                       1048 ; This routine returns with AL=zero and zero flag set (which indicates
+0811                       1049 ; on return from LOOKUP that it has not yet been defined), DX points
+0811                       1050 ; to start of new node, and BX points to data field of new node.
+0811                       1051 
+0811 A0 79 1B              1052 	MOV	AL,[LENID]
+0814 04 08                 1053 	ADD	AL,8		;Storage needed for the node
+0816 8B 1E CE 1B           1054 	MOV	BX,[HEAP]
+081A 8A D0                 1055 	MOV	DL,AL
+081C B6 00                 1056 	MOV	DH,0
+081E 2B DA                 1057 	SUB	BX,DX		;Heap grows downward
+0820 89 1E CE 1B           1058 	MOV	[HEAP],BX
+0824 87 DA                 1059 	XCHG	DX,BX
+0826 8B 1E D1 1B           1060 	MOV	BX,[CODE]	;Check to make sure there's enough
+082A 3B DA                 1061 	CMP	BX,DX
+082C 72 03                 1062 	JB	$+5
+082E E9 40 FA              1063 	JMP	ABORT
+0831 52                    1064 	PUSH	DX
+0832 BB 79 1B              1065 	MOV	BX,LENID
+0835 8A 0F                 1066 	MOV	CL,[BX]
+0837 FE C1                 1067 	INC	CL
+0839 B5 00                 1068 	MOV	CH,0
+083B FC                    1069 	UP
+083C 8B F3                 1070 	MOV	SI,BX
+083E 8B FA                 1071 	MOV	DI,DX
+0840 F3                    1072 	REP
+0841 A4                    1073 	MOVB			;Move identifier and length into node
+0842 8B D7                 1074 	MOV	DX,DI
+0844 8B DE                 1075 	MOV	BX,SI
+0846 B5 04                 1076 	MOV	CH,4
+0848 87 DA                 1077 	XCHG	DX,BX
+084A                       1078 NILIFY:
+084A 88 0F                 1079 	MOV	[BX],CL		;Zero left and right links
+084C 43                    1080 	INC	BX
+084D FE CD                 1081 	DEC	CH
+084F 75 F9                 1082 	JNZ	NILIFY
+0851 32 C0                 1083 	XOR	AL,AL		;Set zero flag
+0853 88 07                 1084 	MOV	[BX],AL		;Zero defined flag
+0855 5A                    1085 	POP	DX		;Restore pointer to node
+0856 C3                    1086 	RET
+0857                       1087 
+0857                       1088 CPSLP:
+0857 8B F2                 1089 	MOV	SI,DX
+0859 AC                    1090 	LODB
+085A 3A 07                 1091 	CMP	AL,[BX]
+085C 9F                    1092 	LAHF
+085D 42                    1093 	INC	DX
+085E 43                    1094 	INC	BX
+085F 9E                    1095 	SAHF
+0860 75 F4                 1096 	JNZ	RET
+0862 FE CD                 1097 	DEC	CH
+0864 75 F1                 1098 	JNZ	CPSLP
+0866 C3                    1099 	RET
+0867                       1100 
+0867                       1101 GETLAB:
+0867 BB 00 00              1102 	MOV	BX,0
+086A 89 1E 69 1B           1103 	MOV	[LABPT],BX
+086E B0 FF                 1104 	MOV	AL,-1
+0870 A2 6B 1B              1105 	MOV	[FLAG],AL
+0873 A2 6C 1B              1106 	MOV	[LONG],AL
+0876 B6 00                 1107 	MOV	DH,0
+0878 A0 CA 1B              1108 	MOV	AL,[CHR]
+087B 3C 21                 1109 	CMP	AL,' '+1
+087D 72 03                 1110 	JC	NOT1
+087F 80 CE 01              1111 	OR	DH,001H
+0882                       1112 NOT1:
+0882 E8 D7 FD              1113 	CALL	GETLET
+0885 72 DF                 1114 	JC	RET
+0887 3C 3A                 1115 	CMP	AL,':'
+0889 75 05                 1116 	JNZ	LABCHK
+088B E8 26 FA              1117 	CALL	NEXTCHR
+088E EB 07                 1118 	JP	LABEL
+0890                       1119 LABCHK:
+0890 0A C0                 1120 	OR	AL,AL
+0892 F6 C6 01              1121 	TEST	DH,001H
+0895 74 CF                 1122 	JZ	RET
+0897                       1123 LABEL:
+0897 A0 E5 1B              1124 	MOV	AL,[CHKLAB]
+089A 0A C0                 1125 	OR	AL,AL
+089C 74 03                 1126 	JZ	$+5
+089E E9 BB FD              1127 	JMP	GETLET
+08A1 E8 39 FF              1128 	CALL	LOOKUP
+08A4 B1 0B                 1129 	MOV	CL,11
+08A6 75 14                 1130 	JNZ	ERR5
+08A8 8B 16 65 1B           1131 	MOV	DX,[PC]
+08AC C6 07 01              1132 	MOV	B,[BX],1
+08AF 43                    1133 	INC	BX
+08B0 88 17                 1134 	MOV	[BX],DL
+08B2 89 1E 69 1B           1135 	MOV	[LABPT],BX
+08B6 43                    1136 	INC	BX
+08B7 88 37                 1137 	MOV	[BX],DH
+08B9 E9 A0 FD              1138 	JMP	GETLET
+08BC                       1139 
+08BC E9 F0 F9              1140 ERR5:	JMP	ERROR
+08BF                       1141 
+08BF                       1142 ASMLIN:
+08BF 8B 1E 65 1B           1143 	MOV	BX,[PC]
+08C3 89 1E 67 1B           1144 	MOV	[OLDPC],BX
+08C7 E8 9D FF              1145 	CALL	GETLAB
+08CA 73 03                 1146 	JNC	$+5
+08CC E9 80 F9              1147 	JMP	ENDLN
+08CF BB 79 1B              1148 	MOV	BX,LENID
+08D2 8A 07                 1149 	MOV	AL,[BX]
+08D4 B1 0C                 1150 	MOV	CL,12
+08D6 2C 02                 1151 	SUB	AL,2
+08D8 8A E8                 1152 	MOV	CH,AL
+08DA 72 E0                 1153 	JC	ERR5
+08DC 43                    1154 	INC	BX
+08DD 82 3F 66              1155 	CMP	B,[BX],"f"	;See if an 8087 mnemonic
+08E0 74 57                 1156 	JZ	NDPOP
+08E2 3C 05                 1157 	CMP	AL,5
+08E4 73 D6                 1158 	JNC	ERR5
+08E6 8A 07                 1159 	MOV	AL,[BX]
+08E8 2C 61                 1160 	SUB	AL,'a'
+08EA 8A C8                 1161 	MOV	CL,AL
+08EC 02 C0                 1162 	ADD	AL,AL
+08EE 02 C0                 1163 	ADD	AL,AL
+08F0 02 C1                 1164 	ADD	AL,CL
+08F2 02 C5                 1165 	ADD	AL,CH
+08F4 02 C0                 1166 	ADD	AL,AL
+08F6 BB 35 19              1167 	MOV	BX,OPTAB
+08F9 8A D0                 1168 	MOV	DL,AL
+08FB B6 00                 1169 	MOV	DH,0
+08FD 03 DA                 1170 	ADD	BX,DX
+08FF 8A 17                 1171 	MOV	DL,[BX]
+0901 43                    1172 	INC	BX
+0902 8A 37                 1173 	MOV	DH,[BX]
+0904 87 DA                 1174 	XCHG	DX,BX
+0906 FE C5                 1175 	INC	CH
+0908 8A CD                 1176 	MOV	CL,CH
+090A 8A 07                 1177 	MOV	AL,[BX]
+090C 43                    1178 	INC	BX
+090D 0A C0                 1179 	OR	AL,AL
+090F 74 1E                 1180 	JZ	OPERR
+0911                       1181 FINDOP:
+0911 8A E9                 1182 	MOV	CH,CL
+0913 9F                    1183 	LAHF
+0914 95                    1184 	XCHG	AX,BP
+0915 9E                    1185 	SAHF
+0916 BA 7B 1B              1186 	MOV	DX,ID+1
+0919 E8 3B FF              1187 	CALL	CPSLP
+091C 74 16                 1188 	JZ	HAVOP
+091E B6 00                 1189 	MOV	DH,0
+0920 8A D5                 1190 	MOV	DL,CH
+0922 FE C2                 1191 	INC	DL
+0924 FE C2                 1192 	INC	DL
+0926 03 DA                 1193 	ADD	BX,DX
+0928 9F                    1194 	LAHF
+0929 95                    1195 	XCHG	AX,BP
+092A 9E                    1196 	SAHF
+092B FE C8                 1197 	DEC	AL
+092D 75 E2                 1198 	JNZ	FINDOP
+092F                       1199 OPERR:
+092F B1 0C                 1200 	MOV	CL,12
+0931 E9 7B F9              1201 	JMP	ERROR
+0934                       1202 
+0934                       1203 HAVOP:
+0934 8A 47 02              1204 	MOV	AL,[BX+2]	;Get opcode
+0937 FF 27                 1205 	JMP	[BX]
+0939                       1206 
+0939                       1207 NDPOP:	;First letter is "F" so must be 8087 opcode ("Numeric Data Processor")
+0939 43                    1208 	INC	BX
+093A 82 3F 6E              1209 	CMP	B,[BX],"n"	;"No-wait" form?
+093D B4 00                 1210 	MOV	AH,0
+093F 75 05                 1211 	JNZ	SAVNFLG
+0941 B4 01                 1212 	MOV	AH,1
+0943 FE C8                 1213 	DEC	AL
+0945 43                    1214 	INC	BX		;Skip over the "N"
+0946                       1215 SAVNFLG:
+0946 88 26 EF 1B           1216 	MOV	[NOWAIT],AH	;0 for wait, 1 for no wait
+094A 3C 01                 1217 	CMP	AL,1
+094C 72 E1                 1218 	JB	OPERR		;Not enough char left for valid opcode?
+094E 3C 05                 1219 	CMP	AL,5
+0950 77 DD                 1220 	JA	OPERR		;Too many?
+0952 98                    1221 	CBW
+0953 92                    1222 	XCHG	AX,DX		;Save length in DX
+0954 8B F2                 1223 	MOV	SI,DX
+0956 80 08 80              1224 	OR	B,[SI+BX],80H	;Set high bit of last character
+0959 8A 07                 1225 	MOV	AL,[BX]		;Get first char of opcode
+095B 43                    1226 	INC	BX
+095C 2C 61                 1227 	SUB	AL,"a"
+095E 72 28                 1228 	JB	TRY2XM1		;Go see if opcode starts with "2"
+0960 3C 19                 1229 	CMP	AL,"z"-"a"
+0962 77 CB                 1230 	JA	OPERR
+0964 98                    1231 	CBW
+0965 D1 E0                 1232 	SHL	AX		;Double to index into address table
+0967 96                    1233 	XCHG	AX,SI		;Put in index register
+0968 8B BC 39 1A           1234 	MOV	DI,[SI+NDPTAB]	;Get start of opcode table for this letter
+096C                       1235 LOOKNDP:
+096C 8A 25                 1236 	MOV	AH,[DI]		;Number of opcodes starting with this letter
+096E 0A E4                 1237 	OR	AH,AH
+0970 74 BD                 1238 	JZ	OPERR		;Any start with this letter?
+0972                       1239 FNDNDP:
+0972 47                    1240 	INC	DI
+0973 8B F3                 1241 	MOV	SI,BX		;Pointer to start of opcode
+0975 8B CA                 1242 	MOV	CX,DX		;Get length of opcode
+0977 F3                    1243 	REPE
+0978 A6                    1244 	CMPB			;Compare opcode to table entry
+0979 74 16                 1245 	JZ	HAVNDP
+097B 4F                    1246 	DEC	DI		;Back up in case that was last letter
+097C B0 80                 1247 	MOV	AL,80H		;Look for char with high bit set
+097E                       1248 ENDOP:
+097E AE                    1249 	SCASB
+097F 77 FD                 1250 	JA	ENDOP
+0981 47                    1251 	INC	DI		;Skip over info about opcode
+0982 FE CC                 1252 	DEC	AH
+0984 75 EC                 1253 	JNZ	FNDNDP
+0986 EB A7                 1254 	JP	OPERR
+0988                       1255 
+0988                       1256 TRY2XM1:
+0988 3C D1                 1257 	CMP	AL,"2"-"a"
+098A 75 A3                 1258 	JNZ	OPERR
+098C BF CC 17              1259 	MOV	DI,XM1
+098F EB DB                 1260 	JP	LOOKNDP
+0991                       1261 
+0991                       1262 HAVNDP:
+0991 8B F7                 1263 	MOV	SI,DI
+0993 82 3E EF 1B 00        1264 	CMP	B,[NOWAIT],0
+0998 75 05                 1265 	JNZ	NWAIT
+099A B0 9B                 1266 	MOV	AL,9BH		;Wait opcode
+099C E8 7C 00              1267 	CALL	PUT
+099F                       1268 NWAIT:
+099F AD                    1269 	LODW			;Get opcode info
+09A0 A8 F8                 1270 	TEST	AL,0F8H		;Any operand bits set?
+09A2 74 00                 1271 	JZ	NOOPS		;If no operands, output code
+09A4                       1272 NOOPS:
+09A4 0C D8                 1273 	OR	AL,0D8H		;ESC hook
+09A6 E8 72 00              1274 	CALL	PUT
+09A9 8A C4                 1275 	MOV	AL,AH
+09AB E9 6D 00              1276 	JMP	PUT
+09AE                       1277 
+09AE                       1278 GRP1:
+09AE B9 09 8A              1279 	MOV	CX,8A09H
+09B1 E8 31 F9              1280 	CALL	MROPS
+09B4 B9 C6 00              1281 	MOV	CX,0C6H
+09B7 8A C7                 1282 	MOV	AL,BH
+09B9 3C 00                 1283 	CMP	AL,UNDEFID
+09BB 75 03                 1284 	JNZ	L0006
+09BD E8 40 00              1285 	CALL	STIMM
+09C0                       1286 L0006:	
+09C0 24 01                 1287 	AND	AL,1
+09C2 74 0A                 1288 	JZ	BYTIMM
+09C4 B0 B8                 1289 	MOV	AL,0B8H
+09C6 0A C3                 1290 	OR	AL,BL
+09C8 E8 50 00              1291 	CALL	PUT
+09CB E9 9A 00              1292 	JMP	PUTWOR
+09CE                       1293 
+09CE                       1294 BYTIMM:
+09CE B0 B0                 1295 	MOV	AL,0B0H
+09D0 0A C3                 1296 	OR	AL,BL
+09D2 E8 46 00              1297 	CALL	PUT
+09D5 E9 97 00              1298 PUTBJ:	JMP	PUTBYT
+09D8                       1299 
+09D8                       1300 IMMED:
+09D8 8A C7                 1301 	MOV	AL,BH
+09DA 3C 00                 1302 	CMP	AL,UNDEFID
+09DC 74 22                 1303 	JZ	STIMM
+09DE 8A C3                 1304 	MOV	AL,BL
+09E0 0A C0                 1305 	OR	AL,AL
+09E2 74 36                 1306 	JZ	RET
+09E4 8A C7                 1307 	MOV	AL,BH
+09E6 E8 22 00              1308 	CALL	IMM
+09E9 0C C0                 1309 	OR	AL,0C0H
+09EB E8 2D 00              1310 	CALL	PUT
+09EE                       1311 FINIMM:
+09EE 8A C1                 1312 	MOV	AL,CL
+09F0 59                    1313 	POP	CX
+09F1 D1 DE                 1314 	RCR	SI
+09F3 A8 01                 1315 	TEST	AL,001H
+09F5 D1 D6                 1316 	RCL	SI
+09F7 74 DC                 1317 	JZ	PUTBJ
+09F9 3C 83                 1318 	CMP	AL,83H
+09FB 74 D8                 1319 	JZ	PUTBJ
+09FD E9 68 00              1320 	JMP	PUTWOR
+0A00                       1321 
+0A00                       1322 STIMM:
+0A00 A0 6B 1B              1323 	MOV	AL,[FLAG]
+0A03 E8 05 00              1324 	CALL	IMM
+0A06 E8 D6 00              1325 	CALL	PUTADD
+0A09 EB E3                 1326 	JP	FINIMM
+0A0B                       1327 
+0A0B                       1328 IMM:
+0A0B 24 01                 1329 	AND	AL,1
+0A0D 0A C1                 1330 	OR	AL,CL
+0A0F 8A C8                 1331 	MOV	CL,AL
+0A11 E8 07 00              1332 	CALL	PUT
+0A14 8A C5                 1333 	MOV	AL,CH
+0A16 24 38                 1334 	AND	AL,38H
+0A18 0A C3                 1335 	OR	AL,BL
+0A1A C3                    1336 	RET
+0A1B                       1337 
+0A1B                       1338 PUT:
+0A1B                       1339 ;Save byte in AL as pure code, with intermediate code bits 00. AL and
+0A1B                       1340 ;DI destroyed, no other registers affected.
+0A1B 53                    1341 	PUSH	BX
+0A1C 51                    1342 	PUSH	CX
+0A1D B5 00                 1343 	MOV	CH,0		;Flag as pure code
+0A1F E8 03 00              1344 	CALL	GEN
+0A22 59                    1345 	POP	CX
+0A23 5B                    1346 	POP	BX
+0A24 C3                    1347 	RET
+0A25                       1348 
+0A25                       1349 GEN:
+0A25                       1350 ;Save byte of code in AL, given intermediate code bits in bits 7&8 of CH.
+0A25 E8 32 00              1351 	CALL	PUTINC		;Save it and bump code pointer
+0A28                       1352 GEN1:
+0A28 8A 0E D4 1B           1353 	MOV	CL,[RELOC]
+0A2C D1 C1                 1354 	ROL	CX
+0A2E D1 C1                 1355 	ROL	CX
+0A30 88 0E D4 1B           1356 	MOV	[RELOC],CL
+0A34 BB D5 1B              1357 	MOV	BX,BCOUNT
+0A37 FE 0F                 1358 	DEC	B,[BX]
+0A39 75 E9                 1359 	JNZ	RET
+0A3B C6 07 04              1360 	MOV	B,[BX],4
+0A3E BB D4 1B              1361 	MOV	BX,RELOC
+0A41 8A 07                 1362 	MOV	AL,[BX]
+0A43 C6 07 00              1363 	MOV	B,[BX],0
+0A46 8B 3E F2 1B           1364 	MOV	DI,[IY]
+0A4A 88 05                 1365 	MOV	[DI],AL
+0A4C 8B 1E D1 1B           1366 	MOV	BX,[CODE]
+0A50 89 1E F2 1B           1367 	MOV	[IY],BX
+0A54 43                    1368 	INC	BX
+0A55 89 1E D1 1B           1369 	MOV	[CODE],BX
+0A59 C3                    1370 	RET
+0A5A                       1371 
+0A5A                       1372 PUTINC:
+0A5A FF 06 65 1B           1373 	INC	[PC]
+0A5E                       1374 PUTCD:
+0A5E 8B 3E D1 1B           1375 	MOV	DI,[CODE]
+0A62 AA                    1376 	STOB
+0A63 89 3E D1 1B           1377 	MOV	[CODE],DI
+0A67 C3                    1378 	RET
+0A68                       1379 
+0A68                       1380 PUTWOR:
+0A68                       1381 ;Save the word value described by [DLABEL] and [DATA] as code. If defined,
+0A68                       1382 ;two bytes of pure code will be produced. Otherwise, appropriate intermediate
+0A68                       1383 ;code will be generated.
+0A68 51                    1384 	PUSH	CX
+0A69 B5 80                 1385 	MOV	CH,80H
+0A6B 52                    1386 	PUSH	DX
+0A6C 53                    1387 	PUSH	BX
+0A6D EB 20                 1388 	JP	PUTBW
+0A6F                       1389 
+0A6F                       1390 PUTBYT:
+0A6F                       1391 ;Same as PUTWOR, above, but for byte value.
+0A6F 51                    1392 	PUSH	CX
+0A70 B5 40                 1393 	MOV	CH,40H
+0A72 52                    1394 	PUSH	DX
+0A73 53                    1395 	PUSH	BX
+0A74 8B 1E 73 1B           1396 	MOV	BX,[DLABEL]
+0A78 8A C7                 1397 	MOV	AL,BH
+0A7A 0A C3                 1398 	OR	AL,BL
+0A7C 75 11                 1399 	JNZ	PUTBW
+0A7E 8B 1E 71 1B           1400 	MOV	BX,[DATA]
+0A82 0A C7                 1401 	OR	AL,BH
+0A84 74 09                 1402 	JZ	PUTBW
+0A86 FE C7                 1403 	INC	BH
+0A88 74 05                 1404 	JZ	PUTBW
+0A8A B1 1F                 1405 	MOV	CL,31
+0A8C E9 20 F8              1406 	JMP	ERROR
+0A8F                       1407 PUTBW:
+0A8F 8B 16 73 1B           1408 	MOV	DX,[DLABEL]
+0A93 8B 1E 71 1B           1409 	MOV	BX,[DATA]
+0A97                       1410 PUTCHK:
+0A97 8A C6                 1411 	MOV	AL,DH
+0A99 0A C2                 1412 	OR	AL,DL
+0A9B 74 29                 1413 	JZ	NOUNDEF
+0A9D 8A C2                 1414 	MOV	AL,DL
+0A9F E8 BC FF              1415 	CALL	PUTCD
+0AA2 8A C6                 1416 	MOV	AL,DH
+0AA4 E8 B7 FF              1417 	CALL	PUTCD
+0AA7 8A C3                 1418 	MOV	AL,BL
+0AA9 E8 AE FF              1419 	CALL	PUTINC
+0AAC 8A C7                 1420 	MOV	AL,BH
+0AAE D1 DE                 1421 	RCR	SI
+0AB0 F6 C5 80              1422 	TEST	CH,080H
+0AB3 D1 D6                 1423 	RCL	SI
+0AB5 74 05                 1424 	JZ	SMPUT
+0AB7 E8 6B FF              1425 	CALL	GEN
+0ABA EB 06                 1426 	JP	PRET
+0ABC                       1427 SMPUT:
+0ABC E8 9F FF              1428 	CALL	PUTCD
+0ABF E8 66 FF              1429 	CALL	GEN1
+0AC2                       1430 PRET:
+0AC2 5B                    1431 	POP	BX
+0AC3 5A                    1432 	POP	DX
+0AC4 59                    1433 	POP	CX
+0AC5 C3                    1434 	RET
+0AC6                       1435 
+0AC6                       1436 NOUNDEF:
+0AC6 8A C3                 1437 	MOV	AL,BL
+0AC8 8A CF                 1438 	MOV	CL,BH
+0ACA 51                    1439 	PUSH	CX
+0ACB B5 00                 1440 	MOV	CH,0
+0ACD E8 55 FF              1441 	CALL	GEN
+0AD0 59                    1442 	POP	CX
+0AD1 8A C1                 1443 	MOV	AL,CL
+0AD3 F6 C5 80              1444 	TEST	CH,080H
+0AD6 B5 00                 1445 	MOV	CH,0
+0AD8 74 E8                 1446 	JZ	PRET
+0ADA E8 48 FF              1447 	CALL	GEN
+0ADD EB E3                 1448 	JP	PRET
+0ADF                       1449 
+0ADF                       1450 PUTADD:
+0ADF                       1451 ;Save complete addressing mode. Addressing mode is in AL; if this is a register
+0ADF                       1452 ;operation (>=C0), then the one byte will be saved as pure code. Otherwise,
+0ADF                       1453 ;the details of the addressing mode will be investigated and the optional one-
+0ADF                       1454 ;or two-byte displacement will be added, as described by [ADDR] and [ALABEL].
+0ADF 51                    1455 	PUSH	CX
+0AE0 52                    1456 	PUSH	DX
+0AE1 53                    1457 	PUSH	BX
+0AE2 B5 00                 1458 	MOV	CH,0
+0AE4 8A C8                 1459 	MOV	CL,AL
+0AE6 E8 3C FF              1460 	CALL	GEN		;Save the addressing mode as pure code
+0AE9 8A C1                 1461 	MOV	AL,CL
+0AEB B5 80                 1462 	MOV	CH,80H
+0AED 24 C7                 1463 	AND	AL,0C7H
+0AEF 3C 06                 1464 	CMP	AL,6
+0AF1 74 0A                 1465 	JZ	TWOBT		;Direct address?
+0AF3 24 C0                 1466 	AND	AL,0C0H
+0AF5 74 CB                 1467 	JZ	PRET		;Indirect through reg, no displacement?
+0AF7 3C C0                 1468 	CMP	AL,0C0H
+0AF9 74 C7                 1469 	JZ	PRET		;Register to register operation?
+0AFB 8A E8                 1470 	MOV	CH,AL		;Save whether one- or two-byte displacement
+0AFD                       1471 TWOBT:
+0AFD 8B 1E 6D 1B           1472 	MOV	BX,[ADDR]
+0B01 8B 16 6F 1B           1473 	MOV	DX,[ALABEL]
+0B05 EB 90                 1474 	JP	PUTCHK
+0B07                       1475 
+0B07                       1476 GRP2:
+0B07 E8 B7 F8              1477 	CALL	GETOP
+0B0A B9 30 FF              1478 	MOV	CX,0FF30H
+0B0D 3C 00                 1479 	CMP	AL,UNDEFID
+0B0F 74 14                 1480 	JZ	PMEM
+0B11 B5 50                 1481 	MOV	CH,50H
+0B13 3C 03                 1482 	CMP	AL,XREG
+0B15 74 1A                 1483 	JZ	PXREG
+0B17 B5 06                 1484 	MOV	CH,6
+0B19 3C 04                 1485 	CMP	AL,SREG
+0B1B 75 03                 1486 	JNZ	$+5
+0B1D E9 2C 04              1487 	JMP	PACKREG
+0B20 B1 14                 1488 	MOV	CL,20
+0B22 E9 8A F7              1489 	JMP	ERROR
+0B25                       1490 
+0B25                       1491 PMEM:
+0B25 8A C5                 1492 	MOV	AL,CH
+0B27 E8 F1 FE              1493 	CALL	PUT
+0B2A 8A C1                 1494 	MOV	AL,CL
+0B2C 0A C2                 1495 	OR	AL,DL
+0B2E E9 AE FF              1496 	JMP	PUTADD
+0B31                       1497 
+0B31                       1498 PXREG:
+0B31 8A C5                 1499 	MOV	AL,CH
+0B33 0A C2                 1500 	OR	AL,DL
+0B35 E9 E3 FE              1501 	JMP	PUT
+0B38                       1502 
+0B38                       1503 GRP3:
+0B38 E8 86 F8              1504 	CALL	GETOP
+0B3B 52                    1505 	PUSH	DX
+0B3C E8 79 F8              1506 	CALL	GETOP2
+0B3F 5B                    1507 	POP	BX
+0B40 B9 14 86              1508 	MOV	CX,8614H
+0B43 B0 04                 1509 	MOV	AL,SREG
+0B45 3A C7                 1510 	CMP	AL,BH
+0B47 74 4C                 1511 	JZ	ERR6
+0B49 3A C6                 1512 	CMP	AL,DH
+0B4B 74 48                 1513 	JZ	ERR6
+0B4D B0 01                 1514 	MOV	AL,CONST
+0B4F 3A C7                 1515 	CMP	AL,BH
+0B51 74 42                 1516 	JZ	ERR6
+0B53 3A C6                 1517 	CMP	AL,DH
+0B55 74 3E                 1518 	JZ	ERR6
+0B57 B0 00                 1519 	MOV	AL,UNDEFID
+0B59 3A C7                 1520 	CMP	AL,BH
+0B5B 74 2D                 1521 	JZ	EXMEM
+0B5D 3A C6                 1522 	CMP	AL,DH
+0B5F 74 2B                 1523 	JZ	EXMEM1
+0B61 8A C7                 1524 	MOV	AL,BH
+0B63 3A C6                 1525 	CMP	AL,DH
+0B65 B1 16                 1526 	MOV	CL,22
+0B67 75 2C                 1527 	JNZ	ERR6
+0B69 3C 03                 1528 	CMP	AL,XREG
+0B6B 74 03                 1529 	JZ	L0008
+0B6D E8 AE F7              1530 	CALL	RR1
+0B70                       1531 L0008:			;RR1 never returns
+0B70 8A C3                 1532 	MOV	AL,BL
+0B72 0A C0                 1533 	OR	AL,AL
+0B74 74 0D                 1534 	JZ	EXACC
+0B76 87 DA                 1535 	XCHG	DX,BX
+0B78 8A C3                 1536 	MOV	AL,BL
+0B7A 0A C0                 1537 	OR	AL,AL
+0B7C 8A C7                 1538 	MOV	AL,BH
+0B7E 74 03                 1539 	JZ	EXACC
+0B80 E8 9B F7              1540 	CALL	RR1
+0B83                       1541 EXACC:
+0B83 B0 90                 1542 	MOV	AL,90H
+0B85 0A C2                 1543 	OR	AL,DL
+0B87 E9 91 FE              1544 	JMP	PUT
+0B8A                       1545 
+0B8A                       1546 EXMEM:
+0B8A 87 DA                 1547 	XCHG	DX,BX
+0B8C                       1548 EXMEM1:
+0B8C 3A C7                 1549 	CMP	AL,BH
+0B8E 74 05                 1550 	JZ	ERR6
+0B90 B1 01                 1551 	MOV	CL,1	;Flag word as OK
+0B92 E8 03 F8              1552 	CALL	NOTAC	;NOTAC never returns
+0B95 E9 17 F7              1553 ERR6:	JMP	ERROR
+0B98                       1554 
+0B98                       1555 GRP4:
+0B98 9F                    1556 	LAHF
+0B99 86 E0                 1557 	XCHG	AH,AL
+0B9B 50                    1558 	PUSH	AX
+0B9C 86 E0                 1559 	XCHG	AH,AL
+0B9E E8 20 F8              1560 	CALL	GETOP
+0BA1 59                    1561 	POP	CX
+0BA2 3C 01                 1562 	CMP	AL,CONST
+0BA4 74 13                 1563 	JZ	FIXED
+0BA6 2C 03                 1564 	SUB	AL,XREG
+0BA8 FE CA                 1565 	DEC	DL
+0BAA FE CA                 1566 	DEC	DL
+0BAC 0A C2                 1567 	OR	AL,DL
+0BAE B1 14                 1568 	MOV	CL,20
+0BB0 75 E3                 1569 	JNZ	ERR6
+0BB2 8A C5                 1570 	MOV	AL,CH
+0BB4 0C 08                 1571 	OR	AL,8
+0BB6 E9 62 FE              1572 	JMP	PUT
+0BB9                       1573 FIXED:
+0BB9 8A C5                 1574 	MOV	AL,CH
+0BBB E8 5D FE              1575 	CALL	PUT
+0BBE E9 AE FE              1576 	JMP	PUTBYT
+0BC1                       1577 
+0BC1                       1578 GRP5:
+0BC1 9F                    1579 	LAHF
+0BC2 86 E0                 1580 	XCHG	AH,AL
+0BC4 50                    1581 	PUSH	AX
+0BC5 86 E0                 1582 	XCHG	AH,AL
+0BC7 E8 F7 F7              1583 	CALL	GETOP
+0BCA 3C 01                 1584 	CMP	AL,CONST
+0BCC 75 C7                 1585 	JNZ	ERR6
+0BCE 8B 1E 73 1B           1586 	MOV	BX,[DLABEL]
+0BD2 8A C7                 1587 	MOV	AL,BH
+0BD4 0A C3                 1588 	OR	AL,BL
+0BD6 B1 1E                 1589 	MOV	CL,30
+0BD8 75 BB                 1590 	JNZ	ERR6
+0BDA 8B 1E 71 1B           1591 	MOV	BX,[DATA]
+0BDE 58                    1592 	POP	AX
+0BDF 86 E0                 1593 	XCHG	AH,AL
+0BE1 9E                    1594 	SAHF
+0BE2 0A C0                 1595 	OR	AL,AL
+0BE4 74 4B                 1596 	JZ	ORG
+0BE6 FE C8                 1597 	DEC	AL
+0BE8 74 19                 1598 	JZ	DSJ
+0BEA FE C8                 1599 	DEC	AL
+0BEC 74 2D                 1600 	JZ	EQU
+0BEE FE C8                 1601 	DEC	AL
+0BF0 74 03                 1602 	JZ	$+5
+0BF2 E9 BA 03              1603 	JMP	IF
+0BF5                       1604 PUTOP:
+0BF5 B0 FD                 1605 	MOV	AL,-3
+0BF7 EB 3E                 1606 	JP	NEWLOC
+0BF9                       1607 ALIGN:
+0BF9 A0 65 1B              1608 	MOV	AL,[PC]
+0BFC 24 01                 1609 	AND	AL,1
+0BFE 74 30                 1610 	JZ	RET
+0C00 BB 01 00              1611 	MOV	BX,1
+0C03                       1612 DSJ:
+0C03 87 DA                 1613 	XCHG	DX,BX
+0C05 8B 1E 65 1B           1614 	MOV	BX,[PC]
+0C09 9F                    1615 	LAHF
+0C0A 03 DA                 1616 	ADD	BX,DX
+0C0C D1 DE                 1617 	RCR	SI
+0C0E 9E                    1618 	SAHF
+0C0F D1 D6                 1619 	RCL	SI
+0C11 89 1E 65 1B           1620 	MOV	[PC],BX
+0C15 87 DA                 1621 	XCHG	DX,BX
+0C17 B0 FC                 1622 	MOV	AL,-4
+0C19 EB 1C                 1623 	JP	NEWLOC
+0C1B                       1624 EQU:
+0C1B 87 DA                 1625 	XCHG	DX,BX
+0C1D 8B 1E 69 1B           1626 	MOV	BX,[LABPT]
+0C21 8A C7                 1627 	MOV	AL,BH
+0C23 0A C3                 1628 	OR	AL,BL
+0C25 B1 22                 1629 	MOV	CL,34
+0C27 74 29                 1630 	JZ	ERR7
+0C29 88 17                 1631 	MOV	[BX],DL
+0C2B 9F                    1632 	LAHF
+0C2C 43                    1633 	INC	BX
+0C2D 9E                    1634 	SAHF
+0C2E 88 37                 1635 	MOV	[BX],DH
+0C30 C3                    1636 	RET
+0C31                       1637 ORG:
+0C31 89 1E 65 1B           1638 	MOV	[PC],BX
+0C35 B0 FE                 1639 	MOV	AL,-2
+0C37                       1640 NEWLOC:
+0C37 E8 24 FE              1641 	CALL	PUTCD
+0C3A 8A C3                 1642 	MOV	AL,BL
+0C3C E8 1F FE              1643 	CALL	PUTCD
+0C3F 8A C7                 1644 	MOV	AL,BH
+0C41 E8 1A FE              1645 	CALL	PUTCD
+0C44 B5 C0                 1646 	MOV	CH,0C0H
+0C46 E9 DF FD              1647 	JMP	GEN1
+0C49                       1648 GRP6:
+0C49 8A E8                 1649 	MOV	CH,AL
+0C4B B1 04                 1650 	MOV	CL,4
+0C4D E8 95 F6              1651 	CALL	MROPS
+0C50 B1 17                 1652 	MOV	CL,23
+0C52 E9 5A F6              1653 ERR7:	JMP	ERROR
+0C55                       1654 GRP7:
+0C55 8A E8                 1655 	MOV	CH,AL
+0C57 B1 01                 1656 	MOV	CL,1
+0C59 E8 89 F6              1657 	CALL	MROPS
+0C5C B1 80                 1658 	MOV	CL,80H
+0C5E 8B 16 73 1B           1659 	MOV	DX,[DLABEL]
+0C62 8A C6                 1660 	MOV	AL,DH
+0C64 0A C2                 1661 	OR	AL,DL
+0C66 75 12                 1662 	JNZ	ACCJ
+0C68 87 DA                 1663 	XCHG	DX,BX
+0C6A 8B 1E 71 1B           1664 	MOV	BX,[DATA]
+0C6E E8 99 F8              1665 	CALL	SIGNEXT
+0C71 87 DA                 1666 	XCHG	DX,BX
+0C73 75 05                 1667 	JNZ	ACCJ
+0C75 9F                    1668 	LAHF
+0C76 80 C9 02              1669 	OR	CL,002H
+0C79 9E                    1670 	SAHF
+0C7A E9 C5 00              1671 ACCJ:	JMP	ACCIMM
+0C7D                       1672 GRP8:
+0C7D 8A C8                 1673 	MOV	CL,AL
+0C7F B5 FE                 1674 	MOV	CH,0FEH
+0C81 EB 04                 1675 	JP	ONEOP
+0C83                       1676 GRP9:
+0C83 8A C8                 1677 	MOV	CL,AL
+0C85 B5 F6                 1678 	MOV	CH,0F6H
+0C87                       1679 ONEOP:
+0C87 51                    1680 	PUSH	CX
+0C88 E8 36 F7              1681 	CALL	GETOP
+0C8B                       1682 ONE:
+0C8B B1 1A                 1683 	MOV	CL,26
+0C8D 3C 01                 1684 	CMP	AL,CONST
+0C8F 74 C1                 1685 	JZ	ERR7
+0C91 3C 04                 1686 	CMP	AL,SREG
+0C93 B1 16                 1687 	MOV	CL,22
+0C95 74 BB                 1688 	JZ	ERR7
+0C97 59                    1689 	POP	CX
+0C98 3C 00                 1690 	CMP	AL,UNDEFID
+0C9A 74 16                 1691 	JZ	MOP
+0C9C 24 01                 1692 	AND	AL,1
+0C9E 74 25                 1693 	JZ	ROP
+0CA0 D1 DE                 1694 	RCR	SI
+0CA2 F6 C1 01              1695 	TEST	CL,001H
+0CA5 D1 D6                 1696 	RCL	SI
+0CA7 74 1C                 1697 	JZ	ROP
+0CA9 8A C1                 1698 	MOV	AL,CL
+0CAB 24 F8                 1699 	AND	AL,0F8H
+0CAD 0A C2                 1700 	OR	AL,DL
+0CAF E9 69 FD              1701 	JMP	PUT
+0CB2                       1702 MOP:
+0CB2 A0 6B 1B              1703 	MOV	AL,[FLAG]
+0CB5 24 01                 1704 	AND	AL,1
+0CB7 0A C5                 1705 	OR	AL,CH
+0CB9 E8 5F FD              1706 	CALL	PUT
+0CBC 8A C1                 1707 	MOV	AL,CL
+0CBE 24 38                 1708 	AND	AL,38H
+0CC0 0A C2                 1709 	OR	AL,DL
+0CC2 E9 1A FE              1710 	JMP	PUTADD
+0CC5                       1711 ROP:
+0CC5 0A C5                 1712 	OR	AL,CH
+0CC7 E8 51 FD              1713 	CALL	PUT
+0CCA 8A C1                 1714 	MOV	AL,CL
+0CCC 24 38                 1715 	AND	AL,38H
+0CCE 0C C0                 1716 	OR	AL,0C0H
+0CD0 0A C2                 1717 	OR	AL,DL
+0CD2 E9 46 FD              1718 	JMP	PUT
+0CD5                       1719 GRP10:
+0CD5 8A C8                 1720 	MOV	CL,AL
+0CD7 B5 F6                 1721 	MOV	CH,0F6H
+0CD9 51                    1722 	PUSH	CX
+0CDA E8 E4 F6              1723 	CALL	GETOP
+0CDD B1 14                 1724 	MOV	CL,20
+0CDF 8A C2                 1725 	MOV	AL,DL
+0CE1 0A C0                 1726 	OR	AL,AL
+0CE3 75 08                 1727 	JNZ	ERRJ1
+0CE5 8A C6                 1728 	MOV	AL,DH
+0CE7 3C 03                 1729 	CMP	AL,XREG
+0CE9 74 04                 1730 	JZ	G10
+0CEB 3C 02                 1731 	CMP	AL,REG
+0CED 75 77                 1732 ERRJ1:	JNZ	ERR8
+0CEF                       1733 G10:
+0CEF 9F                    1734 	LAHF
+0CF0 86 E0                 1735 	XCHG	AH,AL
+0CF2 50                    1736 	PUSH	AX
+0CF3 86 E0                 1737 	XCHG	AH,AL
+0CF5 E8 C9 F6              1738 	CALL	GETOP
+0CF8 58                    1739 	POP	AX
+0CF9 86 E0                 1740 	XCHG	AH,AL
+0CFB 9E                    1741 	SAHF
+0CFC 24 01                 1742 	AND	AL,1
+0CFE A2 6B 1B              1743 	MOV	[FLAG],AL
+0D01 8A C6                 1744 	MOV	AL,DH
+0D03 EB 86                 1745 ONEJ:	JP	ONE
+0D05                       1746 GRP11:
+0D05 E8 13 FD              1747 	CALL	PUT
+0D08 B0 0A                 1748 	MOV	AL,0AH
+0D0A E9 0E FD              1749 	JMP	PUT
+0D0D                       1750 GRP12:
+0D0D 8A C8                 1751 	MOV	CL,AL
+0D0F B5 D0                 1752 	MOV	CH,0D0H
+0D11 51                    1753 	PUSH	CX
+0D12 E8 AC F6              1754 	CALL	GETOP
+0D15 A0 CB 1B              1755 	MOV	AL,[SYM]
+0D18 3C 2C                 1756 	CMP	AL,','
+0D1A 8A C6                 1757 	MOV	AL,DH
+0D1C 75 E5                 1758 	JNZ	ONEJ
+0D1E 52                    1759 	PUSH	DX
+0D1F E8 9F F6              1760 	CALL	GETOP
+0D22 2C 02                 1761 	SUB	AL,REG
+0D24 B1 14                 1762 	MOV	CL,20
+0D26 FE CA                 1763 	DEC	DL
+0D28 0A C2                 1764 	OR	AL,DL
+0D2A 75 3A                 1765 	JNZ	ERR8
+0D2C 5A                    1766 	POP	DX
+0D2D 8A C6                 1767 	MOV	AL,DH
+0D2F 59                    1768 	POP	CX
+0D30 9F                    1769 	LAHF
+0D31 80 CD 02              1770 	OR	CH,002H
+0D34 9E                    1771 	SAHF
+0D35 51                    1772 	PUSH	CX
+0D36 E9 52 FF              1773 	JMP	ONE
+0D39                       1774 GRP13:
+0D39 8A E8                 1775 	MOV	CH,AL
+0D3B B1 01                 1776 	MOV	CL,1
+0D3D E8 A5 F5              1777 	CALL	MROPS
+0D40 B1 80                 1778 	MOV	CL,80H
+0D42                       1779 ACCIMM:
+0D42 E8 93 FC              1780 	CALL	IMMED
+0D45 80 CD 04              1781 	OR	CH,004H
+0D48 80 E5 FD              1782 	AND	CH,0FDH
+0D4B                       1783 AIMM:
+0D4B 8A C7                 1784 	MOV	AL,BH
+0D4D 24 01                 1785 	AND	AL,1
+0D4F 9F                    1786 	LAHF
+0D50 86 E0                 1787 	XCHG	AH,AL
+0D52 50                    1788 	PUSH	AX
+0D53 86 E0                 1789 	XCHG	AH,AL
+0D55 0A C5                 1790 	OR	AL,CH
+0D57 E8 C1 FC              1791 	CALL	PUT
+0D5A 58                    1792 	POP	AX
+0D5B 86 E0                 1793 	XCHG	AH,AL
+0D5D 9E                    1794 	SAHF
+0D5E 75 03                 1795 	JNZ	$+5
+0D60 E9 0C FD              1796 	JMP	PUTBYT
+0D63 E9 02 FD              1797 	JMP	PUTWOR
+0D66 E9 46 F5              1798 ERR8:	JMP	ERROR
+0D69                       1799 GRP14:
+0D69 9F                    1800 	LAHF
+0D6A 86 E0                 1801 	XCHG	AH,AL
+0D6C 50                    1802 	PUSH	AX
+0D6D 86 E0                 1803 	XCHG	AH,AL
+0D6F E8 4F F6              1804 	CALL	GETOP
+0D72 3C 01                 1805 	CMP	AL,CONST
+0D74 74 31                 1806 	JZ	DIRECT
+0D76 B1 14                 1807 	MOV	CL,20
+0D78 3C 02                 1808 	CMP	AL,REG
+0D7A 74 EA                 1809 	JZ	ERR8
+0D7C 3C 04                 1810 	CMP	AL,SREG
+0D7E 74 E6                 1811 	JZ	ERR8
+0D80 3C 03                 1812 	CMP	AL,XREG
+0D82 75 06                 1813 	JNZ	NOTRG
+0D84 80 CA 40              1814 	OR	DL,040H
+0D87 80 CA 80              1815 	OR	DL,080H
+0D8A                       1816 NOTRG:
+0D8A B0 FF                 1817 	MOV	AL,0FFH
+0D8C E8 8C FC              1818 	CALL	PUT
+0D8F 58                    1819 	POP	AX
+0D90 86 E0                 1820 	XCHG	AH,AL
+0D92 9E                    1821 	SAHF
+0D93 24 38                 1822 	AND	AL,38H
+0D95 0A C2                 1823 	OR	AL,DL
+0D97 8A E8                 1824 	MOV	CH,AL
+0D99 A0 6C 1B              1825 	MOV	AL,[LONG]
+0D9C 0A C0                 1826 	OR	AL,AL
+0D9E 8A C5                 1827 	MOV	AL,CH
+0DA0 74 02                 1828 	JZ	PUTADDJ
+0DA2 24 F7                 1829 	AND	AL,0F7H
+0DA4                       1830 PUTADDJ:
+0DA4 E9 38 FD              1831 	JMP	PUTADD
+0DA7                       1832 DIRECT:
+0DA7 A0 CB 1B              1833 	MOV	AL,[SYM]
+0DAA 3C 2C                 1834 	CMP	AL,','
+0DAC 74 22                 1835 	JZ	LONGJ
+0DAE 58                    1836 	POP	AX
+0DAF 86 E0                 1837 	XCHG	AH,AL
+0DB1 9E                    1838 	SAHF
+0DB2 FE C8                 1839 	DEC	AL
+0DB4 3C E9                 1840 	CMP	AL,0E9H
+0DB6 74 02                 1841 	JZ	GOTOP
+0DB8 B0 E8                 1842 	MOV	AL,0E8H
+0DBA                       1843 GOTOP:
+0DBA E8 5E FC              1844 	CALL	PUT
+0DBD 8B 1E 71 1B           1845 	MOV	BX,[DATA]
+0DC1 8B 16 65 1B           1846 	MOV	DX,[PC]
+0DC5 42                    1847 	INC	DX
+0DC6 42                    1848 	INC	DX
+0DC7 2B DA                 1849 	SUB	BX,DX
+0DC9 89 1E 71 1B           1850 	MOV	[DATA],BX
+0DCD E9 98 FC              1851 	JMP	PUTWOR
+0DD0                       1852 LONGJ:
+0DD0 58                    1853 	POP	AX
+0DD1 86 E0                 1854 	XCHG	AH,AL
+0DD3 9E                    1855 	SAHF
+0DD4 E8 44 FC              1856 	CALL	PUT
+0DD7 E8 8E FC              1857 	CALL	PUTWOR
+0DDA E8 E4 F5              1858 	CALL	GETOP
+0DDD B1 14                 1859 	MOV	CL,20
+0DDF 3C 01                 1860 	CMP	AL,CONST
+0DE1 75 83                 1861 	JNZ	ERR8
+0DE3 E9 82 FC              1862 	JMP	PUTWOR
+0DE6                       1863 GRP16:
+0DE6 9F                    1864 	LAHF
+0DE7 86 E0                 1865 	XCHG	AH,AL
+0DE9 50                    1866 	PUSH	AX
+0DEA 86 E0                 1867 	XCHG	AH,AL
+0DEC E8 B8 F7              1868 	CALL	GETSYM
+0DEF 3C 05                 1869 	CMP	AL,5
+0DF1 74 1C                 1870 	JZ	LONGR
+0DF3 3C 0D                 1871 	CMP	AL,EOL
+0DF5 74 3F                 1872 	JZ	NODEC
+0DF7 3C 3B                 1873 	CMP	AL,';'
+0DF9 74 3B                 1874 	JZ	NODEC
+0DFB                       1875 GETSP:
+0DFB E8 C6 F5              1876 	CALL	GETOP1
+0DFE 59                    1877 	POP	CX
+0DFF 3C 01                 1878 	CMP	AL,CONST
+0E01 B1 14                 1879 	MOV	CL,20
+0E03 75 6A                 1880 	JNZ	ERR9
+0E05 8A C5                 1881 	MOV	AL,CH
+0E07 24 FE                 1882 	AND	AL,0FEH
+0E09 E8 0F FC              1883 	CALL	PUT
+0E0C E9 59 FC              1884 	JMP	PUTWOR
+0E0F                       1885 LONGR:
+0E0F A0 6C 1B              1886 	MOV	AL,[LONG]
+0E12 0A C0                 1887 	OR	AL,AL
+0E14 75 0C                 1888 	JNZ	NOTLON
+0E16 58                    1889 	POP	AX
+0E17 86 E0                 1890 	XCHG	AH,AL
+0E19 9E                    1891 	SAHF
+0E1A 0C 08                 1892 	OR	AL,8
+0E1C 9F                    1893 	LAHF
+0E1D 86 E0                 1894 	XCHG	AH,AL
+0E1F 50                    1895 	PUSH	AX
+0E20 86 E0                 1896 	XCHG	AH,AL
+0E22                       1897 NOTLON:
+0E22 E8 82 F7              1898 	CALL	GETSYM
+0E25 3C 0D                 1899 	CMP	AL,EOL
+0E27 74 35                 1900 	JZ	DORET
+0E29 3C 3B                 1901 	CMP	AL,';'
+0E2B 74 31                 1902 	JZ	DORET
+0E2D 3C 2C                 1903 	CMP	AL,','
+0E2F 75 03                 1904 	JNZ	L0011
+0E31 E8 73 F7              1905 	CALL	GETSYM
+0E34                       1906 L0011:	
+0E34 EB C5                 1907 	JP	GETSP
+0E36                       1908 NODEC:
+0E36 8B 1E 65 1B           1909 	MOV	BX,[PC]
+0E3A 89 1E E8 1B           1910 	MOV	[LSTRET],BX
+0E3E 87 DA                 1911 	XCHG	DX,BX
+0E40 8B 1E EA 1B           1912 	MOV	BX,[RETPT]
+0E44 8A C7                 1913 	MOV	AL,BH
+0E46 0A C3                 1914 	OR	AL,BL
+0E48 74 14                 1915 	JZ	DORET
+0E4A C6 07 01              1916 	MOV	B,[BX],1
+0E4D 9F                    1917 	LAHF
+0E4E 43                    1918 	INC	BX
+0E4F 9E                    1919 	SAHF
+0E50 88 17                 1920 	MOV	[BX],DL
+0E52 9F                    1921 	LAHF
+0E53 43                    1922 	INC	BX
+0E54 9E                    1923 	SAHF
+0E55 88 37                 1924 	MOV	[BX],DH
+0E57 BB 00 00              1925 	MOV	BX,0
+0E5A 89 1E EA 1B           1926 	MOV	[RETPT],BX
+0E5E                       1927 DORET:
+0E5E 58                    1928 	POP	AX
+0E5F 86 E0                 1929 	XCHG	AH,AL
+0E61 9E                    1930 	SAHF
+0E62 E9 B6 FB              1931 	JMP	PUT
+0E65                       1932 GRP17:
+0E65 E8 B3 FB              1933 	CALL	PUT
+0E68 E8 56 F5              1934 	CALL	GETOP
+0E6B 3C 01                 1935 	CMP	AL,CONST
+0E6D B1 14                 1936 	MOV	CL,20
+0E6F 75 29                 1937 ERR9:	JNZ	ERR10
+0E71 8B 1E 71 1B           1938 	MOV	BX,[DATA]
+0E75 8B 16 65 1B           1939 	MOV	DX,[PC]
+0E79 9F                    1940 	LAHF
+0E7A 42                    1941 	INC	DX
+0E7B 9E                    1942 	SAHF
+0E7C 1B DA                 1943 	SBB	BX,DX
+0E7E 89 1E 71 1B           1944 	MOV	[DATA],BX
+0E82 E8 EA FB              1945 	CALL	PUTBYT
+0E85 8B 1E 73 1B           1946 	MOV	BX,[DLABEL]
+0E89 8A C7                 1947 	MOV	AL,BH
+0E8B 0A C3                 1948 	OR	AL,BL
+0E8D 75 0E                 1949 	JNZ	RET
+0E8F 8B 1E 71 1B           1950 	MOV	BX,[DATA]
+0E93 E8 74 F6              1951 	CALL	SIGNEXT
+0E96 74 05                 1952 	JZ	RET
+0E98 B1 1F                 1953 	MOV	CL,31
+0E9A E9 12 F4              1954 ERR10:	JMP	ERROR
+0E9D C3                    1955 	RET
+0E9E                       1956 GRP18:
+0E9E E8 20 F5              1957 	CALL	GETOP
+0EA1 3C 01                 1958 	CMP	AL,CONST
+0EA3 B1 14                 1959 	MOV	CL,20
+0EA5 75 F3                 1960 	JNZ	ERR10
+0EA7 8B 1E 73 1B           1961 	MOV	BX,[DLABEL]
+0EAB 8A C7                 1962 	MOV	AL,BH
+0EAD 0A C3                 1963 	OR	AL,BL
+0EAF 75 10                 1964 	JNZ	GENINT
+0EB1 8B 1E 71 1B           1965 	MOV	BX,[DATA]
+0EB5 BA 03 00              1966 	MOV	DX,3
+0EB8 1B DA                 1967 	SBB	BX,DX
+0EBA 75 05                 1968 	JNZ	GENINT
+0EBC B0 CC                 1969 	MOV	AL,0CCH
+0EBE E9 5A FB              1970 	JMP	PUT
+0EC1                       1971 GENINT:
+0EC1 B0 CD                 1972 	MOV	AL,0CDH
+0EC3 E8 55 FB              1973 	CALL	PUT
+0EC6 E9 A6 FB              1974 	JMP	PUTBYT
+0EC9                       1975 
+0EC9                       1976 GRP19:	;ESC opcode
+0EC9 E8 F5 F4              1977 	CALL	GETOP
+0ECC B1 14                 1978 	MOV	CL,20
+0ECE 3C 01                 1979 	CMP	AL,CONST
+0ED0 75 39                 1980 	JNZ	ERRJ		;First operand must be immediate
+0ED2 B1 1E                 1981 	MOV	CL,1EH
+0ED4 F7 06 73 1B FF FF     1982 	TEST	[DLABEL],-1	;See if all labels have been defined
+0EDA 75 2F                 1983 	JNZ	ERRJ
+0EDC A1 71 1B              1984 	MOV	AX,[DATA]
+0EDF 3D 40 00              1985 	CMP	AX,64		;Must only be 6 bits
+0EE2 B1 1F                 1986 	MOV	CL,1FH
+0EE4 73 25                 1987 	JNB	ERRJ
+0EE6 8A D8                 1988 	MOV	BL,AL		;Save for second byte
+0EE8 D0 E8                 1989 	SHR	AL
+0EEA D0 E8                 1990 	SHR	AL
+0EEC D0 E8                 1991 	SHR	AL
+0EEE 0C D8                 1992 	OR	AL,0D8H		;ESC opcode
+0EF0 E8 28 FB              1993 	CALL	PUT
+0EF3 53                    1994 	PUSH	BX
+0EF4 E8 C1 F4              1995 	CALL	GETOP2
+0EF7 5B                    1996 	POP	BX
+0EF8 80 E3 07              1997 	AND	BL,7		;Low 3 bits of first operand
+0EFB D0 E3                 1998 	SHL	BL
+0EFD D0 E3                 1999 	SHL	BL
+0EFF D0 E3                 2000 	SHL	BL
+0F01 3C 00                 2001 	CMP	AL,UNDEFID	;Check for memory operand
+0F03 74 09                 2002 	JZ	ESCMEM
+0F05 3C 01                 2003 	CMP	AL,CONST	;Check for another immediate
+0F07 74 0C                 2004 	JZ	ESCIMM
+0F09 B1 14                 2005 	MOV	CL,20
+0F0B E9 A1 F3              2006 ERRJ:	JMP	ERROR
+0F0E                       2007 
+0F0E                       2008 ESCMEM:
+0F0E 0A DA                 2009 	OR	BL,DL		;Combine mode with first operand
+0F10 8A C3                 2010 	MOV	AL,BL
+0F12 E9 CA FB              2011 	JMP	PUTADD
+0F15                       2012 
+0F15                       2013 ESCIMM:
+0F15 B1 1E                 2014 	MOV	CL,1EH
+0F17 F7 06 73 1B FF FF     2015 	TEST	[DLABEL],-1	;See if second operand is fully defined
+0F1D 75 EC                 2016 	JNZ	ERRJ
+0F1F A1 71 1B              2017 	MOV	AX,[DATA]
+0F22 B1 1F                 2018 	MOV	CL,1FH
+0F24 3D 08 00              2019 	CMP	AX,8		;Must only be 3 bit value
+0F27 73 E2                 2020 	JNB	ERRJ
+0F29 0A C3                 2021 	OR	AL,BL		;Combine first and second operands
+0F2B 0C C0                 2022 	OR	AL,0C0H		;Force "register" mode
+0F2D E9 EB FA              2023 	JMP	PUT
+0F30                       2024 
+0F30                       2025 GRP20:
+0F30 8A E8                 2026 	MOV	CH,AL
+0F32 B1 01                 2027 	MOV	CL,1
+0F34 E8 AE F3              2028 	CALL	MROPS
+0F37 B1 F6                 2029 	MOV	CL,0F6H
+0F39 E8 9C FA              2030 	CALL	IMMED
+0F3C B5 A8                 2031 	MOV	CH,0A8H
+0F3E E9 0A FE              2032 	JMP	AIMM
+0F41                       2033 GRP21:
+0F41 E8 7D F4              2034 	CALL	GETOP
+0F44 3C 04                 2035 	CMP	AL,SREG
+0F46 B1 1C                 2036 	MOV	CL,28
+0F48 75 C1                 2037 	JNZ	ERRJ
+0F4A B5 26                 2038 	MOV	CH,26H
+0F4C                       2039 PACKREG:
+0F4C 8A C2                 2040 	MOV	AL,DL
+0F4E 02 C0                 2041 	ADD	AL,AL
+0F50 02 C0                 2042 	ADD	AL,AL
+0F52 02 C0                 2043 	ADD	AL,AL
+0F54 0A C5                 2044 	OR	AL,CH
+0F56 E9 C2 FA              2045 	JMP	PUT
+0F59                       2046 GRP22:
+0F59 E8 65 F4              2047 	CALL	GETOP
+0F5C B9 00 8F              2048 	MOV	CX,8F00H
+0F5F 3C 00                 2049 	CMP	AL,UNDEFID
+0F61 75 03                 2050 	JNZ	$+5
+0F63 E9 BF FB              2051 	JMP	PMEM
+0F66 B5 58                 2052 	MOV	CH,58H
+0F68 3C 03                 2053 	CMP	AL,XREG
+0F6A 75 03                 2054 	JNZ	$+5
+0F6C E9 C2 FB              2055 	JMP	PXREG
+0F6F B5 07                 2056 	MOV	CH,7
+0F71 3C 04                 2057 	CMP	AL,SREG
+0F73 74 D7                 2058 	JZ	PACKREG
+0F75 B1 14                 2059 	MOV	CL,20
+0F77 E9 35 F3              2060 ERR11:	JMP	ERROR
+0F7A                       2061 GRP23:
+0F7A A2 D3 1B              2062 	MOV	[DATSIZ],AL
+0F7D                       2063 GETDAT:
+0F7D E8 27 F6              2064 	CALL	GETSYM
+0F80 B0 02                 2065 	MOV	AL,2
+0F82 E8 55 F4              2066 	CALL	VAL1
+0F85 A0 CB 1B              2067 	MOV	AL,[SYM]
+0F88 3C 2C                 2068 	CMP	AL,','
+0F8A A0 D3 1B              2069 	MOV	AL,[DATSIZ]
+0F8D 75 05                 2070 	JNZ	ENDDAT
+0F8F E8 13 00              2071 	CALL	SAVDAT
+0F92 EB E9                 2072 	JP	GETDAT
+0F94                       2073 ENDDAT:
+0F94 3C 02                 2074 	CMP	AL,2
+0F96 75 0D                 2075 	JNZ	SAVDAT
+0F98 8B 1E 71 1B           2076 	MOV	BX,[DATA]
+0F9C 9F                    2077 	LAHF
+0F9D 80 CB 80              2078 	OR	BL,080H
+0FA0 9E                    2079 	SAHF
+0FA1 89 1E 71 1B           2080 	MOV	[DATA],BX
+0FA5                       2081 SAVDAT:
+0FA5 0A C0                 2082 	OR	AL,AL
+0FA7 74 03                 2083 	JZ	$+5
+0FA9 E9 C3 FA              2084 	JMP	PUTBYT
+0FAC E9 B9 FA              2085 	JMP	PUTWOR
+0FAF                       2086 IF:
+0FAF 0B DB                 2087 	OR	BX,BX
+0FB1 74 05                 2088 	JZ	SKIPCD
+0FB3 FE 06 E4 1B           2089 	INC	B,[IFFLG]
+0FB7 C3                    2090 	RET
+0FB8                       2091 
+0FB8                       2092 SKIPCD:
+0FB8 FE 06 E5 1B           2093 	INC	B,[CHKLAB]
+0FBC                       2094 SKIPLP:
+0FBC 32 C0                 2095 	XOR	AL,AL
+0FBE E8 98 F2              2096 	CALL	NEXLIN
+0FC1 E8 F0 F2              2097 	CALL	NEXTCHR
+0FC4 3C 1A                 2098 	CMP	AL,1AH
+0FC6 74 40                 2099 	JZ	END
+0FC8 E8 9C F8              2100 	CALL	GETLAB
+0FCB 72 EF                 2101 	JC	SKIPLP
+0FCD BF 79 1B              2102 	MOV	DI,LENID
+0FD0 BE 0F 1B              2103 	MOV	SI,IFEND
+0FD3 B5 00                 2104 	MOV	CH,0
+0FD5 8A 0D                 2105 	MOV	CL,[DI]
+0FD7 FE C1                 2106 	INC	CL
+0FD9 F3                    2107 	REPE
+0FDA A6                    2108 	CMPB
+0FDB 74 14                 2109 	JZ	ENDCOND
+0FDD BF 79 1B              2110 	MOV	DI,LENID
+0FE0 BE 15 1B              2111 	MOV	SI,IFNEST
+0FE3 8A 0D                 2112 	MOV	CL,[DI]
+0FE5 FE C1                 2113 	INC	CL
+0FE7 F3                    2114 	REPE
+0FE8 A6                    2115 	CMPB
+0FE9 75 D1                 2116 	JNZ	SKIPLP
+0FEB FE 06 E5 1B           2117 	INC	B,[CHKLAB]
+0FEF EB CB                 2118 	JP	SKIPLP
+0FF1                       2119 
+0FF1                       2120 ENDCOND:
+0FF1 FE 0E E5 1B           2121 	DEC	B,[CHKLAB]
+0FF5 75 C5                 2122 	JNZ	SKIPLP
+0FF7 C3                    2123 	RET
+0FF8                       2124 
+0FF8                       2125 ENDIF:
+0FF8 A0 E4 1B              2126 	MOV	AL,[IFFLG]
+0FFB B1 24                 2127 	MOV	CL,36
+0FFD FE C8                 2128 	DEC	AL
+0FFF 78 04                 2129 	JS	ERRJMP
+1001 A2 E4 1B              2130 	MOV	[IFFLG],AL
+1004 C3                    2131 	RET
+1005                       2132 
+1005 E9 A7 F2              2133 ERRJMP:	JMP	ERROR
+1008                       2134 
+1008                       2135 ;*********************************************************************
+1008                       2136 ;
+1008                       2137 ;	PASS 2
+1008                       2138 ;
+1008                       2139 ;*********************************************************************
+1008                       2140 
+1008                       2141 END:
+1008 B2 04                 2142 	MOV	DL,4
+100A                       2143 WREND:
+100A B5 FF                 2144 	MOV	CH,0FFH
+100C 8A C5                 2145 	MOV	AL,CH
+100E E8 14 FA              2146 	CALL	GEN
+1011 FE CA                 2147 	DEC	DL
+1013 75 F5                 2148 	JNZ	WREND
+1015 C7 06 3E 20 40 20     2149 	MOV	[BUFPT],SRCBUF
+101B C6 06 E0 1B FB        2150 	MOV	B,[HEXCNT],-5	;FLAG HEX BUFFER AS EMPTY
+1020 C7 06 F6 1B 3E 1C     2151 	MOV	[LSTPNT],LSTBUF
+1026 C7 06 F4 1B F8 1B     2152 	MOV	[HEXPNT],HEXBUF
+102C 33 C0                 2153 	XOR	AX,AX
+102E A3 E6 1B              2154 	MOV	[ERRCNT],AX
+1031 A3 65 1B              2155 	MOV	[PC],AX
+1034 A3 D8 1B              2156 	MOV	[LINE],AX	;Current line number
+1037 C7 06 DC 1B 00 01     2157 	MOV	[HEXADD],OBJECT
+103D BA 5C 00              2158 	MOV	DX,FCB
+1040 B4 0F                 2159 	MOV	AH,OPEN
+1042 CD 21                 2160 	INT	33		;Re-open source file
+1044 32 C0                 2161 	XOR	AL,AL
+1046 A2 7C 00              2162 	MOV	[FCB+20H],AL
+1049 C7 06 6A 00 00 04     2163 	MOV	[FCB+14],BUFSIZ
+104F A2 D6 1B              2164 	MOV	[COUNT],AL
+1052 B5 01                 2165 	MOV	CH,1
+1054 BE 90 24              2166 	MOV	SI,START
+1057                       2167 FIXLINE:
+1057 BF 90 24              2168 	MOV	DI,START	;Store code over used up intermediate code
+105A 32 C0                 2169 	XOR	AL,AL
+105C A2 EE 1B              2170 	MOV	[SPC],AL	;No "special" yet (ORG, PUT, DS)
+105F A2 D7 1B              2171 	MOV	[ERR],AL	;No second pass errors yet
+1062                       2172 NEXBT:
+1062 D0 E1                 2173 	SHL	CL		;Shift out last bit of previous code
+1064 FE CD                 2174 	DEC	CH		;Still have codes left?
+1066 75 05                 2175 	JNZ	TESTTYP
+1068 AC                    2176 	LODB			;Get next flag byte
+1069 8A C8                 2177 	MOV	CL,AL
+106B B5 04                 2178 	MOV	CH,4
+106D                       2179 TESTTYP:
+106D D0 E1                 2180 	SHL	CL		;Set flags based on two bits
+106F 70 06                 2181 	JO	FIXUP
+1071 AC                    2182 	LODB
+1072 72 4E                 2183 	JC	EMARK
+1074                       2184 OBJBT:
+1074 AA                    2185 	STOB
+1075 EB EB                 2186 	JP	NEXBT
+1077                       2187 
+1077                       2188 FIXUP:
+1077                       2189 ;Either a word or byte fixup is needed from a forward reference
+1077 AD                    2190 	LODW			;Get pointer to symbol
+1078 93                    2191 	XCHG	AX,BX
+1079 AD                    2192 	LODW			;Get constant part
+107A 03 47 01              2193 	ADD	AX,[BX+1]	;Add symbol value to constant part
+107D 82 3F 00              2194 	CMP	B,[BX],0	;See if symbol got defined
+1080 75 07                 2195 	JNZ	HAVDEF
+1082 C6 06 D7 1B 64        2196 	MOV	B,[ERR],100	;Undefined - flag error
+1087 33 C0                 2197 	XOR	AX,AX
+1089                       2198 HAVDEF:
+1089 0A C9                 2199 	OR	CL,CL		;See if word or byte fixup
+108B 78 03                 2200 	JS	DEFBYT
+108D AB                    2201 	STOW
+108E EB D2                 2202 	JP	NEXBT
+1090                       2203 
+1090                       2204 DEFBYT:
+1090 8B D0                 2205 	MOV	DX,AX
+1092 98                    2206 	CBW			;Extend sign
+1093 3B C2                 2207 	CMP	AX,DX		;See if in range +127 to -128
+1095 74 DD                 2208 	JZ	OBJBT		;If so, it's always OK
+1097 F6 D4                 2209 	NOT	AH		;Check for range +255 to -256
+1099 3A E6                 2210 	CMP	AH,DH
+109B 75 1B                 2211 	JNZ	RNGERR		;Must always be in this range
+109D                       2212 ;Check for short jump. If so, we're out of range; otherwise we're OK
+109D 81 FF 91 24           2213 	CMP	DI,START+1	;Only one other byte on line?
+10A1 75 D1                 2214 	JNZ	OBJBT		;Can't be short jump if not
+10A3 A0 90 24              2215 	MOV	AL,[START]	;Get the first byte of this line
+10A6 3C EB                 2216 	CMP	AL,0EBH		;Direct short jump?
+10A8 74 0E                 2217 	JZ	RNGERR
+10AA 24 FC                 2218 	AND	AL,0FCH
+10AC 3C E0                 2219 	CMP	AL,0E0H		;LOOP or JCXZ instruction?
+10AE 74 08                 2220 	JZ	RNGERR
+10B0 24 F0                 2221 	AND	AL,0F0H
+10B2 3C 70                 2222 	CMP	AL,70H		;Conditional jump?
+10B4 8A C2                 2223 	MOV	AL,DL		;Get code byte in AL
+10B6 75 BC                 2224 	JNZ	OBJBT		;If not, we're OK
+10B8                       2225 RNGERR:
+10B8 C6 06 D7 1B 65        2226 	MOV	B,[ERR],101	;Value out of range
+10BD EB B5                 2227 	JP	OBJBT
+10BF                       2228 
+10BF E9 7A 01              2229 FINIJ:	JMP	FINI
+10C2                       2230 
+10C2                       2231 EMARK:
+10C2 3C FF                 2232 	CMP	AL,-1		;End of file?
+10C4 74 F9                 2233 	JZ	FINIJ
+10C6 3C F6                 2234 	CMP	AL,-10		;Special item?
+10C8 77 5C                 2235 	JA	SPEND
+10CA 51                    2236 	PUSH	CX
+10CB 56                    2237 	PUSH	SI
+10CC 50                    2238 	PUSH	AX		;Save error code
+10CD 8A 26 EC 1B           2239 	MOV	AH,[LSTDEV]
+10D1 80 E4 FE              2240 	AND	AH,0FEH		;Reset error indicator
+10D4 0A 06 D7 1B           2241 	OR	AL,[ERR]	;See if any errors on this line
+10D8 74 03                 2242 	JZ	NOERR
+10DA 80 CC 01              2243 	OR	AH,1		;Send line to console if error occured
+10DD                       2244 NOERR:
+10DD 88 26 EC 1B           2245 	MOV	[LSTDEV],AH
+10E1 8B CF                 2246 	MOV	CX,DI
+10E3 E8 EE 00              2247 	CALL	STRTLIN		;Print address of line
+10E6 BE 90 24              2248 	MOV	SI,START
+10E9 2B CE                 2249 	SUB	CX,SI		;Get count of bytes of code
+10EB 74 06                 2250 	JZ	SHOLIN
+10ED                       2251 CODLP:
+10ED AC                    2252 	LODB
+10EE E8 33 02              2253 	CALL	SAVCD		;Ouput code to HEX and PRN files
+10F1 E2 FA                 2254 	LOOP	CODLP
+10F3                       2255 SHOLIN:
+10F3 B0 00                 2256 	MOV	AL,0
+10F5 86 06 D6 1B           2257 	XCHG	AL,[COUNT]
+10F9 B9 07 00              2258 	MOV	CX,7		;Allow 7 bytes of code per line
+10FC 2A C8                 2259 	SUB	CL,AL
+10FE B0 20                 2260 	MOV	AL,' '
+1100 74 0B                 2261 	JZ	NOFIL
+1102                       2262 BLNK:				;Put in 3 blanks for each byte not present
+1102 E8 E4 00              2263 	CALL	LIST
+1105 E8 E1 00              2264 	CALL	LIST
+1108 E8 DE 00              2265 	CALL	LIST
+110B E2 F5                 2266 	LOOP	BLNK
+110D                       2267 NOFIL:
+110D E8 45 00              2268 	CALL	OUTLIN
+1110 58                    2269 	POP	AX		;Restore error code
+1111 E8 46 02              2270 	CALL	REPERR
+1114 A0 D7 1B              2271 	MOV	AL,[ERR]
+1117 E8 40 02              2272 	CALL	REPERR
+111A 5E                    2273 	POP	SI
+111B 59                    2274 	POP	CX
+111C A0 EE 1B              2275 	MOV	AL,[SPC]	;Any special funtion?
+111F 0A C0                 2276 	OR	AL,AL
+1121 75 0D                 2277 	JNZ	SPCFUN
+1123 E9 31 FF              2278 	JMP	FIXLINE
+1126                       2279 
+1126                       2280 SPEND:
+1126 A2 EE 1B              2281 	MOV	[SPC],AL	;Record special function
+1129 AD                    2282 	LODW			;Get it's data
+112A A3 71 1B              2283 	MOV	[DATA],AX
+112D E9 32 FF              2284 	JMP	NEXBT
+1130                       2285 
+1130                       2286 SPCFUN:
+1130 8B 16 71 1B           2287 	MOV	DX,[DATA]
+1134 3C FE                 2288 	CMP	AL,-2
+1136 74 0F                 2289 	JZ	DORG
+1138 3C FD                 2290 	CMP	AL,-3
+113A 74 12                 2291 	JZ	DPUT
+113C                       2292 DDS:
+113C                       2293 ;Handle DS pseudo-op
+113C 01 16 65 1B           2294 	ADD	[PC],DX
+1140 01 16 DC 1B           2295 	ADD	[HEXADD],DX
+1144 E9 10 FF              2296 	JMP	FIXLINE
+1147                       2297 
+1147                       2298 DORG:
+1147                       2299 ;Handle ORG pseudo-op
+1147 89 16 65 1B           2300 	MOV	[PC],DX
+114B E9 09 FF              2301 	JMP	FIXLINE
+114E                       2302 
+114E                       2303 DPUT:
+114E                       2304 ;Handle PUT pseudo-op
+114E 89 16 DC 1B           2305 	MOV	[HEXADD],DX
+1152 E9 02 FF              2306 	JMP	FIXLINE
+1155                       2307 
+1155                       2308 OUTLIN:
+1155                       2309 ;Copy the source line to the ouput device. Line will be preceded by
+1155                       2310 ;assembler-generated line number. This routine may be called several times
+1155                       2311 ;on one line (once for each line of object code bytes), so it sets a flag
+1155                       2312 ;so the line will only be output on the first call.
+1155 B0 FF                 2313 	MOV	AL,-1
+1157 86 06 E2 1B           2314 	XCHG	AL,[LINFLG]
+115B 0A C0                 2315 	OR	AL,AL
+115D 75 33                 2316 	JNZ	CRLF		;Output line only if first time
+115F A1 D8 1B              2317 	MOV	AX,[LINE]
+1162 40                    2318 	INC	AX
+1163 A3 D8 1B              2319 	MOV	[LINE],AX
+1166 B7 00                 2320 	MOV	BH,0		;No leading zero suppression
+1168 E8 30 00              2321 	CALL	OUT10
+116B B0 20                 2322 	MOV	AL," "
+116D E8 79 00              2323 	CALL	LIST
+1170 A0 40 1B              2324 	MOV	AL,[LSTFCB]
+1173 3C 5A                 2325 	CMP	AL,'Z'
+1175 74 1B                 2326 	JZ	CRLF		;Don't call NEXTCHR if listing suppressed
+1177 56                    2327 	PUSH	SI		;Save the only register destroyed by NEXTCHR
+1178                       2328 OUTLN:
+1178 E8 39 F1              2329 	CALL	NEXTCHR
+117B E8 6B 00              2330 	CALL	LIST
+117E 3C 0A                 2331 	CMP	AL,10		;Output until linefeed found
+1180 75 F6                 2332 	JNZ	OUTLN
+1182 5E                    2333 	POP	SI
+1183 C3                    2334 	RET
+1184                       2335 
+1184                       2336 PRTCNT:
+1184 BB E7 1A              2337 	MOV	BX,ERCNTM
+1187 E8 E6 01              2338 	CALL	PRINT
+118A A1 E6 1B              2339 	MOV	AX,[ERRCNT]
+118D B7 10                 2340 	MOV	BH,"0"-" "	;Enable leading zero suppression
+118F E8 09 00              2341 	CALL	OUT10
+1192                       2342 CRLF:
+1192 B0 0D                 2343 	MOV	AL,13
+1194 E8 52 00              2344 	CALL	LIST
+1197 B0 0A                 2345 	MOV	AL,10
+1199 EB 4E                 2346 	JP	LIST
+119B                       2347 
+119B                       2348 OUT10:
+119B 33 D2                 2349 	XOR	DX,DX
+119D BF 10 27              2350 	MOV	DI,10000
+11A0 F7 F7                 2351 	DIV	AX,DI
+11A2 0A C0                 2352 	OR	AL,AL		;>10,000?
+11A4 75 02                 2353 	JNZ	LEAD
+11A6 2C 10                 2354 	SUB	AL,"0"-" "	;Convert leading zero to blank
+11A8                       2355 LEAD:
+11A8 04 30                 2356 	ADD	AL,"0"
+11AA E8 3C 00              2357 	CALL	LIST
+11AD 92                    2358 	XCHG	AX,DX
+11AE B3 64                 2359 	MOV	BL,100
+11B0 F6 F3                 2360 	DIV	AL,BL
+11B2 8A DC                 2361 	MOV	BL,AH
+11B4 E8 0C 00              2362 	CALL	HIDIG		;Convert to decimal and print 1000s digit
+11B7 E8 0E 00              2363 	CALL	DIGIT		;Print 100s digit
+11BA 8A C3                 2364 	MOV	AL,BL
+11BC E8 04 00              2365 	CALL	HIDIG		;Convert to decimal and print 10s digit
+11BF B7 00                 2366 	MOV	BH,0		;Ensure leading zero suppression is off
+11C1 EB 05                 2367 	JP	DIGIT
+11C3                       2368 
+11C3                       2369 HIDIG:
+11C3 D4 0A                 2370 	AAM			;Convert binary to unpacked BCD
+11C5 0D 30 30              2371 	OR	AX,3030H	;Add "0" bias
+11C8                       2372 DIGIT:
+11C8 86 C4                 2373 	XCHG	AL,AH
+11CA 3C 30                 2374 	CMP	AL,"0"
+11CC 74 02                 2375 	JZ	SUPZ
+11CE B7 00                 2376 	MOV	BH,0		;Turn off zero suppression if not zero
+11D0                       2377 SUPZ:
+11D0 2A C7                 2378 	SUB	AL,BH		;Convert leading zeros to blanks
+11D2 EB 15                 2379 	JP	LIST
+11D4                       2380 
+11D4                       2381 STRTLIN:
+11D4 C6 06 E2 1B 00        2382 	MOV	B,[LINFLG],0
+11D9 8B 1E 65 1B           2383 	MOV	BX,[PC]
+11DD 8A C7                 2384 	MOV	AL,BH
+11DF E8 4D 00              2385 	CALL	PHEX
+11E2 8A C3                 2386 	MOV	AL,BL
+11E4                       2387 PHEXB:
+11E4 E8 48 00              2388 	CALL	PHEX
+11E7 B0 20                 2389 	MOV	AL,' '
+11E9                       2390 LIST:
+11E9 50                    2391 	PUSH	AX
+11EA 52                    2392 	PUSH	DX
+11EB 24 7F                 2393 	AND	AL,7FH
+11ED 8A D0                 2394 	MOV	DL,AL
+11EF F6 06 EC 1B 03        2395 	TEST	B,[LSTDEV],3	;See if output goes to console
+11F4 74 04                 2396 	JZ	PRNCHK
+11F6 B4 02                 2397 	MOV	AH,2
+11F8 CD 21                 2398 	INT	33		;Output to console
+11FA                       2399 PRNCHK:
+11FA F6 06 EC 1B 04        2400 	TEST	B,[LSTDEV],4	;See if output goes to printer
+11FF 74 04                 2401 	JZ	FILCHK
+1201 B4 04                 2402 	MOV	AH,4
+1203 CD 21                 2403 	INT	33		;Output to printer
+1205                       2404 FILCHK:
+1205 8A C2                 2405 	MOV	AL,DL
+1207 5A                    2406 	POP	DX
+1208 F6 06 EC 1B 80        2407 	TEST	B,[LSTDEV],80H	;See if output goes to a file
+120D 74 03                 2408 	JZ	LISTRET
+120F E8 02 00              2409 	CALL	WRTBUF
+1212                       2410 LISTRET:
+1212 58                    2411 	POP	AX
+1213 C3                    2412 	RET
+1214                       2413 
+1214                       2414 WRTBUF:
+1214 57                    2415 	PUSH	DI
+1215 8B 3E F6 1B           2416 	MOV	DI,[LSTPNT]
+1219 AA                    2417 	STOB
+121A 81 FF 3E 20           2418 	CMP	DI,LSTBUF+LSTBUFSIZ
+121E 75 09                 2419 	JNZ	SAVPT
+1220 50                    2420 	PUSH	AX
+1221 51                    2421 	PUSH	CX
+1222 52                    2422 	PUSH	DX
+1223 E8 22 02              2423 	CALL	FLUSHBUF
+1226 5A                    2424 	POP	DX
+1227 59                    2425 	POP	CX
+1228 58                    2426 	POP	AX
+1229                       2427 SAVPT:
+1229 89 3E F6 1B           2428 	MOV	[LSTPNT],DI
+122D 5F                    2429 	POP	DI
+122E C3                    2430 	RET
+122F                       2431 
+122F                       2432 PHEX:
+122F 50                    2433 	PUSH	AX
+1230 E8 37 02              2434 	CALL	UHALF
+1233 E8 B3 FF              2435 	CALL	LIST
+1236 58                    2436 	POP	AX
+1237 E8 38 02              2437 	CALL	LHALF
+123A EB AD                 2438 	JP	LIST
+123C                       2439 
+123C                       2440 FINI:
+123C 80 0E EC 1B 01        2441 	OR	B,[LSTDEV],1
+1241 E8 40 FF              2442 	CALL	PRTCNT
+1244 80 26 EC 1B FE        2443 	AND	B,[LSTDEV],0FEH
+1249 A0 1B 1B              2444 	MOV	AL,[HEXFCB]
+124C 3C 5A                 2445 	CMP	AL,'Z'
+124E 74 3B                 2446 	JZ	SYMDMP
+1250 A0 E0 1B              2447 	MOV	AL,[HEXCNT]
+1253 3C FB                 2448 	CMP	AL,-5
+1255 74 03                 2449 	JZ	L0012
+1257 E8 A0 01              2450 	CALL	ENHEXL
+125A                       2451 L0012:	
+125A B0 3A                 2452 	MOV	AL,':'
+125C E8 DF 01              2453 	CALL	PUTCHR
+125F B5 0A                 2454 	MOV	CH,10
+1261                       2455 HEXEND:
+1261 51                    2456 	PUSH	CX
+1262 B0 30                 2457 	MOV	AL,'0'
+1264 E8 D7 01              2458 	CALL	PUTCHR
+1267 59                    2459 	POP	CX
+1268 FE CD                 2460 	DEC	CH
+126A 75 F5                 2461 	JNZ	HEXEND
+126C B0 0D                 2462 	MOV	AL,13
+126E E8 CD 01              2463 	CALL	PUTCHR
+1271 B0 0A                 2464 	MOV	AL,10
+1273 E8 C8 01              2465 	CALL	PUTCHR
+1276 B0 1A                 2466 	MOV	AL,1AH
+1278 E8 C3 01              2467 	CALL	PUTCHR
+127B E8 A5 01              2468 	CALL	WRTHEX		;Flush HEX file buffer
+127E A1 70 00              2469 	MOV	AX,[FCB+20]
+1281 A3 2F 1B              2470 	MOV	[HEXFCB+20],AX	;Copy date to hex file
+1284 BA 1B 1B              2471 	MOV	DX,HEXFCB
+1287 B4 10                 2472 	MOV	AH,CLOSE
+1289 CD 21                 2473 	INT	33
+128B                       2474 SYMDMP:
+128B A0 D0 1B              2475 	MOV	AL,[SYMFLG]
+128E 3C 53                 2476 	CMP	AL,'S'
+1290 75 19                 2477 	JNZ	ENDSYM
+1292 BB F8 1A              2478 	MOV	BX,SYMMES
+1295 E8 D8 00              2479 	CALL	PRINT
+1298 8B 16 CC 1B           2480 	MOV	DX,[BASE]
+129C 8A C6                 2481 	MOV	AL,DH
+129E 0A C2                 2482 	OR	AL,DL
+12A0 74 22                 2483 	JZ	EXIT
+12A2 8B 1E CE 1B           2484 	MOV	BX,[HEAP]
+12A6 8B E3                 2485 	MOV	SP,BX
+12A8 E8 1C 00              2486 	CALL	NODE
+12AB                       2487 ENDSYM:
+12AB F6 06 EC 1B 80        2488 	TEST	B,[LSTDEV],80H	;Print listing to file?
+12B0 74 12                 2489 	JZ	EXIT
+12B2 B0 1A                 2490 	MOV	AL,1AH
+12B4 E8 5D FF              2491 	CALL	WRTBUF		;Write end-of-file mark
+12B7 E8 8E 01              2492 	CALL	FLUSHBUF
+12BA A1 70 00              2493 	MOV	AX,[FCB+20]	;Get date of source file
+12BD A3 54 1B              2494 	MOV	[LSTFCB+20],AX
+12C0 B4 10                 2495 	MOV	AH,CLOSE
+12C2 CD 21                 2496 	INT	33
+12C4 E9 39 ED              2497 EXIT:	JMP	0
+12C7                       2498 
+12C7                       2499 NODE:
+12C7 87 DA                 2500 	XCHG	DX,BX
+12C9 53                    2501 	PUSH	BX
+12CA 8A 17                 2502 	MOV	DL,[BX]
+12CC B6 00                 2503 	MOV	DH,0
+12CE 43                    2504 	INC	BX
+12CF 03 DA                 2505 	ADD	BX,DX
+12D1 8A 17                 2506 	MOV	DL,[BX]
+12D3 43                    2507 	INC	BX
+12D4 8A 37                 2508 	MOV	DH,[BX]
+12D6 8A C2                 2509 	MOV	AL,DL
+12D8 0A C6                 2510 	OR	AL,DH
+12DA 74 03                 2511 	JZ	L0014
+12DC E8 E8 FF              2512 	CALL	NODE
+12DF                       2513 L0014:	
+12DF 5B                    2514 	POP	BX
+12E0 8A 2F                 2515 	MOV	CH,[BX]
+12E2 43                    2516 	INC	BX
+12E3 B0 0A                 2517 	MOV	AL,SYMWID
+12E5 2A C5                 2518 	SUB	AL,CH
+12E7 73 02                 2519 	JNC	LENOK
+12E9 B0 01                 2520 	MOV	AL,1
+12EB                       2521 LENOK:
+12EB 8A F0                 2522 	MOV	DH,AL
+12ED                       2523 WRTSYM:
+12ED 8A 07                 2524 	MOV	AL,[BX]
+12EF 43                    2525 	INC	BX
+12F0 E8 F6 FE              2526 	CALL	LIST
+12F3 FE CD                 2527 	DEC	CH
+12F5 75 F6                 2528 	JNZ	WRTSYM
+12F7 8A EE                 2529 	MOV	CH,DH
+12F9 FE C5                 2530 	INC	CH
+12FB B0 20                 2531 	MOV	AL,' '
+12FD                       2532 OUTB:
+12FD E8 E9 FE              2533 	CALL	LIST
+1300 FE CD                 2534 	DEC	CH
+1302 75 F9                 2535 	JNZ	OUTB
+1304 43                    2536 	INC	BX
+1305 43                    2537 	INC	BX
+1306 53                    2538 	PUSH	BX
+1307 43                    2539 	INC	BX
+1308 43                    2540 	INC	BX
+1309 43                    2541 	INC	BX
+130A 43                    2542 	INC	BX
+130B 8A 07                 2543 	MOV	AL,[BX]
+130D E8 1F FF              2544 	CALL	PHEX
+1310 4B                    2545 	DEC	BX
+1311 8A 07                 2546 	MOV	AL,[BX]
+1313 E8 19 FF              2547 	CALL	PHEX
+1316 E8 79 FE              2548 	CALL	CRLF
+1319 5B                    2549 	POP	BX
+131A 8B 17                 2550 	MOV	DX,[BX]
+131C 43                    2551 	INC	BX
+131D 8A C6                 2552 	MOV	AL,DH
+131F 0A C2                 2553 	OR	AL,DL
+1321 75 A4                 2554 	JNZ	NODE
+1323 C3                    2555 	RET
+1324                       2556 
+1324                       2557 SAVCD:
+1324 A2 E3 1B              2558 	MOV	[PREV],AL
+1327 53                    2559 	PUSH	BX
+1328 51                    2560 	PUSH	CX
+1329 50                    2561 	PUSH	AX
+132A 52                    2562 	PUSH	DX
+132B E8 59 00              2563 	CALL	CODBYT
+132E 5A                    2564 	POP	DX
+132F BB D6 1B              2565 	MOV	BX,COUNT
+1332 FE 07                 2566 	INC	B,[BX]
+1334 8A 07                 2567 	MOV	AL,[BX]
+1336 3C 08                 2568 	CMP	AL,8
+1338 75 11                 2569 	JNZ	NOEXT
+133A C6 07 01              2570 	MOV	B,[BX],1
+133D E8 15 FE              2571 	CALL	OUTLIN
+1340 B0 20                 2572 	MOV	AL,' '
+1342 B5 05                 2573 	MOV	CH,5
+1344                       2574 TAB:
+1344 E8 A2 FE              2575 	CALL	LIST
+1347 FE CD                 2576 	DEC	CH
+1349 75 F9                 2577 	JNZ	TAB
+134B                       2578 NOEXT:
+134B 58                    2579 	POP	AX
+134C E8 95 FE              2580 	CALL	PHEXB
+134F 59                    2581 	POP	CX
+1350 FF 06 65 1B           2582 	INC	[PC]
+1354 FF 06 DC 1B           2583 	INC	[HEXADD]
+1358 5B                    2584 	POP	BX
+1359 C3                    2585 	RET
+135A                       2586 
+135A                       2587 REPERR:
+135A 0A C0                 2588 	OR	AL,AL
+135C 74 FB                 2589 	JZ	RET
+135E 50                    2590 	PUSH	AX
+135F BB 6D 1A              2591 	MOV	BX,ERRMES
+1362 E8 0B 00              2592 	CALL	PRINT
+1365 58                    2593 	POP	AX
+1366 E8 C6 FE              2594 	CALL	PHEX
+1369 BB 94 1A              2595 	MOV	BX,ENDMES
+136C FF 06 E6 1B           2596 	INC	[ERRCNT]
+1370                       2597 PRINT:
+1370 8A 07                 2598 	MOV	AL,[BX]
+1372 E8 74 FE              2599 	CALL	LIST
+1375 0A C0                 2600 	OR	AL,AL
+1377 78 E0                 2601 	JS	RET
+1379 43                    2602 	INC	BX
+137A EB F4                 2603 	JP	PRINT
+137C                       2604 
+137C                       2605 OUTA:
+137C 8A D0                 2606 	MOV	DL,AL
+137E                       2607 OUT:
+137E 80 E2 7F              2608 	AND	DL,7FH
+1381 B1 02                 2609 	MOV	CL,2
+1383                       2610 SYSTEM:
+1383 E8 7F EC              2611 	CALL	5
+1386 C3                    2612 	RET
+1387                       2613 
+1387                       2614 CODBYT:
+1387 82 3E 1B 1B 5A        2615 	CMP	B,[HEXFCB],"Z"
+138C 74 F8                 2616 	JZ	RET
+138E 50                    2617 	PUSH	AX
+138F 8B 16 DE 1B           2618 	MOV	DX,[LASTAD]
+1393 8B 1E DC 1B           2619 	MOV	BX,[HEXADD]
+1397 89 1E DE 1B           2620 	MOV	[LASTAD],BX
+139B 42                    2621 	INC	DX
+139C A0 E0 1B              2622 	MOV	AL,[HEXCNT]
+139F 3C FB                 2623 	CMP	AL,-5
+13A1 74 07                 2624 	JZ	NEWLIN
+13A3 3B DA                 2625 	CMP	BX,DX
+13A5 74 2E                 2626 	JZ	AFHEX
+13A7 E8 50 00              2627 	CALL	ENHEXL
+13AA                       2628 NEWLIN:
+13AA B0 3A                 2629 	MOV	AL,':'
+13AC E8 8F 00              2630 	CALL	PUTCHR
+13AF B0 FC                 2631 	MOV	AL,-4
+13B1 A2 E0 1B              2632 	MOV	[HEXCNT],AL
+13B4 32 C0                 2633 	XOR	AL,AL
+13B6 A2 E1 1B              2634 	MOV	[CHKSUM],AL
+13B9 8B 1E F4 1B           2635 	MOV	BX,[HEXPNT]
+13BD 89 1E DA 1B           2636 	MOV	[HEXLEN],BX
+13C1 E8 12 00              2637 	CALL	HEXBYT
+13C4 A0 DD 1B              2638 	MOV	AL,[HEXADD+1]
+13C7 E8 0C 00              2639 	CALL	HEXBYT
+13CA A0 DC 1B              2640 	MOV	AL,[HEXADD]
+13CD E8 06 00              2641 	CALL	HEXBYT
+13D0 32 C0                 2642 	XOR	AL,AL
+13D2 E8 01 00              2643 	CALL	HEXBYT
+13D5                       2644 AFHEX:
+13D5 58                    2645 	POP	AX
+13D6                       2646 HEXBYT:
+13D6 8A E8                 2647 	MOV	CH,AL
+13D8 BB E1 1B              2648 	MOV	BX,CHKSUM
+13DB 02 07                 2649 	ADD	AL,[BX]
+13DD 88 07                 2650 	MOV	[BX],AL
+13DF 8A C5                 2651 	MOV	AL,CH
+13E1 E8 86 00              2652 	CALL	UHALF
+13E4 E8 57 00              2653 	CALL	PUTCHR
+13E7 8A C5                 2654 	MOV	AL,CH
+13E9 E8 86 00              2655 	CALL	LHALF
+13EC E8 4F 00              2656 	CALL	PUTCHR
+13EF BB E0 1B              2657 	MOV	BX,HEXCNT
+13F2 FE 07                 2658 	INC	B,[BX]
+13F4 8A 07                 2659 	MOV	AL,[BX]
+13F6 3C 1A                 2660 	CMP	AL,26
+13F8 75 8C                 2661 	JNZ	RET
+13FA                       2662 ENHEXL:
+13FA 8B 3E DA 1B           2663 	MOV	DI,[HEXLEN]
+13FE 8A E8                 2664 	MOV	CH,AL
+1400 E8 67 00              2665 	CALL	UHALF
+1403 AA                    2666 	STOB
+1404 8A C5                 2667 	MOV	AL,CH
+1406 E8 69 00              2668 	CALL	LHALF
+1409 AA                    2669 	STOB
+140A B0 FA                 2670 	MOV	AL,-6
+140C A2 E0 1B              2671 	MOV	[HEXCNT],AL
+140F A0 E1 1B              2672 	MOV	AL,[CHKSUM]
+1412 02 C5                 2673 	ADD	AL,CH
+1414 F6 D8                 2674 	NEG	AL
+1416 E8 BD FF              2675 	CALL	HEXBYT
+1419 B0 0D                 2676 	MOV	AL,13
+141B E8 20 00              2677 	CALL	PUTCHR
+141E B0 0A                 2678 	MOV	AL,10
+1420 E8 1B 00              2679 	CALL	PUTCHR
+1423                       2680 WRTHEX:
+1423                       2681 ;Write out the line
+1423 BA F8 1B              2682 	MOV	DX,HEXBUF
+1426 89 16 F4 1B           2683 	MOV	[HEXPNT],DX
+142A B4 1A                 2684 	MOV	AH,SETDMA
+142C CD 21                 2685 	INT	33
+142E 2B FA                 2686 	SUB	DI,DX		;Length of buffer
+1430 8B CF                 2687 	MOV	CX,DI
+1432 BA 1B 1B              2688 	MOV	DX,HEXFCB
+1435 B4 28                 2689 	MOV	AH,BLKWRT
+1437 CD 21                 2690 	INT	33
+1439 0A C0                 2691 	OR	AL,AL
+143B 75 27                 2692 	JNZ	DSKFUL
+143D C3                    2693 	RET
+143E                       2694 
+143E                       2695 PUTCHR:
+143E 8B 3E F4 1B           2696 	MOV	DI,[HEXPNT]
+1442 AA                    2697 	STOB
+1443 89 3E F4 1B           2698 	MOV	[HEXPNT],DI
+1447 C3                    2699 	RET
+1448                       2700 
+1448                       2701 FLUSHBUF:
+1448 8B 0E F6 1B           2702 	MOV	CX,[LSTPNT]
+144C BA 3E 1C              2703 	MOV	DX,LSTBUF
+144F 8B FA                 2704 	MOV	DI,DX
+1451 2B CA                 2705 	SUB	CX,DX
+1453 74 F2                 2706 	JZ	RET		;Buffer empty?
+1455 B4 1A                 2707 	MOV	AH,SETDMA
+1457 CD 21                 2708 	INT	33
+1459 BA 40 1B              2709 	MOV	DX,LSTFCB
+145C B4 28                 2710 	MOV	AH,BLKWRT
+145E CD 21                 2711 	INT	33
+1460 0A C0                 2712 	OR	AL,AL
+1462 74 E3                 2713 	JZ	RET
+1464                       2714 DSKFUL:
+1464 BB C2 1A              2715 	MOV	BX,WRTERR
+1467 E9 0A EE              2716 	JMP	PRERR
+146A                       2717 
+146A                       2718 UHALF:
+146A D0 D8                 2719 	RCR	AL
+146C D0 D8                 2720 	RCR	AL
+146E D0 D8                 2721 	RCR	AL
+1470 D0 D8                 2722 	RCR	AL
+1472                       2723 LHALF:
+1472 24 0F                 2724 	AND	AL,0FH
+1474 0C 30                 2725 	OR	AL,30H
+1476 3C 3A                 2726 	CMP	AL,'9'+1
+1478 72 CD                 2727 	JC	RET
+147A 04 07                 2728 	ADD	AL,7
+147C C3                    2729 	RET
+147D                       2730 
+147D 00                    2731 NONE:	DB	0
+147E                       2732 
+147E                       2733 ; 8086 MNEMONIC TABLE
+147E                       2734 
+147E                       2735 ; This table is actually a sequence of subtables, each starting with a label.
+147E                       2736 ; The label signifies which mnemonics the subtable applies to--A3, for example,
+147E                       2737 ; means all 3-letter mnemonics beginning with A.
+147E                       2738 
+147E                       2739 A3:
+147E 07                    2740 	DB	7
+147F 64 64                 2741 	DB	'dd'
+1481 55 0C                 2742 	DW	GRP7
+1483 02                    2743 	DB	2
+1484 6E 64                 2744 	DB	'nd'
+1486 39 0D                 2745 	DW	GRP13
+1488 22                    2746 	DB	22H
+1489 64 63                 2747 	DB	'dc'
+148B 55 0C                 2748 	DW	GRP7
+148D 12                    2749 	DB	12H
+148E 61 61                 2750 	DB	'aa'
+1490 1B 0A                 2751 	DW	PUT
+1492 37                    2752 	DB	37H
+1493 61 73                 2753 	DB	'as'
+1495 1B 0A                 2754 	DW	PUT
+1497 3F                    2755 	DB	3FH
+1498 61 6D                 2756 	DB	'am'
+149A 05 0D                 2757 	DW	GRP11
+149C D4                    2758 	DB	0D4H
+149D 61 64                 2759 	DB	'ad'
+149F 05 0D                 2760 	DW	GRP11
+14A1 D5                    2761 	DB	0D5H
+14A2                       2762 A5:
+14A2 01                    2763 	DB	1
+14A3 6C 69 67 6E           2764 	DB	'lign'
+14A7 F9 0B                 2765 	DW	ALIGN
+14A9 00                    2766 	DB	0
+14AA                       2767 C3:
+14AA 07                    2768 	DB	7
+14AB 6D 70                 2769 	DB	'mp'
+14AD 55 0C                 2770 	DW	GRP7
+14AF 3A                    2771 	DB	3AH
+14B0 6C 63                 2772 	DB	'lc'
+14B2 1B 0A                 2773 	DW	PUT
+14B4 F8                    2774 	DB	0F8H
+14B5 6C 64                 2775 	DB	'ld'
+14B7 1B 0A                 2776 	DW	PUT
+14B9 FC                    2777 	DB	0FCH
+14BA 6C 69                 2778 	DB	'li'
+14BC 1B 0A                 2779 	DW	PUT
+14BE FA                    2780 	DB	0FAH
+14BF 6D 63                 2781 	DB	'mc'
+14C1 1B 0A                 2782 	DW	PUT
+14C3 F5                    2783 	DB	0F5H
+14C4 62 77                 2784 	DB	'bw'
+14C6 1B 0A                 2785 	DW	PUT
+14C8 98                    2786 	DB	98H
+14C9 77 64                 2787 	DB	'wd'
+14CB 1B 0A                 2788 	DW	PUT
+14CD 99                    2789 	DB	99H
+14CE                       2790 C4:
+14CE 03                    2791 	DB	3
+14CF 61 6C 6C              2792 	DB	'all'
+14D2 69 0D                 2793 	DW	GRP14
+14D4 9A                    2794 	DB	9AH
+14D5 6D 70 62              2795 	DB	'mpb'
+14D8 1B 0A                 2796 	DW	PUT
+14DA A6                    2797 	DB	0A6H
+14DB 6D 70 77              2798 	DB	'mpw'
+14DE 1B 0A                 2799 	DW	PUT
+14E0 A7                    2800 	DB	0A7H
+14E1                       2801 C5:
+14E1 02                    2802 	DB	2
+14E2 6D 70 73 62           2803 	DB	'mpsb'
+14E6 1B 0A                 2804 	DW	PUT
+14E8 A6                    2805 	DB	0A6H
+14E9 6D 70 73 77           2806 	DB	'mpsw'
+14ED 1B 0A                 2807 	DW	PUT
+14EF A7                    2808 	DB	0A7H
+14F0                       2809 D2:
+14F0 05                    2810 	DB	5
+14F1 62                    2811 	DB	'b'
+14F2 7A 0F                 2812 	DW	GRP23
+14F4 01                    2813 	DB	1
+14F5 77                    2814 	DB	'w'
+14F6 7A 0F                 2815 	DW	GRP23
+14F8 00                    2816 	DB	0
+14F9 6D                    2817 	DB	'm'
+14FA 7A 0F                 2818 	DW	GRP23
+14FC 02                    2819 	DB	2
+14FD 73                    2820 	DB	's'
+14FE C1 0B                 2821 	DW	GRP5
+1500 01                    2822 	DB	1
+1501 69                    2823 	DB	'i'
+1502 1B 0A                 2824 	DW	PUT
+1504 FA                    2825 	DB	0FAH
+1505                       2826 D3:
+1505 04                    2827 	DB	4
+1506 65 63                 2828 	DB	'ec'
+1508 7D 0C                 2829 	DW	GRP8
+150A 49                    2830 	DB	49H
+150B 69 76                 2831 	DB	'iv'
+150D D5 0C                 2832 	DW	GRP10
+150F 30                    2833 	DB	30H
+1510 61 61                 2834 	DB	'aa'
+1512 1B 0A                 2835 	DW	PUT
+1514 27                    2836 	DB	27H
+1515 61 73                 2837 	DB	'as'
+1517 1B 0A                 2838 	DW	PUT
+1519 2F                    2839 	DB	2FH
+151A                       2840 D4:
+151A 01                    2841 	DB	1
+151B 6F 77 6E              2842 	DB	'own'
+151E 1B 0A                 2843 	DW	PUT
+1520 FD                    2844 	DB	0FDH
+1521                       2845 E2:
+1521 01                    2846 	DB	1
+1522 69                    2847 	DB	'i'
+1523 1B 0A                 2848 	DW	PUT
+1525 FB                    2849 	DB	0FBH
+1526                       2850 E3:
+1526 03                    2851 	DB	3
+1527 71 75                 2852 	DB	'qu'
+1529 C1 0B                 2853 	DW	GRP5
+152B 02                    2854 	DB	2
+152C 73 63                 2855 	DB	'sc'
+152E C9 0E                 2856 	DW	GRP19
+1530 D8                    2857 	DB	0D8H
+1531 6E 64                 2858 	DB	'nd'
+1533 08 10                 2859 	DW	END
+1535 00                    2860 	DB	0
+1536                       2861 E5:
+1536 01                    2862 	DB	1
+1537 6E 64 69 66           2863 	DB	'ndif'
+153B F8 0F                 2864 	DW	ENDIF
+153D 00                    2865 	DB	0
+153E                       2866 H3:
+153E 01                    2867 	DB	1
+153F 6C 74                 2868 	DB	'lt'
+1541 1B 0A                 2869 	DW	PUT
+1543 F4                    2870 	DB	0F4H
+1544                       2871 H4:
+1544 01                    2872 	DB	1
+1545 61 6C 74              2873 	DB	'alt'
+1548 1B 0A                 2874 	DW	PUT
+154A F4                    2875 	DB	0F4H
+154B                       2876 I2:
+154B 02                    2877 	DB	2
+154C 6E                    2878 	DB	'n'
+154D 98 0B                 2879 	DW	GRP4
+154F E4                    2880 	DB	0E4H
+1550 66                    2881 	DB	'f'
+1551 C1 0B                 2882 	DW	GRP5
+1553 04                    2883 	DB	4
+1554                       2884 I3:
+1554 04                    2885 	DB	4
+1555 6E 63                 2886 	DB	'nc'
+1557 7D 0C                 2887 	DW	GRP8
+1559 41                    2888 	DB	41H
+155A 6E 62                 2889 	DB	'nb'
+155C 98 0B                 2890 	DW	GRP4
+155E E4                    2891 	DB	0E4H
+155F 6E 77                 2892 	DB	'nw'
+1561 98 0B                 2893 	DW	GRP4
+1563 E5                    2894 	DB	0E5H
+1564 6E 74                 2895 	DB	'nt'
+1566 9E 0E                 2896 	DW	GRP18
+1568 CC                    2897 	DB	0CCH
+1569                       2898 I4:
+1569 04                    2899 	DB	4
+156A 6D 75 6C              2900 	DB	'mul'
+156D D5 0C                 2901 	DW	GRP10
+156F 28                    2902 	DB	28H
+1570 64 69 76              2903 	DB	'div'
+1573 D5 0C                 2904 	DW	GRP10
+1575 38                    2905 	DB	38H
+1576 72 65 74              2906 	DB	'ret'
+1579 1B 0A                 2907 	DW	PUT
+157B CF                    2908 	DB	0CFH
+157C 6E 74 6F              2909 	DB	'nto'
+157F 1B 0A                 2910 	DW	PUT
+1581 CE                    2911 	DB	0CEH
+1582                       2912 J2:
+1582 0A                    2913 	DB	10
+1583 70                    2914 	DB	'p'
+1584 65 0E                 2915 	DW	GRP17
+1586 EB                    2916 	DB	0EBH
+1587 7A                    2917 	DB	'z'
+1588 65 0E                 2918 	DW	GRP17
+158A 74                    2919 	DB	74H
+158B 65                    2920 	DB	'e'
+158C 65 0E                 2921 	DW	GRP17
+158E 74                    2922 	DB	74H
+158F 6C                    2923 	DB	'l'
+1590 65 0E                 2924 	DW	GRP17
+1592 7C                    2925 	DB	7CH
+1593 62                    2926 	DB	'b'
+1594 65 0E                 2927 	DW	GRP17
+1596 72                    2928 	DB	72H
+1597 61                    2929 	DB	'a'
+1598 65 0E                 2930 	DW	GRP17
+159A 77                    2931 	DB	77H
+159B 67                    2932 	DB	'g'
+159C 65 0E                 2933 	DW	GRP17
+159E 7F                    2934 	DB	7FH
+159F 6F                    2935 	DB	'o'
+15A0 65 0E                 2936 	DW	GRP17
+15A2 70                    2937 	DB	70H
+15A3 73                    2938 	DB	's'
+15A4 65 0E                 2939 	DW	GRP17
+15A6 78                    2940 	DB	78H
+15A7 63                    2941 	DB	'c'
+15A8 65 0E                 2942 	DW	GRP17
+15AA 72                    2943 	DB	72H
+15AB                       2944 J3:
+15AB 11                    2945 	DB	17
+15AC 6D 70                 2946 	DB	'mp'
+15AE 69 0D                 2947 	DW	GRP14
+15B0 EA                    2948 	DB	0EAH
+15B1 6E 7A                 2949 	DB	'nz'
+15B3 65 0E                 2950 	DW	GRP17
+15B5 75                    2951 	DB	75H
+15B6 6E 65                 2952 	DB	'ne'
+15B8 65 0E                 2953 	DW	GRP17
+15BA 75                    2954 	DB	75H
+15BB 6E 6C                 2955 	DB	'nl'
+15BD 65 0E                 2956 	DW	GRP17
+15BF 7D                    2957 	DB	7DH
+15C0 67 65                 2958 	DB	'ge'
+15C2 65 0E                 2959 	DW	GRP17
+15C4 7D                    2960 	DB	7DH
+15C5 6E 62                 2961 	DB	'nb'
+15C7 65 0E                 2962 	DW	GRP17
+15C9 73                    2963 	DB	73H
+15CA 61 65                 2964 	DB	'ae'
+15CC 65 0E                 2965 	DW	GRP17
+15CE 73                    2966 	DB	73H
+15CF 6E 63                 2967 	DB	'nc'
+15D1 65 0E                 2968 	DW	GRP17
+15D3 73                    2969 	DB	73H
+15D4 6E 67                 2970 	DB	'ng'
+15D6 65 0E                 2971 	DW	GRP17
+15D8 7E                    2972 	DB	7EH
+15D9 6C 65                 2973 	DB	'le'
+15DB 65 0E                 2974 	DW	GRP17
+15DD 7E                    2975 	DB	7EH
+15DE 6E 61                 2976 	DB	'na'
+15E0 65 0E                 2977 	DW	GRP17
+15E2 76                    2978 	DB	76H
+15E3 62 65                 2979 	DB	'be'
+15E5 65 0E                 2980 	DW	GRP17
+15E7 76                    2981 	DB	76H
+15E8 70 65                 2982 	DB	'pe'
+15EA 65 0E                 2983 	DW	GRP17
+15EC 7A                    2984 	DB	7AH
+15ED 6E 70                 2985 	DB	'np'
+15EF 65 0E                 2986 	DW	GRP17
+15F1 7B                    2987 	DB	7BH
+15F2 70 6F                 2988 	DB	'po'
+15F4 65 0E                 2989 	DW	GRP17
+15F6 7B                    2990 	DB	7BH
+15F7 6E 6F                 2991 	DB	'no'
+15F9 65 0E                 2992 	DW	GRP17
+15FB 71                    2993 	DB	71H
+15FC 6E 73                 2994 	DB	'ns'
+15FE 65 0E                 2995 	DW	GRP17
+1600 79                    2996 	DB	79H
+1601                       2997 J4:
+1601 06                    2998 	DB	6
+1602 6D 70 73              2999 	DB	'mps'
+1605 65 0E                 3000 	DW	GRP17
+1607 EB                    3001 	DB	0EBH
+1608 63 78 7A              3002 	DB	'cxz'
+160B 65 0E                 3003 	DW	GRP17
+160D E3                    3004 	DB	0E3H
+160E 6E 67 65              3005 	DB	'nge'
+1611 65 0E                 3006 	DW	GRP17
+1613 7C                    3007 	DB	7CH
+1614 6E 61 65              3008 	DB	'nae'
+1617 65 0E                 3009 	DW	GRP17
+1619 72                    3010 	DB	72H
+161A 6E 62 65              3011 	DB	'nbe'
+161D 65 0E                 3012 	DW	GRP17
+161F 77                    3013 	DB	77H
+1620 6E 6C 65              3014 	DB	'nle'
+1623 65 0E                 3015 	DW	GRP17
+1625 7F                    3016 	DB	7FH
+1626                       3017 L3:
+1626 03                    3018 	DB	3
+1627 65 61                 3019 	DB	'ea'
+1629 49 0C                 3020 	DW	GRP6
+162B 8D                    3021 	DB	8DH
+162C 64 73                 3022 	DB	'ds'
+162E 49 0C                 3023 	DW	GRP6
+1630 C5                    3024 	DB	0C5H
+1631 65 73                 3025 	DB	'es'
+1633 49 0C                 3026 	DW	GRP6
+1635 C4                    3027 	DB	0C4H
+1636                       3028 L4:
+1636 05                    3029 	DB	5
+1637 6F 6F 70              3030 	DB	'oop'
+163A 65 0E                 3031 	DW	GRP17
+163C E2                    3032 	DB	0E2H
+163D 6F 64 62              3033 	DB	'odb'
+1640 1B 0A                 3034 	DW	PUT
+1642 AC                    3035 	DB	0ACH
+1643 6F 64 77              3036 	DB	'odw'
+1646 1B 0A                 3037 	DW	PUT
+1648 AD                    3038 	DB	0ADH
+1649 61 68 66              3039 	DB	'ahf'
+164C 1B 0A                 3040 	DW	PUT
+164E 9F                    3041 	DB	9FH
+164F 6F 63 6B              3042 	DB	'ock'
+1652 1B 0A                 3043 	DW	PUT
+1654 F0                    3044 	DB	0F0H
+1655                       3045 L5:
+1655 04                    3046 	DB	4
+1656 6F 6F 70 65           3047 	DB	'oope'
+165A 65 0E                 3048 	DW	GRP17
+165C E1                    3049 	DB	0E1H
+165D 6F 6F 70 7A           3050 	DB	'oopz'
+1661 65 0E                 3051 	DW	GRP17
+1663 E1                    3052 	DB	0E1H
+1664 6F 64 73 62           3053 	DB	'odsb'
+1668 1B 0A                 3054 	DW	PUT
+166A AC                    3055 	DB	0ACH
+166B 6F 64 73 77           3056 	DB	'odsw'
+166F 1B 0A                 3057 	DW	PUT
+1671 AD                    3058 	DB	0ADH
+1672                       3059 L6:
+1672 02                    3060 	DB	2
+1673 6F 6F 70 6E 65        3061 	DB	'oopne'
+1678 65 0E                 3062 	DW	GRP17
+167A E0                    3063 	DB	0E0H
+167B 6F 6F 70 6E 7A        3064 	DB	'oopnz'
+1680 65 0E                 3065 	DW	GRP17
+1682 E0                    3066 	DB	0E0H
+1683                       3067 M3:
+1683 02                    3068 	DB	2
+1684 6F 76                 3069 	DB	'ov'
+1686 AE 09                 3070 	DW	GRP1
+1688 88                    3071 	DB	88H
+1689 75 6C                 3072 	DB	'ul'
+168B D5 0C                 3073 	DW	GRP10
+168D 20                    3074 	DB	20H
+168E                       3075 M4:
+168E 02                    3076 	DB	2
+168F 6F 76 62              3077 	DB	'ovb'
+1692 1B 0A                 3078 	DW	PUT
+1694 A4                    3079 	DB	0A4H
+1695 6F 76 77              3080 	DB	'ovw'
+1698 1B 0A                 3081 	DW	PUT
+169A A5                    3082 	DB	0A5H
+169B                       3083 M5:
+169B 02                    3084 	DB	2
+169C 6F 76 73 62           3085 	DB	'ovsb'
+16A0 1B 0A                 3086 	DW	PUT
+16A2 A4                    3087 	DB	0A4H
+16A3 6F 76 73 77           3088 	DB	'ovsw'
+16A7 1B 0A                 3089 	DW	PUT
+16A9 A5                    3090 	DB	0A5H
+16AA                       3091 N3:
+16AA 03                    3092 	DB	3
+16AB 6F 74                 3093 	DB	'ot'
+16AD 83 0C                 3094 	DW	GRP9
+16AF 10                    3095 	DB	10H
+16B0 65 67                 3096 	DB	'eg'
+16B2 83 0C                 3097 	DW	GRP9
+16B4 18                    3098 	DB	18H
+16B5 6F 70                 3099 	DB	'op'
+16B7 1B 0A                 3100 	DW	PUT
+16B9 90                    3101 	DB	90H
+16BA                       3102 O2:
+16BA 01                    3103 	DB	1
+16BB 72                    3104 	DB	'r'
+16BC 39 0D                 3105 	DW	GRP13
+16BE 0A                    3106 	DB	0AH
+16BF                       3107 O3:
+16BF 02                    3108 	DB	2
+16C0 75 74                 3109 	DB	'ut'
+16C2 98 0B                 3110 	DW	GRP4
+16C4 E6                    3111 	DB	0E6H
+16C5 72 67                 3112 	DB	'rg'
+16C7 C1 0B                 3113 	DW	GRP5
+16C9 00                    3114 	DB	0
+16CA                       3115 O4:
+16CA 02                    3116 	DB	2
+16CB 75 74 62              3117 	DB	'utb'
+16CE 98 0B                 3118 	DW	GRP4
+16D0 E6                    3119 	DB	0E6H
+16D1 75 74 77              3120 	DB	'utw'
+16D4 98 0B                 3121 	DW	GRP4
+16D6 E7                    3122 	DB	0E7H
+16D7                       3123 P3:
+16D7 02                    3124 	DB	2
+16D8 6F 70                 3125 	DB	'op'
+16DA 59 0F                 3126 	DW	GRP22
+16DC 8F                    3127 	DB	8FH
+16DD 75 74                 3128 	DB	'ut'
+16DF C1 0B                 3129 	DW	GRP5
+16E1 03                    3130 	DB	3
+16E2                       3131 P4:
+16E2 02                    3132 	DB	2
+16E3 75 73 68              3133 	DB	'ush'
+16E6 07 0B                 3134 	DW	GRP2
+16E8 FF                    3135 	DB	0FFH
+16E9 6F 70 66              3136 	DB	'opf'
+16EC 1B 0A                 3137 	DW	PUT
+16EE 9D                    3138 	DB	9DH
+16EF                       3139 P5:
+16EF 01                    3140 	DB	1
+16F0 75 73 68 66           3141 	DB	'ushf'
+16F4 1B 0A                 3142 	DW	PUT
+16F6 9C                    3143 	DB	9CH
+16F7                       3144 R3:
+16F7 06                    3145 	DB	6
+16F8 65 74                 3146 	DB	'et'
+16FA E6 0D                 3147 	DW	GRP16
+16FC C3                    3148 	DB	0C3H
+16FD 65 70                 3149 	DB	'ep'
+16FF 1B 0A                 3150 	DW	PUT
+1701 F3                    3151 	DB	0F3H
+1702 6F 6C                 3152 	DB	'ol'
+1704 0D 0D                 3153 	DW	GRP12
+1706 00                    3154 	DB	0
+1707 6F 72                 3155 	DB	'or'
+1709 0D 0D                 3156 	DW	GRP12
+170B 08                    3157 	DB	8
+170C 63 6C                 3158 	DB	'cl'
+170E 0D 0D                 3159 	DW	GRP12
+1710 10                    3160 	DB	10H
+1711 63 72                 3161 	DB	'cr'
+1713 0D 0D                 3162 	DW	GRP12
+1715 18                    3163 	DB	18H
+1716                       3164 R4:
+1716 02                    3165 	DB	2
+1717 65 70 7A              3166 	DB	'epz'
+171A 1B 0A                 3167 	DW	PUT
+171C F3                    3168 	DB	0F3H
+171D 65 70 65              3169 	DB	'epe'
+1720 1B 0A                 3170 	DW	PUT
+1722 F3                    3171 	DB	0F3H
+1723                       3172 R5:
+1723 02                    3173 	DB	2
+1724 65 70 6E 7A           3174 	DB	'epnz'
+1728 1B 0A                 3175 	DW	PUT
+172A F2                    3176 	DB	0F2H
+172B 65 70 6E 65           3177 	DB	'epne'
+172F 1B 0A                 3178 	DW	PUT
+1731 F2                    3179 	DB	0F2H
+1732                       3180 S3:
+1732 0B                    3181 	DB	11
+1733 75 62                 3182 	DB	'ub'
+1735 55 0C                 3183 	DW	GRP7
+1737 2A                    3184 	DB	2AH
+1738 62 62                 3185 	DB	'bb'
+173A 55 0C                 3186 	DW	GRP7
+173C 1A                    3187 	DB	1AH
+173D 62 63                 3188 	DB	'bc'
+173F 55 0C                 3189 	DW	GRP7
+1741 1A                    3190 	DB	1AH
+1742 74 63                 3191 	DB	'tc'
+1744 1B 0A                 3192 	DW	PUT
+1746 F9                    3193 	DB	0F9H
+1747 74 64                 3194 	DB	'td'
+1749 1B 0A                 3195 	DW	PUT
+174B FD                    3196 	DB	0FDH
+174C 74 69                 3197 	DB	'ti'
+174E 1B 0A                 3198 	DW	PUT
+1750 FB                    3199 	DB	0FBH
+1751 68 6C                 3200 	DB	'hl'
+1753 0D 0D                 3201 	DW	GRP12
+1755 20                    3202 	DB	20H
+1756 68 72                 3203 	DB	'hr'
+1758 0D 0D                 3204 	DW	GRP12
+175A 28                    3205 	DB	28H
+175B 61 6C                 3206 	DB	'al'
+175D 0D 0D                 3207 	DW	GRP12
+175F 20                    3208 	DB	20H
+1760 61 72                 3209 	DB	'ar'
+1762 0D 0D                 3210 	DW	GRP12
+1764 38                    3211 	DB	38H
+1765 65 67                 3212 	DB	'eg'
+1767 41 0F                 3213 	DW	GRP21
+1769 26                    3214 	DB	26H
+176A                       3215 S4:
+176A 05                    3216 	DB	5
+176B 63 61 62              3217 	DB	'cab'
+176E 1B 0A                 3218 	DW	PUT
+1770 AE                    3219 	DB	0AEH
+1771 63 61 77              3220 	DB	'caw'
+1774 1B 0A                 3221 	DW	PUT
+1776 AF                    3222 	DB	0AFH
+1777 74 6F 62              3223 	DB	'tob'
+177A 1B 0A                 3224 	DW	PUT
+177C AA                    3225 	DB	0AAH
+177D 74 6F 77              3226 	DB	'tow'
+1780 1B 0A                 3227 	DW	PUT
+1782 AB                    3228 	DB	0ABH
+1783 61 68 66              3229 	DB	'ahf'
+1786 1B 0A                 3230 	DW	PUT
+1788 9E                    3231 	DB	9EH
+1789                       3232 S5:
+1789 04                    3233 	DB	4
+178A 63 61 73 62           3234 	DB	'casb'
+178E 1B 0A                 3235 	DW	PUT
+1790 AE                    3236 	DB	0AEH
+1791 63 61 73 77           3237 	DB	'casw'
+1795 1B 0A                 3238 	DW	PUT
+1797 AF                    3239 	DB	0AFH
+1798 74 6F 73 62           3240 	DB	'tosb'
+179C 1B 0A                 3241 	DW	PUT
+179E AA                    3242 	DB	0AAH
+179F 74 6F 73 77           3243 	DB	'tosw'
+17A3 1B 0A                 3244 	DW	PUT
+17A5 AB                    3245 	DB	0ABH
+17A6                       3246 T4:
+17A6 01                    3247 	DB	1
+17A7 65 73 74              3248 	DB	'est'
+17AA 30 0F                 3249 	DW	GRP20
+17AC 84                    3250 	DB	84H
+17AD                       3251 U2:
+17AD 01                    3252 	DB	1
+17AE 70                    3253 	DB	'p'
+17AF 1B 0A                 3254 	DW	PUT
+17B1 FC                    3255 	DB	0FCH
+17B2                       3256 W4:
+17B2 01                    3257 	DB	1
+17B3 61 69 74              3258 	DB	'ait'
+17B6 1B 0A                 3259 	DW	PUT
+17B8 9B                    3260 	DB	9BH
+17B9                       3261 X3:
+17B9 01                    3262 	DB	1
+17BA 6F 72                 3263 	DB	'or'
+17BC 39 0D                 3264 	DW	GRP13
+17BE 32                    3265 	DB	32H
+17BF                       3266 X4:
+17BF 02                    3267 	DB	2
+17C0 63 68 67              3268 	DB	'chg'
+17C3 38 0B                 3269 	DW	GRP3
+17C5 86                    3270 	DB	86H
+17C6 6C 61 74              3271 	DB	'lat'
+17C9 1B 0A                 3272 	DW	PUT
+17CB D7                    3273 	DB	0D7H
+17CC                       3274 
+17CC                       3275 
+17CC                       3276 ; 8087 MNEMONIC TABLE
+17CC                       3277 ; Similar to 8086 table above, except NOT distinguished by opcode length
+17CC                       3278 
+17CC                       3279 XM1:	;F2XM1
+17CC 01                    3280 	DB	1		;One opcode
+17CD 78 6D B1              3281 	DM	"xm1"
+17D0 01 F0                 3282 	DB	1,0F0H
+17D2                       3283 
+17D2                       3284 NDPA:
+17D2 03                    3285 	DB	3
+17D3 64 E4                 3286 	DM	"dd"
+17D5 00 C0                 3287 	DB	0,0C0H
+17D7 64 64 F0              3288 	DM	"ddp"
+17DA 06 C0                 3289 	DB	6,0C0H
+17DC 62 F3                 3290 	DM	"bs"
+17DE 01 E0                 3291 	DB	1,0E0H
+17E0                       3292 
+17E0                       3293 NDPB:
+17E0 02                    3294 	DB	2
+17E1 6C E4                 3295 	DM	"ld"
+17E3 07 20                 3296 	DB	7,20H
+17E5 73 74 F0              3297 	DM	"stp"
+17E8 07 30                 3298 	DB	7,30H
+17EA                       3299 
+17EA                       3300 NDPC:
+17EA 05                    3301 	DB	5
+17EB 6F ED                 3302 	DM	"om"
+17ED 00 D0                 3303 	DB	0,0D0H
+17EF 6F 6D F0              3304 	DM	"omp"
+17F2 00 18                 3305 	DB	0,18H
+17F4 68 F3                 3306 	DM	"hs"
+17F6 01 E0                 3307 	DB	1,0E0H
+17F8 6F 6D 70 F0           3308 	DM	"ompp"
+17FC 06 D9                 3309 	DB	6,0D9H
+17FE 6C 65 F8              3310 	DM	"lex"
+1801 03 E2                 3311 	DB	3,0E2H
+1803                       3312 
+1803                       3313 NDPD:
+1803 06                    3314 	DB	6
+1804 69 F6                 3315 	DM	"iv"
+1806 00 30                 3316 	DB	0,30H
+1808 69 76 F0              3317 	DM	"ivp"
+180B 06 F0                 3318 	DB	6,0F0H
+180D 69 76 F2              3319 	DM	"ivr"
+1810 00 38                 3320 	DB	0,38H
+1812 69 76 72 F0           3321 	DM	"ivrp"
+1816 06 F8                 3322 	DB	6,0F8H
+1818 65 63 73 74 F0        3323 	DM	"ecstp"
+181D 01 F6                 3324 	DB	1,0F6H
+181F 69 73 E9              3325 	DM	"isi"
+1822 03 E1                 3326 	DB	3,0E1H
+1824                       3327 
+1824                       3328 NDPE:
+1824 01                    3329 	DB	1
+1825 6E E9                 3330 	DM	"ni"
+1827 03 E0                 3331 	DB	3,0E0H
+1829                       3332 
+1829                       3333 NDPF:
+1829 01                    3334 	DB	1
+182A 72 65 E5              3335 	DM	"ree"
+182D 05 C0                 3336 	DB	5,0C0H
+182F                       3337 
+182F                       3338 NDPI:
+182F 0D                    3339 	DB	13
+1830 61 64 E4              3340 	DM	"add"
+1833 00 00                 3341 	DB	0,0
+1835 6C E4                 3342 	DM	"ld"
+1837 00 00                 3343 	DB	0,0
+1839 73 75 E2              3344 	DM	"sub"
+183C 00 00                 3345 	DB	0,0
+183E 73 74 F0              3346  	DM	"stp"
+1841 00 00                 3347 	DB	0,0
+1843 73 F4                 3348 	DM	"st"
+1845 00 00                 3349 	DB	0,0
+1847 6D 75 EC              3350 	DM	"mul"
+184A 00 00                 3351 	DB	0,0
+184C 64 69 F6              3352 	DM	"div"
+184F 00 00                 3353 	DB	0,0
+1851 73 75 62 F2           3354 	DM	"subr"
+1855 00 00                 3355 	DB	0,0
+1857 64 69 76 F2           3356 	DM	"divr"
+185B 00 00                 3357 	DB	0,0
+185D 63 6F ED              3358 	DM	"com"
+1860 00 00                 3359 	DB	0,0
+1862 63 6F 6D F0           3360 	DM	"comp"
+1866 00 00                 3361 	DB	0,0
+1868 6E 63 73 74 F0        3362 	DM	"ncstp"
+186D 01 F7                 3363 	DB	1,0F7H
+186F 6E 69 F4              3364 	DM	"nit"
+1872 03 E3                 3365 	DB	3,0E3H
+1874                       3366 
+1874                       3367 NDPL:
+1874 0A                    3368 	DB	10
+1875 E4                    3369 	DM	"d"
+1876 00 00                 3370 	DB	0,0
+1878 64 FA                 3371 	DM	"dz"
+187A 01 EE                 3372 	DB	1,0EEH
+187C 64 B1                 3373 	DM	"d1"
+187E 01 E8                 3374 	DB	1,0E8H
+1880 64 70 E9              3375 	DM	"dpi"
+1883 01 EB                 3376 	DB	1,0EBH
+1885 64 6C 32 F4           3377 	DM	"dl2t"
+1889 01 E9                 3378 	DB	1,0E9H
+188B 64 6C 32 E5           3379 	DM	"dl2e"
+188F 01 EA                 3380 	DB	1,0EAH
+1891 64 6C 67 B2           3381 	DM	"dlg2"
+1895 01 EC                 3382 	DB	1,0ECH
+1897 64 6C 6E B2           3383 	DM	"dln2"
+189B 01 EB                 3384 	DB	1,0EBH
+189D 64 63 F7              3385 	DM	"dcw"
+18A0 01 00                 3386 	DB	1,0
+18A2 64 65 6E F6           3387 	DM	"denv"
+18A6 00 00                 3388 	DB	0,0
+18A8                       3389 
+18A8                       3390 NDPM:
+18A8 02                    3391 	DB	2
+18A9 75 EC                 3392 	DM	"ul"
+18AB 00 00                 3393 	DB	0,0
+18AD 75 6C F0              3394 	DM	"ulp"
+18B0 00 00                 3395 	DB	0,0
+18B2                       3396 
+18B2                       3397 NDPP:
+18B2 03                    3398 	DB	3
+18B3 72 65 ED              3399 	DM	"rem"
+18B6 01 F8                 3400 	DB	1,0F8H
+18B8 74 61 EE              3401 	DM	"tan"
+18BB 01 F2                 3402 	DB	1,0F2H
+18BD 61 74 61 EE           3403 	DM	"atan"
+18C1 01 F3                 3404 	DB	1,0F3H
+18C3                       3405 
+18C3                       3406 NDPR:
+18C3 02                    3407 	DB	2
+18C4 6E 64 69 6E F4        3408 	DM	"ndint"
+18C9 01 FC                 3409 	DB	1,0FCH
+18CB 73 74 6F F2           3410 	DM	"stor"
+18CF 05 00                 3411 	DB	5,0
+18D1                       3412 
+18D1                       3413 NDPS:
+18D1 0C                    3414 	DB	12
+18D2 F4                    3415 	DM	"t"
+18D3 00 00                 3416 	DB	0,0
+18D5 74 F0                 3417 	DM	"tp"
+18D7 00 00                 3418 	DB	0,0
+18D9 75 E2                 3419 	DM	"ub"
+18DB 00 00                 3420 	DB	0,0
+18DD 75 62 F0              3421 	DM	"ubp"
+18E0 00 00                 3422 	DB	0,0
+18E2 75 62 F2              3423 	DM	"ubr"
+18E5 00 00                 3424 	DB	0,0
+18E7 75 62 72 F0           3425 	DM	"ubrp"
+18EB 00 00                 3426 	DB	0,0
+18ED 71 72 F4              3427 	DM	"qrt"
+18F0 01 FA                 3428 	DB	1,0FAH
+18F2 63 61 6C E5           3429 	DM	"cale"
+18F6 01 FD                 3430 	DB	1,0FDH
+18F8 61 76 E5              3431 	DM	"ave"
+18FB 05 00                 3432 	DB	5,0
+18FD 74 63 F7              3433 	DM	"tcw"
+1900 05 00                 3434 	DB	5,0
+1902 74 65 6E F6           3435 	DM	"tenv"
+1906 05 00                 3436 	DB	5,0
+1908 74 73 F7              3437 	DM	"tsw"
+190B 05 00                 3438 	DB	5,0
+190D                       3439 
+190D                       3440 NDPT:
+190D 01                    3441 	DB	1
+190E 73 F4                 3442 	DM	"st"
+1910 01 E4                 3443 	DB	1,0E4H
+1912                       3444 
+1912                       3445 NDPW:
+1912 01                    3446 	DB	1
+1913 61 69 F4              3447 	DM	"ait"
+1916 00 00                 3448 	DB	0,0
+1918                       3449 
+1918                       3450 NDPX:
+1918 03                    3451 	DB	3
+1919 63 E8                 3452 	DM	"ch"
+191B 01 C4                 3453 	DB	1,0C4H
+191D 61 ED                 3454 	DM	"am"
+191F 01 E5                 3455 	DB	1,0E5H
+1921 74 72 61 63 F4        3456 	DM	"tract"
+1926 01 F4                 3457 	DB	1,0F4H
+1928                       3458 
+1928                       3459 NDPY:
+1928 02                    3460 	DB	2
+1929 6C 32 F8              3461 	DM	"l2x"
+192C 01 F1                 3462 	DB	1,0F1H
+192E 6C 32 78 70 B1        3463 	DM	"l2xp1"
+1933 01 F9                 3464 	DB	1,0F9H
+1935                       3465 
+1935                       3466 
+1935                       3467 OPTAB:
+1935                       3468 ; Table of pointers  to mnemonics. For each letter of the alphabet (the
+1935                       3469 ; starting letter of the mnemonic), there are 5 entries. Each entry
+1935                       3470 ; corresponds to a mnemonic whose length is 2, 3, 4, 5, and 6 characters
+1935                       3471 ; long, respectively. If there are no mnemonics for a given combination
+1935                       3472 ; of first letter and length (such as A-2), then the corresponding entry
+1935                       3473 ; points to NONE. Otherwise, it points to a place in the mnemonic table
+1935                       3474 ; for that type.
+1935                       3475 
+1935                       3476 ; This table only needs to be modified if a mnemonic is added to a group
+1935                       3477 ; previously marked NONE. Change the NONE to a label made up of the first
+1935                       3478 ; letter of the mnemonic and its length, then add a new subsection to
+1935                       3479 ; the mnemonic table in alphabetical order.
+1935                       3480 
+1935 7D 14                 3481 	DW	NONE
+1937 7E 14                 3482 	DW	A3
+1939 7D 14                 3483 	DW	NONE
+193B A2 14                 3484 	DW	A5
+193D 7D 14                 3485 	DW	NONE
+193F 7D 14                 3486 	DW	NONE	;B
+1941 7D 14                 3487 	DW	NONE
+1943 7D 14                 3488 	DW	NONE
+1945 7D 14                 3489 	DW	NONE
+1947 7D 14                 3490 	DW	NONE
+1949 7D 14                 3491 	DW	NONE	;C
+194B AA 14                 3492 	DW	C3
+194D CE 14                 3493 	DW	C4
+194F E1 14                 3494 	DW	C5
+1951 7D 14                 3495 	DW	NONE
+1953 F0 14                 3496 	DW	D2	;D
+1955 05 15                 3497 	DW	D3
+1957 1A 15                 3498 	DW	D4
+1959 7D 14                 3499 	DW	NONE
+195B 7D 14                 3500 	DW	NONE
+195D 21 15                 3501 	DW	E2	;E
+195F 26 15                 3502 	DW	E3
+1961 7D 14                 3503 	DW	NONE
+1963 36 15                 3504 	DW	E5
+1965 7D 14                 3505 	DW	NONE
+1967 7D 14                 3506 	DW	NONE	;F
+1969 7D 14                 3507 	DW	NONE
+196B 7D 14                 3508 	DW	NONE
+196D 7D 14                 3509 	DW	NONE
+196F 7D 14                 3510 	DW	NONE
+1971 7D 14                 3511 	DW	NONE	;G
+1973 7D 14                 3512 	DW	NONE
+1975 7D 14                 3513 	DW	NONE
+1977 7D 14                 3514 	DW	NONE
+1979 7D 14                 3515 	DW	NONE
+197B 7D 14                 3516 	DW	NONE	;H
+197D 3E 15                 3517 	DW	H3
+197F 44 15                 3518 	DW	H4
+1981 7D 14                 3519 	DW	NONE
+1983 7D 14                 3520 	DW	NONE
+1985 4B 15                 3521 	DW	I2	;I
+1987 54 15                 3522 	DW	I3
+1989 69 15                 3523 	DW	I4
+198B 7D 14                 3524 	DW	NONE
+198D 7D 14                 3525 	DW	NONE
+198F 82 15                 3526 	DW	J2	;J
+1991 AB 15                 3527 	DW	J3
+1993 01 16                 3528 	DW	J4
+1995 7D 14                 3529 	DW	NONE
+1997 7D 14                 3530 	DW	NONE
+1999 7D 14                 3531 	DW	NONE	;K
+199B 7D 14                 3532 	DW	NONE
+199D 7D 14                 3533 	DW	NONE
+199F 7D 14                 3534 	DW	NONE
+19A1 7D 14                 3535 	DW	NONE
+19A3 7D 14                 3536 	DW	NONE	;L
+19A5 26 16                 3537 	DW	L3
+19A7 36 16                 3538 	DW	L4
+19A9 55 16                 3539 	DW	L5
+19AB 72 16                 3540 	DW	L6
+19AD 7D 14                 3541 	DW	NONE	;M
+19AF 83 16                 3542 	DW	M3
+19B1 8E 16                 3543 	DW	M4
+19B3 9B 16                 3544 	DW	M5
+19B5 7D 14                 3545 	DW	NONE
+19B7 7D 14                 3546 	DW	NONE	;N
+19B9 AA 16                 3547 	DW	N3
+19BB 7D 14                 3548 	DW	NONE
+19BD 7D 14                 3549 	DW	NONE
+19BF 7D 14                 3550 	DW	NONE
+19C1 BA 16                 3551 	DW	O2	;O
+19C3 BF 16                 3552 	DW	O3
+19C5 CA 16                 3553 	DW	O4
+19C7 7D 14                 3554 	DW	NONE
+19C9 7D 14                 3555 	DW	NONE
+19CB 7D 14                 3556 	DW	NONE	;P
+19CD D7 16                 3557 	DW	P3
+19CF E2 16                 3558 	DW	P4
+19D1 EF 16                 3559 	DW	P5
+19D3 7D 14                 3560 	DW	NONE
+19D5 7D 14                 3561 	DW	NONE	;Q
+19D7 7D 14                 3562 	DW	NONE
+19D9 7D 14                 3563 	DW	NONE
+19DB 7D 14                 3564 	DW	NONE
+19DD 7D 14                 3565 	DW	NONE
+19DF 7D 14                 3566 	DW	NONE	;R
+19E1 F7 16                 3567 	DW	R3
+19E3 16 17                 3568 	DW	R4
+19E5 23 17                 3569 	DW	R5
+19E7 7D 14                 3570 	DW	NONE
+19E9 7D 14                 3571 	DW	NONE	;S
+19EB 32 17                 3572 	DW	S3
+19ED 6A 17                 3573 	DW	S4
+19EF 89 17                 3574 	DW	S5
+19F1 7D 14                 3575 	DW	NONE
+19F3 7D 14                 3576 	DW	NONE	;T
+19F5 7D 14                 3577 	DW	NONE
+19F7 A6 17                 3578 	DW	T4
+19F9 7D 14                 3579 	DW	NONE
+19FB 7D 14                 3580 	DW	NONE
+19FD AD 17                 3581 	DW	U2	;U
+19FF 7D 14                 3582 	DW	NONE
+1A01 7D 14                 3583 	DW	NONE
+1A03 7D 14                 3584 	DW	NONE
+1A05 7D 14                 3585 	DW	NONE
+1A07 7D 14                 3586 	DW	NONE	;V
+1A09 7D 14                 3587 	DW	NONE
+1A0B 7D 14                 3588 	DW	NONE
+1A0D 7D 14                 3589 	DW	NONE
+1A0F 7D 14                 3590 	DW	NONE
+1A11 7D 14                 3591 	DW	NONE	;W
+1A13 7D 14                 3592 	DW	NONE
+1A15 B2 17                 3593 	DW	W4
+1A17 7D 14                 3594 	DW	NONE
+1A19 7D 14                 3595 	DW	NONE
+1A1B 7D 14                 3596 	DW	NONE	;X
+1A1D B9 17                 3597 	DW	X3
+1A1F BF 17                 3598 	DW	X4
+1A21 7D 14                 3599 	DW	NONE
+1A23 7D 14                 3600 	DW	NONE
+1A25 7D 14                 3601 	DW	NONE	;Y
+1A27 7D 14                 3602 	DW	NONE
+1A29 7D 14                 3603 	DW	NONE
+1A2B 7D 14                 3604 	DW	NONE
+1A2D 7D 14                 3605 	DW	NONE
+1A2F 7D 14                 3606 	DW	NONE	;Z
+1A31 7D 14                 3607 	DW	NONE
+1A33 7D 14                 3608 	DW	NONE
+1A35 7D 14                 3609 	DW	NONE
+1A37 7D 14                 3610 	DW	NONE
+1A39                       3611 
+1A39                       3612 NDPTAB:
+1A39                       3613 ;Lookup table for 8087 mnemonics. There is one entry for each letter of the
+1A39                       3614 ;alphabet
+1A39 D2 17                 3615 	DW	NDPA
+1A3B E0 17                 3616 	DW	NDPB
+1A3D EA 17                 3617 	DW	NDPC
+1A3F 03 18                 3618 	DW	NDPD
+1A41 24 18                 3619 	DW	NDPE
+1A43 29 18                 3620 	DW	NDPF
+1A45 7D 14                 3621 	DW	NONE	;G
+1A47 7D 14                 3622 	DW	NONE	;H
+1A49 2F 18                 3623 	DW	NDPI
+1A4B 7D 14                 3624 	DW	NONE	;J
+1A4D 7D 14                 3625 	DW	NONE	;K
+1A4F 74 18                 3626 	DW	NDPL
+1A51 A8 18                 3627 	DW	NDPM
+1A53 7D 14                 3628 	DW	NONE	;N
+1A55 7D 14                 3629 	DW	NONE	;O
+1A57 B2 18                 3630 	DW	NDPP
+1A59 7D 14                 3631 	DW	NONE	;Q
+1A5B C3 18                 3632 	DW	NDPR
+1A5D D1 18                 3633 	DW	NDPS
+1A5F 0D 19                 3634 	DW	NDPT
+1A61 7D 14                 3635 	DW	NONE	;U
+1A63 7D 14                 3636 	DW	NONE	;V
+1A65 12 19                 3637 	DW	NDPW
+1A67 18 19                 3638 	DW	NDPX
+1A69 28 19                 3639 	DW	NDPY
+1A6B 7D 14                 3640 	DW	NONE	;Z
+1A6D                       3641 
+1A6D                       3642 
+1A6D 2A 2A 2A 2A 2A 20 45  3643 ERRMES:	DM	'***** ERROR no. '
+     52 52 4F 52 20 6E 6F 
+     2E A0                
+1A7D 0D 0A 4E 6F 20 64 69  3644 NOSPAC:	DB	13,10,'No directory space',13,10,24H
+     72 65 63 74 6F 72 79 
+     20 73 70 61 63 65 0D 
+     0A 24                
+1A94 48 0D 8A              3645 ENDMES:	DM	'H',13,10
+1A97 0D 0A 49 6E 73 75 66  3646 NOMEM:	DB	13,10,'Insufficient memory',13,10,'$'
+     66 69 63 69 65 6E 74 
+     20 6D 65 6D 6F 72 79 
+     0D 0A 24             
+1AAF 0D 0A 46 69 6C 65 20  3647 NOFILE:	DB	13,10,'File not found',13,10,'$'
+     6E 6F 74 20 66 6F 75 
+     6E 64 0D 0A 24       
+1AC2 0D 0A 44 69 73 6B 20  3648 WRTERR:	DB	13,10,'Disk full',13,10,'$'
+     66 75 6C 6C 0D 0A 24 
+1AD0 0D 0A 42 61 64 20 64  3649 BADDSK:	DB	13,10,'Bad disk specifier',13,10,'$'
+     69 73 6B 20 73 70 65 
+     63 69 66 69 65 72 0D 
+     0A 24                
+1AE7 0D 0A 0D 0A 45 72 72  3650 ERCNTM:	DM	13,10,13,10,'Error Count ='
+     6F 72 20 43 6F 75 6E 
+     74 20 BD             
+1AF8 0D 0A 53 79 6D 62 6F  3651 SYMMES:	DM	13,10,'Symbol Table',13,10,13,10
+     6C 20 54 61 62 6C 65 
+     0D 0A 0D 8A          
+1B0A 41 53 4D 00 00        3652 EXTEND:	DB	'ASM',0,0
+1B0F 05 65 6E 64 69 66     3653 IFEND:	DB	5,'endif'
+1B15 02 69 66              3654 IFNEST:	DB	2,'if'
+1B18 72 65 F4              3655 RETSTR:	DM	'ret'
+1B1B 00 20 20 20 20 20 20  3656 HEXFCB:	DB	0,'        HEX',0,0,0,0
+     20 20 48 45 58 00 00 
+     00 00                
+1B2B                       3657 	DS	16
+1B3B 00 00 00 00 00        3658 	DB	0,0,0,0,0
+1B40 00 20 20 20 20 20 20  3659 LSTFCB:	DB	0,'        PRN',0,0,0,0
+     20 20 50 52 4E 00 00 
+     00 00                
+1B50                       3660 	DS	16
+1B60 00 00 00 00 00        3661 	DB	0,0,0,0,0
+1B65                       3662 PC:	DS	2
+1B67                       3663 OLDPC:	DS	2
+1B69                       3664 LABPT:	DS	2
+1B6B                       3665 FLAG:	DS	1
+1B6C                       3666 LONG:	DS	1
+1B6D                       3667 ADDR:	DS	2
+1B6F                       3668 ALABEL:	DS	2
+1B71                       3669 DATA:	DS	2
+1B73                       3670 DLABEL:	DS	2
+1B75                       3671 CON:	DS	2
+1B77                       3672 UNDEF:	DS	2
+1B79                       3673 LENID:	DS	1
+1B7A                       3674 ID:	DS	80
+1BCA                       3675 CHR:	DS	1
+1BCB                       3676 SYM:	DS	1
+1BCC                       3677 BASE:	DS	2
+1BCE                       3678 HEAP:	DS	2
+1BD0                       3679 SYMFLG:	DS	1
+1BD1                       3680 CODE:	DS	2
+1BD3                       3681 DATSIZ:	DS	1
+1BD4                       3682 RELOC:	DS	1
+1BD5                       3683 BCOUNT:	DS	1
+1BD6                       3684 COUNT:	DS	1
+1BD7                       3685 ERR:	DS	1
+1BD8                       3686 LINE:	DS	2
+1BDA                       3687 HEXLEN:	DS	2
+1BDC                       3688 HEXADD:	DS	2
+1BDE                       3689 LASTAD:	DS	2
+1BE0                       3690 HEXCNT:	DS	1
+1BE1                       3691 CHKSUM:	DS	1
+1BE2                       3692 LINFLG:	DS	1
+1BE3                       3693 PREV:	DS	1
+1BE4                       3694 IFFLG:	DS	1
+1BE5                       3695 CHKLAB:	DS	1
+1BE6                       3696 ERRCNT:	DS	2
+1BE8                       3697 LSTRET:	DS	2
+1BEA                       3698 RETPT:	DS	2
+1BEC                       3699 LSTDEV:	DS	2
+1BEE                       3700 SPC:	DS	1
+1BEF                       3701 NOWAIT:	DS	1
+1BF0                       3702 IX:	DS	2
+1BF2                       3703 IY:	DS	2
+1BF4                       3704 HEXPNT:	DS	2
+1BF6                       3705 LSTPNT:	DS	2
+1BF8                       3706 HEXBUF:	DS	HEXBUFSIZ
+1C3E                       3707 LSTBUF:	DS	LSTBUFSIZ
+203E                       3708 BUFPT:	DS	2
+2040                       3709 SRCBUF:	DS	BUFSIZ
+2440                       3710 	DS	80
+2490                       3711 	ALIGN
+2490                       3712 STACK:	EQU	$
+2490                       3713 START:	EQU	$
+
+
+Error Count =    0
