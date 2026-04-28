@@ -29,6 +29,7 @@ Further details about these listings, including technical writeups, can be
 found at:
 - https://thebrokenpipe.com/dos/paterson_listings
 - http://cini.classiccmp.org/recoveryblog.htm
+- https://jscarsbrook.me/doshistory
 
 ## Listing Content
 Paterson's stack of DOS listings contains 10 bundles of continuous-feed paper,
