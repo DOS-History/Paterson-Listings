@@ -2,3 +2,8 @@
 LICENSE text=auto
 *.md text=auto
 *.txt text=auto
+*.asm text=auto
+*.a86 text=auto
+*.lst text=auto
+*.prn text=auto
+*.dif text=auto
