@@ -23,7 +23,7 @@ compilable source code extracted from the printed files above
 
 If you just want to browse the source code or compile/assemble it, choose
 [`3_source_code`](./3_source_code/). The original scans, in PDF and PNG
-formats, are available at https://archive.org/details/paterson_listings.
+formats, are available at <https://archive.org/details/paterson_listings>.
 
 Further details about these listings, including technical writeups, can be
 found at:
