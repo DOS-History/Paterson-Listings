@@ -30,6 +30,7 @@ found at:
 - https://thebrokenpipe.com/dos/paterson_listings
 - http://cini.classiccmp.org/recoveryblog.htm
 - https://jscarsbrook.me/doshistory
+- https://opensource.microsoft.com/blog/2026/04/28/continuing-the-story-of-early-dos-development
 
 ## Listing Content
 Paterson's stack of DOS listings contains 10 bundles of continuous-feed paper,
@@ -109,3 +110,8 @@ A:HEX2BIN 86DOS
 
 A:
 ```
+
+## Special Thanks
+* [@TimPaterson](https://github.com/TimPaterson) - for providing the listings
+* [@shanselman](https://github.com/shanselman) and the Microsoft folks - for making this happen
+* [@the-grue](https://github.com/the-grue) - for transcribing bundle 10
