@@ -358,7 +358,7 @@ $CHN . . . . . . . . . . . . . .	L NEAR 	0006	CODE	Global
 $ERR_BFN . . . . . . . . . . . .	L NEAR 	0000	CODE	External
 
 
-CHAIN - CHAIN and RUN statements                                 Macro-86 %1(12)   0:58:26  13-Nov-81   Symbols-1
+CHAIN - CHAIN and RUN statements                                 Macro-86 %1(12)   0:58:26  13-Nov-81   Symbols-2
 
 
 
