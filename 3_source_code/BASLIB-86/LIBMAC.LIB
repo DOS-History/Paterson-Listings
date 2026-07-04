@@ -1,0 +1,23 @@
+; BASLIB-86 helper macros
+
+LXIOK   EQU     1               ;1 to allow LXI tricks, 0 to avoid them
+
+SKIP    MACRO   LENGTH
+
+        IF      LXIOK           ;;OK to use LXI trick?
+        IF      LENGTH EQ 1     ;;Is length 1?
+        DB      0B0H            ;MOV AL,immediate
+        ENDIF
+        IF      LENGTH EQ 2     ;;Is length 2?
+        DB      0B8H            ;MOV AX,immediate
+        ENDIF
+        IF      LENGTH GT 2
+        ILLEGAL SKIP LENGTH     ;Cause an error
+        ENDIF
+        ELSE                    ;Don't use LXI tricks
+        JMP     SHORT $+LENGTH+2
+
+        ENDIF
+
+        ENDM
+
