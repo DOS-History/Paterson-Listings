@@ -67,10 +67,10 @@ endif
 
 ;       Public Data Variables
 
-;if      _CPM_
-;        PUBLIC  $DIRTMP
-;$DIRTMP         DB      REC_LENGTH DUP (?)       ;Temporary buffer
-;endif
+if      _CPM_
+        PUBLIC  $DIRTMP
+$DIRTMP         DB      REC_LENGTH DUP (?)       ;Temporary buffer
+endif
 
 
 ;       Local Data Variables
@@ -858,8 +858,8 @@ fil01:
         CALL    FILQS
 if      _MSDOS_
         MOV     DX,OFFSET DC:$FILNM2    ;For MSDOS
-;else
-;        MOV     DX,OFFSET DC:$DIRTMP    ;For CPM
+else
+        MOV     DX,OFFSET DC:$DIRTMP    ;For CPM
 endif
         CALLOS  C_BUFF                  ;Set buffer address
         MOV     DX,OFFSET DC:$FILNAM
@@ -917,10 +917,10 @@ nwfil2: RET
 
 $DKK:   CALL    $SAVREG
         CALL    NAMFIL                  ;Scan file name
-;if      _CPM_
-;        MOV     DX,OFFSET DC:$DIRTMP    ;Temporary buffer
-;        CALLOS  C_BUFF                  ;Set buffer address
-;endif
+if      _CPM_
+        MOV     DX,OFFSET DC:$DIRTMP    ;Temporary buffer
+        CALLOS  C_BUFF                  ;Set buffer address
+endif
         MOV     DX,OFFSET DC:$FILNAM
         CALLOS  C_OPEN                  ;Open file
         INC     AL
@@ -960,13 +960,13 @@ $DKR:   CALL    $SAVREG
         INC     AL
         JNZ     ercfae                  ;File already exists
 
-;if      _CPM_
-;        MOV     AL,[$FILNAM]            ;Test to see if drives match
-;        CMP     [$FILNM2],AL
-;        JE      drvsok
-;        JMP     $ERC_FC                 ;Illegal function call
-;drvsok:
-;endif
+if      _CPM_
+        MOV     AL,[$FILNAM]            ;Test to see if drives match
+        CMP     [$FILNM2],AL
+        JE      drvsok
+        JMP     $ERC_FC                 ;Illegal function call
+drvsok:
+endif
 
 if      _MSDOS_
         MOV     SI,DX

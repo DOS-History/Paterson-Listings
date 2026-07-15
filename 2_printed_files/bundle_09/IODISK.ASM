@@ -1732,19 +1732,19 @@ IODISK - Disk I/O Drivers for BASCOM-86                  Macro-86 %1(12)   1:4:3
 1198	 04D7  FE C0	 	 	        INC     AL
 1199	 04D9  75 13	 	 	        JNZ     ercfae                  ;File already exists
 1200	 	 	 	 	
-1201	 	 	 	 	;if      _CPM_
-1202	 	 	 	 	;        MOV     AL,[$FILNAM]            ;Test to see if drives match
-1203	 	 	 	 	;        CMP     [$FILNM2],AL
-1204	 	 	 	 	;        JE      drvsok
+1201	 	 	 	 	if      _CPM_
+1202	 	 	 	 	        MOV     AL,[$FILNAM]            ;Test to see if drives match
+1203	 	 	 	 	        CMP     [$FILNM2],AL
+1204	 	 	 	 	        JE      drvsok
 
 
 IODISK - Disk I/O Drivers for BASCOM-86                  Macro-86 %1(12)   1:4:30  13-Nov-81    Page 4-4
 
 
 
-1205	 	 	 	 	;        JMP     $ERC_FC                 ;Illegal function call
-1206	 	 	 	 	;drvsok:
-1207	 	 	 	 	;endif
+1205	 	 	 	 	        JMP     $ERC_FC                 ;Illegal function call
+1206	 	 	 	 	drvsok:
+1207	 	 	 	 	endif
 1208	 	 	 	 	
 1209	 	 	 	 	if      _MSDOS_
 1210	 04DB  8B F2	 	 	        MOV     SI,DX
