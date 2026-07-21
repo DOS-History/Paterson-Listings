@@ -1,5 +1,5 @@
         TITLE   IOTTY  - Console driver for BASCOM-86
-PAGE 60,132
+
 
         INCLUDE TABMAC.INC
 

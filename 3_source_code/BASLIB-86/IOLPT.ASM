@@ -1,6 +1,6 @@
         TITLE   IOLPT  - Line printer Device Drivers
         SUBTTL  Support for 1 line printers
-PAGE 60,132
+
 
 ;       This module contains the device independent printer routines for
 ;       the BASIC Compiler.  While this module is intended for use with

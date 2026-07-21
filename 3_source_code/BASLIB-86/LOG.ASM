@@ -1,5 +1,5 @@
         TITLE   LOG - Natural and base 2 logarithm
-PAGE 60,132
+
 DATA    SEGMENT WORD PUBLIC 'DATA'
 
         EXTRN   $AC:WORD, $FAC:BYTE, $ARG:WORD
