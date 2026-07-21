@@ -1,5 +1,5 @@
         TITLE   IODISK - Disk I/O Drivers for BASCOM-86
-PAGE 60,132
+
 ;       This module contains the disk operating system interface
 ;       for the device I/O independent package.  It also includes
 ;       other operating system features of BASIC.
