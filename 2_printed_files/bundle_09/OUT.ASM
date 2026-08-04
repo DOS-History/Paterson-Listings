@@ -382,6 +382,7 @@ FB_NUM . . . . . . . . . . . . .        Number  FFFB
 FCB_LENGTH . . . . . . . . . . .        Number  0026
 FILNAML. . . . . . . . . . . . .        Number  0026
 FILNAM_LENGTH. . . . . . . . . .        Number  000B
+LAST_DEVICE_OFFSET . . . . . . .        Number  0008
 LF . . . . . . . . . . . . . . .	Number	000A	
 MD_APP . . . . . . . . . . . . .        Number  0008
 MD_BIN . . . . . . . . . . . . .        Number  0080
@@ -416,7 +417,6 @@ _IBM_. . . . . . . . . . . . . .        Number  0000
 _MSDOS_. . . . . . . . . . . . .        Number  0001
 ___DEV . . . . . . . . . . . . .        Number  FFFC
 ___ZZZ . . . . . . . . . . . . .        Number  0018
-
 
 OUT - Output utilities                                   Macro-86 %1(12)   1:6:27  13-Nov-81    Symbols-3
 
