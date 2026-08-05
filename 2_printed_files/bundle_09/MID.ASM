@@ -3,7 +3,7 @@ MID - Left-hand MID$                                     Macro-86 %1(12)   1:6:1
 
 
     1	 	 	 	 	        TITLE   MID - Left-hand MID$
-    2	 	 	 	 	PAGE 60,132
+    2	 	 	 	 	
     3	 0000	 	 	 	CODE    SEGMENT BYTE PUBLIC 'CODE'
     4	 	 	 	 	
     5	 	 	 	 	        PUBLIC  $MD$A

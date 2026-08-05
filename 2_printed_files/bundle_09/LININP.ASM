@@ -3,7 +3,7 @@ LININP - LINE INPUT statement                            Macro-86 %1(12)   1:6:2
 
 
     1	 	 	 	 	        TITLE   LININP - LINE INPUT statement
-    2	 	 	 	 	PAGE 60,132
+    2	 	 	 	 	
     3	 0000	 	 	 	DATA    SEGMENT WORD PUBLIC 'DATA'
     4	 	 	 	 	
     5	 	 	 	 	        EXTRN   $FILBUF:WORD,$INBUF:BYTE,$$ERRV:WORD
