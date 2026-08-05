@@ -3,7 +3,7 @@ IOFILM - File Manager for BASCOM-86                      Macro-86 %1(12)   1:5:1
 
 
     1	 	 	 	 	        TITLE   IOFILM - File Manager for BASCOM-86
-    2	 	 	 	 	PAGE 60,132
+    2	 	 	 	 	
     3	 	 	 	 	;       This module contains the dynamic file management routines for the
     4	 	 	 	 	;       8086 BASIC Compiler runtime.
     5	 	 	 	 	
