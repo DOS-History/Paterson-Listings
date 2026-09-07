@@ -3710,8 +3710,8 @@ QUEUE Switches:  /FILE:ASCII /COPIES:1 /SPACING:1 /LIMIT:565 /FORMS:NORMAL
 36040	MEMSTRT:
 36050	ADJFAC:	EQU	DIRBUF-MEMSTRT
    CCCCCCCCCCCC         OOOOOOOOO         MMM         MMM         AAAAAAAAA         NNN	        NNN      DDDDDDDDDDDD   
-   СССССССССССС         OOOOOOOOO         MMM         MMM         AAAAAAAAA         NNN         NNN      DDDDDDDDDDDD   
-   СССССССССССС         OOOOOOOOO         MMM         MMM         AAAAAAAAA         NNN         NNN      DDDDDDDDDDDD   
+   CCCCCCCCCCCC         OOOOOOOOO         MMM         MMM         AAAAAAAAA         NNN         NNN      DDDDDDDDDDDD   
+   CCCCCCCCCCCC         OOOOOOOOO         MMM         MMM         AAAAAAAAA         NNN         NNN      DDDDDDDDDDDD   
 CCC                  OOO         OOO      MMMMMM   MMMMMM      AAA         AAA      NNN         NNN      DDD         DDD
 CCC                  OOO         OOO      MMMMMM   MMMMMM      AAA         AAA      NNN         NNN      DDD         DDD
 CCC                  OOO         OOO      MMMMMM   MMMMMM      AAA         AAA      NNN         NNN      DDD         DDD
@@ -3728,8 +3728,8 @@ CCC                  OOO         OOO      MMM         MMM      AAA         AAA  
 CCC                  OOO         OOO      MMM         MMM      AAA         AAA      NNN         NNN      DDD         DDD
 CCC                  OOO         OOO      MMM         MMM      AAA         AAA      NNN         NNN      DDD         DDD
    CCCCCCCCCCCC         OOOOOOOOO         MMM         MMM      AAA         AAA      NNN         NNN      DDDDDDDDDDDD   
-   СССССССССССС         OOOOOOOOO         MMM         MMM      AAA         AAA      NNN         NNN      DDDDDDDDDDDD   
-   СССССССССССС         OOOOOOOOO         MMM         MMM      AAA         AAA      NNN         NNN      DDDDDDDDDDDD   
+   CCCCCCCCCCCC         OOOOOOOOO         MMM         MMM      AAA         AAA      NNN         NNN      DDDDDDDDDDDD   
+   CCCCCCCCCCCC         OOOOOOOOO         MMM         MMM      AAA         AAA      NNN         NNN      DDDDDDDDDDDD   
 
 
 

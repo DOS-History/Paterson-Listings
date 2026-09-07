@@ -294,8 +294,8 @@ File 2)	DSKC:EDLIN.A86[500,500]	created: 1007 01-JULY-1981
 2)	22380	END:	DS	2
 **************
    CCCCCCCCCCCC      HHH         HHH      KKK         KKK      DDDDDDDDDDDD            SSSSSSSSSSSS      KKK         KKK
-   СССССССССССС      HHH         HHH      KKK         KKK      DDDDDDDDDDDD            SSSSSSSSSSSS      KKK         KKK
-   СССССССССССС      HHH         HHH      KKK         KKK      DDDDDDDDDDDD            SSSSSSSSSSSS      KKK         KKK
+   CCCCCCCCCCCC      HHH         HHH      KKK         KKK      DDDDDDDDDDDD            SSSSSSSSSSSS      KKK         KKK
+   CCCCCCCCCCCC      HHH         HHH      KKK         KKK      DDDDDDDDDDDD            SSSSSSSSSSSS      KKK         KKK
 CCC                  HHH         HHH      KKK         KKK      DDD         DDD      SSS                  KKK         KKK
 CCC                  HHH         HHH      KKK         KKK      DDD         DDD      SSS                  KKK         KKK
 CCC                  HHH         HHH      KKK         KKK      DDD         DDD      SSS                  KKK         KKK
@@ -312,8 +312,8 @@ CCC                  HHH         HHH      KKK         KKK      DDD         DDD  
 CCC                  HHH         HHH      KKK         KKK      DDD         DDD                  SSS      KKK         KKK
 CCC                  HHH         HHH      KKK         KKK      DDD         DDD                  SSS      KKK         KKK
    CCCCCCCCCCCC      HHH         HHH      KKK         KKK      DDDDDDDDDDDD         SSSSSSSSSSSS         KKK         KKK
-   СССССССССССС      HHH         HHH      KKK         KKK      DDDDDDDDDDDD         SSSSSSSSSSSS         KKK         KKK
-   СССССССССССС      HHH         HHH      KKK         KKK      DDDDDDDDDDDD         SSSSSSSSSSSS         KKK         KKK
+   CCCCCCCCCCCC      HHH         HHH      KKK         KKK      DDDDDDDDDDDD         SSSSSSSSSSSS         KKK         KKK
+   CCCCCCCCCCCC      HHH         HHH      KKK         KKK      DDDDDDDDDDDD         SSSSSSSSSSSS         KKK         KKK
 
 
 
@@ -347,8 +347,8 @@ AAA         AAA         888888888            666666666
 File: DSKC:CHKDSK.A86<055>[500,500] Created: 15-Jul-81 12:19:22 Printed: 28-Jul-81 14:41:18
 QUEUE Switches:  /FILE:ASCII /COPIES:1 /SPACING:1 /LIMIT:119 /FORMS:NORMAL
    CCCCCCCCCCCC      HHH         HHH      KKK         KKK      DDDDDDDDDDDD            SSSSSSSSSSSS      KKK         KKK
-   СССССССССССС      HHH         HHH      KKK         KKK      DDDDDDDDDDDD            SSSSSSSSSSSS      KKK         KKK
-   СССССССССССС      HHH         HHH      KKK         KKK      DDDDDDDDDDDD            SSSSSSSSSSSS      KKK         KKK
+   CCCCCCCCCCCC      HHH         HHH      KKK         KKK      DDDDDDDDDDDD            SSSSSSSSSSSS      KKK         KKK
+   CCCCCCCCCCCC      HHH         HHH      KKK         KKK      DDDDDDDDDDDD            SSSSSSSSSSSS      KKK         KKK
 CCC                  HHH         HHH      KKK         KKK      DDD         DDD      SSS                  KKK         KKK
 CCC                  HHH         HHH      KKK         KKK      DDD         DDD      SSS                  KKK         KKK
 CCC                  HHH         HHH      KKK         KKK      DDD         DDD      SSS                  KKK         KKK
@@ -365,8 +365,8 @@ CCC                  HHH         HHH      KKK         KKK      DDD         DDD  
 CCC                  HHH         HHH      KKK         KKK      DDD         DDD                  SSS      KKK         KKK
 CCC                  HHH         HHH      KKK         KKK      DDD         DDD                  SSS      KKK         KKK
    CCCCCCCCCCCC      HHH         HHH      KKK         KKK      DDDDDDDDDDDD         SSSSSSSSSSSS         KKK         KKK
-   СССССССССССС      HHH         HHH      KKK         KKK      DDDDDDDDDDDD         SSSSSSSSSSSS         KKK         KKK
-   СССССССССССС      HHH         HHH      KKK         KKK      DDDDDDDDDDDD         SSSSSSSSSSSS         KKK         KKK
+   CCCCCCCCCCCC      HHH         HHH      KKK         KKK      DDDDDDDDDDDD         SSSSSSSSSSSS         KKK         KKK
+   CCCCCCCCCCCC      HHH         HHH      KKK         KKK      DDDDDDDDDDDD         SSSSSSSSSSSS         KKK         KKK
 
 
 
